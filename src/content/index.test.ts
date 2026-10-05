@@ -115,6 +115,10 @@ describe('oxlint documentation contract', () => {
       for (const group of ['typescript', 'effect']) {
         const text = corpus[`presets/${group}.md`]!
         expect(text).toContain('Ultracite 7.12.3')
+        expect(text).toContain(locale === 'en' ? 'pinned MIT port' : 'MIT 固定移植')
+        expect(text).toContain(
+          locale === 'en' ? 'runtime and command remain Oxlint directly' : 'コマンドは Oxlint を直接',
+        )
         expect(text).toContain('ultracite/oxlint/core')
         expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs')
         expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx')

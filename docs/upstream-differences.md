@@ -42,7 +42,9 @@ See THIRD-PARTY-NOTICES.md for attribution.
 
 ## Ultracite baseline documentation
 
-The library presets use the published [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) native `ultracite/oxlint/core` export.
+The library presets use a pinned MIT port of the native core configuration and shared ignores from [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3), corresponding to its upstream `ultracite/oxlint/core` export.
+The library includes only these native settings, not the full Ultracite CLI package or unused CLI transitive dependencies.
+This scoped port avoids the CLI dependency advisory found by the library audit without changing the native baseline policy, and the consumer runs directly with Oxlint.
 Verified package gitHead/source comparison revision: `48156546701badf2c6e60f25cf1e8511f7dc44c7`.
 Direct references: [core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [official provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
 Native rule counts are not frozen in site prose because package/runtime-enabled counts include different scopes and can change.

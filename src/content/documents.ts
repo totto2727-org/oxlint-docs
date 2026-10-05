@@ -88,7 +88,7 @@ ${preset}
 
 Use @totto2727/oxlint/effect for Effect-only policy, or @totto2727/oxlint/preset for both groups.
 The exported default plugin uses the rules/ namespace. Named exports typescriptRuleNames, effectRuleNames and compatibilityRuleNames expose group membership.
-The presets already include native Ultracite 7.12.3 core. You do not need a second Ultracite preset or CLI wrapper.
+The presets already include a pinned MIT port of the native Ultracite 7.12.3 core configuration. The library does not depend on the full Ultracite CLI package, and runs directly with Oxlint. You do not need a second Ultracite preset or CLI wrapper.
 React, type-aware rules, Ultracite JavaScript plugins and oxfmt integration are separate opt-in choices, not automatically enabled.
 For explicit per-rule configuration in .oxlintrc.json instead of a preset (this does not apply the native core baseline):
 
@@ -120,7 +120,7 @@ ${preset}
 
 Effect のみには @totto2727/oxlint/effect、両グループには @totto2727/oxlint/preset を使います。
 default export のプラグインは rules/ 名前空間です。名前付き export の typescriptRuleNames、effectRuleNames、compatibilityRuleNames で所属を参照できます。
-プリセットは native Ultracite 7.12.3 core を含むため、別の Ultracite プリセットや CLI wrapper は不要です。
+プリセットは native Ultracite 7.12.3 core 設定の MIT 固定移植を含みます。ライブラリは Ultracite CLI パッケージ全体に依存せず、Oxlint で直接実行します。別の Ultracite プリセットや CLI wrapper は不要です。
 React、type-aware ルール、Ultracite JavaScript plugins、oxfmt 統合は個別の opt-in であり、自動的には有効化しません。
 プリセットを使わず .oxlintrc.json で明示的にルールを選ぶ場合 (native core baseline は適用しません):
 
@@ -146,7 +146,8 @@ ${code('sh', 'npx oxlint\nnpx oxlint --fix')}
     const baseline = en
       ? `## Shared native baseline {#baseline}
 
-Both group presets and the combined preset use the published [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) export \`ultracite/oxlint/core\`.
+Both group presets and the combined preset use a pinned MIT port of the native core configuration and shared ignores from [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3), corresponding to its upstream \`ultracite/oxlint/core\` export.
+Only these native configuration sources are included in the library. The full Ultracite CLI package and its unnecessary transitive dependencies are not imported. This avoids the unused CLI dependency advisory identified during the package audit, without changing the selected native rule policy. The runtime and command remain Oxlint directly.
 Verified version sources: [native core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [official Oxlint provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
 The library flattens its native core configuration and rules into each preset's top-level configuration, rather than adding a second preset to extends.
 Native core settings and shared ignore patterns are retained. All upstream per-file overrides are discarded, including test-specific relaxations. Test files are not excluded by this policy.
@@ -163,7 +164,8 @@ React presets, type-aware presets, Ultracite JavaScript plugins and oxfmt config
 Keep the existing Oxlint/Vite+ command entrypoints and formatter configuration unless you independently opt into another integration.`
       : `## 共通 native baseline {#baseline}
 
-両グループと統合プリセットは公開パッケージ [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) の \`ultracite/oxlint/core\` export を使います。
+両グループと統合プリセットは [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) の native core 設定と共通 ignore の MIT 固定移植を使います。上流の \`ultracite/oxlint/core\` export に対応します。
+ライブラリにはこれらの native 設定ソースのみを取り込み、Ultracite CLI パッケージ全体と不要な間接依存を取り込みません。パッケージ監査で確認された未使用 CLI 依存の advisory を回避し、選択した native ルールのポリシーは変えません。実行時とコマンドは Oxlint を直接使います。
 このバージョンの確認済み出典は [native core 設定](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) と [公式 Oxlint provider ドキュメント](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx) です。
 native core の設定とルールを各プリセットのトップレベルに展開し、extends に別のプリセットを追加する方式ではありません。
 native core の設定と共通 ignore パターンは保持します。テスト向けの緩和を含め、上流のファイル別 override はすべて除外します。このポリシーはテストファイルを ignore しません。
