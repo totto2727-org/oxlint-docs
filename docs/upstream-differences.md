@@ -43,6 +43,9 @@ See THIRD-PARTY-NOTICES.md for attribution.
 ## Ultracite baseline documentation
 
 The library presets use the published [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) native `ultracite/oxlint/core` export.
+Verified package gitHead/source comparison revision: `48156546701badf2c6e60f25cf1e8511f7dc44c7`.
+Direct references: [core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [official provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
+Native rule counts are not frozen in site prose because package/runtime-enabled counts include different scopes and can change.
 This site documents that configuration and the library's conflict adjustments, without adding Ultracite as a site dependency or vendoring its source.
 Both groups retain shared native settings/ignores but discard all upstream file overrides, with no test-only exemptions.
 The library-owned generated **/*.gen.ts no-redundant-alias allowance remains.

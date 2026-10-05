@@ -116,6 +116,8 @@ describe('oxlint documentation contract', () => {
         const text = corpus[`presets/${group}.md`]!
         expect(text).toContain('Ultracite 7.12.3')
         expect(text).toContain('ultracite/oxlint/core')
+        expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs')
+        expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx')
         expect(text).toContain('{#baseline}')
         for (const nativeRule of ['unicorn/prefer-bigint-literals', 'preserve-caught-error', 'prefer-const']) {
           expect(text).toContain(nativeRule)

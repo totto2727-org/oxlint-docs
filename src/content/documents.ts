@@ -147,6 +147,7 @@ ${code('sh', 'npx oxlint\nnpx oxlint --fix')}
       ? `## Shared native baseline {#baseline}
 
 Both group presets and the combined preset use the published [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) export \`ultracite/oxlint/core\`.
+Verified version sources: [native core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [official Oxlint provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
 The library flattens its native core configuration and rules into each preset's top-level configuration, rather than adding a second preset to extends.
 Native core settings and shared ignore patterns are retained. All upstream per-file overrides are discarded, including test-specific relaxations. Test files are not excluded by this policy.
 The library's own **/*.gen.ts no-redundant-alias allowance remains in TypeScript and combined presets.
@@ -163,6 +164,7 @@ Keep the existing Oxlint/Vite+ command entrypoints and formatter configuration u
       : `## 共通 native baseline {#baseline}
 
 両グループと統合プリセットは公開パッケージ [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) の \`ultracite/oxlint/core\` export を使います。
+このバージョンの確認済み出典は [native core 設定](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) と [公式 Oxlint provider ドキュメント](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx) です。
 native core の設定とルールを各プリセットのトップレベルに展開し、extends に別のプリセットを追加する方式ではありません。
 native core の設定と共通 ignore パターンは保持します。テスト向けの緩和を含め、上流のファイル別 override はすべて除外します。このポリシーはテストファイルを ignore しません。
 ライブラリ独自の **/*.gen.ts に対する no-redundant-alias の許可は TypeScript と統合プリセットに残ります。
