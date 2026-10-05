@@ -40,6 +40,16 @@ Four upstream rules are enabled by the Effect preset. The overlapping no-js-exte
 The scanner's packages/**/src .ts scope and process-lifetime cache are documented, rather than promising unsupported flat-src coverage.
 See THIRD-PARTY-NOTICES.md for attribution.
 
+## Ultracite baseline documentation
+
+The library presets use the published [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) native `ultracite/oxlint/core` export.
+This site documents that configuration and the library's conflict adjustments, without adding Ultracite as a site dependency or vendoring its source.
+Both groups retain shared native settings/ignores but discard all upstream file overrides, with no test-only exemptions.
+The library-owned generated **/*.gen.ts no-redundant-alias allowance remains.
+The native prefer-bigint-literals, preserve-caught-error and prefer-const rules are explicitly off in both groups for compatibility and duplicate-diagnostic avoidance.
+React/type-aware presets, JavaScript plugins, oxfmt integration and CLI replacement remain separate opt-in choices.
+This is authored policy documentation, not an additional site lint/formatter migration.
+
 ## Operational impact
 
 Run `vp run dev`, `build` and `preview` against the local host configuration.
