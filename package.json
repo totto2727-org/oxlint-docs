@@ -1,15 +1,15 @@
 {
-  "name": "template-vite-plus-app",
+  "name": "@totto2727/oxlint-docs",
   "version": "0.0.0",
   "private": true,
-  "description": "A simple Bun command-line application with Vite+ tooling",
+  "description": "Documentation for @totto2727/oxlint",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/totto2727-org/template-vite-plus-app.git"
+    "url": "git+https://github.com/totto2727-org/oxlint-docs.git"
   },
   "bin": {
-    "project": "dist/main.mjs"
+    "oxlint-docs": "dist/main.mjs"
   },
   "files": [
     "dist"
