@@ -1,5 +1,5 @@
 {
-  description = "A simple Bun CLI template with Vite+ tooling";
+  description = "Standalone documentation for @totto2727/oxlint";
 
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
@@ -25,7 +25,7 @@
       ];
       forEachSystem = nixpkgs.lib.genAttrs supportedSystems;
       overlay = final: _previous: {
-        project = final.callPackage ./package.nix {
+        oxlint-docs = final.callPackage ./package.nix {
           bun2nix = bun2nix.packages.${final.stdenv.hostPlatform.system}.default;
         };
       };
@@ -47,8 +47,8 @@
           pkgs = mkPkgs system;
         in
         rec {
-          inherit (pkgs) project;
-          default = project;
+          inherit (pkgs) oxlint-docs;
+          default = oxlint-docs;
         }
       );
       devShells = forEachSystem (

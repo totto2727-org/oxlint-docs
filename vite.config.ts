@@ -21,7 +21,7 @@ export default defineConfig({
   run: {
     tasks: {
       build: {
-        command: 'bun build --compile src/main.ts --outfile build/project',
+        command: 'bun build --compile src/main.ts --outfile build/oxlint-docs',
         input: [{ auto: true }, '!build/**'],
         output: ['build/**'],
       },

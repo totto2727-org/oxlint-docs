@@ -1,3 +1,3 @@
-export function greet(name: string = 'world'): string {
-  return `Hello, ${name}!`
+export function greet(): string {
+  return '@totto2727/oxlint documentation'
 }

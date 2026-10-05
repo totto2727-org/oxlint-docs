@@ -1,6 +1,6 @@
 { lib, bun2nix }:
 bun2nix.mkDerivation {
-  pname = "project";
+  pname = "oxlint-docs";
   packageJson = ./package.json;
   src = lib.fileset.toSource {
     root = ./.;
@@ -30,7 +30,7 @@ bun2nix.mkDerivation {
   ];
 
   meta = {
-    description = "A simple Bun command-line application";
+    description = "Oxlint documentation bootstrap";
     license = lib.licenses.mit;
     platforms = [
       "aarch64-darwin"
