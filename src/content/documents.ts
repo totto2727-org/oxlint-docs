@@ -98,7 +98,7 @@ Do not enable force-ts-extension alongside the two replacement rules.
 ${code('sh', 'npx oxlint\nnpx oxlint --fix')}
 
 Review diagnostics and fixes before committing. Only rules with a documented automatic fix change code.
-Presets apply documented test-file exceptions, rather than silently weakening every file.
+Preset rules apply to test files as well as application sources. There are no test-only rule exemptions.
 Use an oxlint-disable-next-line comment with -- and a concrete reason only when a genuine boundary exception is required.
 See [TypeScript](/presets/typescript), [Effect](/presets/effect), and the [Oxlint configuration documentation](https://oxc.rs/docs/guide/usage/linter/config.html).`
     : `## インストール {#install}
@@ -128,7 +128,7 @@ force-ts-extension を2つの置換ルールと同時に有効にしないでく
 ${code('sh', 'npx oxlint\nnpx oxlint --fix')}
 
 コミット前に診断と修正を確認します。自動修正を明記したルールのみがコードを変更します。
-プリセットはテストファイルに明示的な例外を設け、すべてのファイルを一律に弱めません。
+プリセットのルールはアプリケーションソースとテストファイルに同じように適用します。テスト専用のルール免除はありません。
 本当に必要な境界例外だけに、-- と具体的な理由を持つ oxlint-disable-next-line を使います。
 [TypeScript](/presets/typescript)、[Effect](/presets/effect)、[Oxlint の設定ドキュメント](https://oxc.rs/docs/guide/usage/linter/config.html)も参照してください。`
   for (const group of ['TypeScript', 'Effect'] as const) {
@@ -140,13 +140,13 @@ ${code('sh', 'npx oxlint\nnpx oxlint --fix')}
     const exceptions =
       group === 'TypeScript'
         ? en
-          ? 'The test-file overrides allow no-let. Generated **/*.gen.ts files allow no-redundant-alias. The compatibility force-ts-extension rule is not enabled. Extension normalization defaults to ts, and can be overridden with mode js.'
-          : 'テストファイルでは no-let を許可します。生成された **/*.gen.ts では no-redundant-alias を許可します。互換ルール force-ts-extension は有効化しません。拡張子の統一は既定で ts、必要なら mode js に変更できます。'
+          ? 'Generated **/*.gen.ts files allow no-redundant-alias. The compatibility force-ts-extension rule is not enabled. Extension normalization defaults to ts, and can be overridden with mode js.'
+          : '生成された **/*.gen.ts では no-redundant-alias を許可します。互換ルール force-ts-extension は有効化しません。拡張子の統一は既定で ts、必要なら mode js に変更できます。'
         : en
-          ? 'The preset includes four official Effect rules, not the entire upstream native lint configuration. It permits module namespace imports and configures the barrel rule with regex patterns for effect/@effect package roots and lowercase subpaths, plus relative index imports. Legacy no-effect-import-as/no-effect-subpath-import are opt-in because they impose the opposite convention. The overlapping no-js-extension-imports is also off. no-unused-internal only scans cwd/packages/**/src .ts files and caches analysis per process. Test-file overrides allow no-effect-runtime-run, no-node-imports, no-sync-decode, no-type-predicate, prefer-is-nullish, prefer-non-unknown-decode and require-top-level-decoder. The no-node-imports preset allowlist contains child_process, crypto, os and util; other node: names require an explicit override.'
-          : '公式 Effect の4ルールを含みますが、上流の native lint 設定全体ではありません。モジュールの namespace import を許可し、barrel ルールには effect/@effect のパッケージルートと小文字サブパスの正規表現および相対 index import を設定します。逆の規約を持つ no-effect-import-as/no-effect-subpath-import と重複する no-js-extension-imports は opt-in です。no-unused-internal は cwd/packages/**/src の .ts のみを走査し、解析をプロセス内でキャッシュします。テストファイルでは no-effect-runtime-run、no-node-imports、no-sync-decode、no-type-predicate、prefer-is-nullish、prefer-non-unknown-decode、require-top-level-decoder を許可します。no-node-imports の既定の許可リストは child_process、crypto、os、util です。他の node: 名には明示的な上書きが必要です。'
+          ? 'The preset includes four official Effect rules, not the entire upstream native lint configuration. It permits module namespace imports and configures the barrel rule with regex patterns for effect/@effect package roots and lowercase subpaths, plus relative index imports. Legacy no-effect-import-as/no-effect-subpath-import are opt-in because they impose the opposite convention. The overlapping no-js-extension-imports is also off. no-unused-internal only scans cwd/packages/**/src .ts files and caches analysis per process. The no-node-imports preset allowlist contains child_process, crypto, os and util; other node: names require an explicit override.'
+          : '公式 Effect の4ルールを含みますが、上流の native lint 設定全体ではありません。モジュールの namespace import を許可し、barrel ルールには effect/@effect のパッケージルートと小文字サブパスの正規表現および相対 index import を設定します。逆の規約を持つ no-effect-import-as/no-effect-subpath-import と重複する no-js-extension-imports は opt-in です。no-unused-internal は cwd/packages/**/src の .ts のみを走査し、解析をプロセス内でキャッシュします。no-node-imports の既定の許可リストは child_process、crypto、os、util です。他の node: 名には明示的な上書きが必要です。'
     result[`presets/${subpath}.md`] =
-      `${en ? '## Usage' : '## 使い方'} {#usage}\n\n${usage}\n\n${en ? 'The preset registers the plugin and enables every listed rule with error severity. Use @totto2727/oxlint/preset to combine both groups.' : 'プリセットはプラグインを登録し、以下のルールを error として有効化します。両グループを組み合わせる場合は @totto2727/oxlint/preset を使います。'}\n\n${en ? '## Included rules' : '## 収録ルール'} {#included}\n\n${links(group)}\n\n${en ? '## Exceptions' : '## 例外'} {#exceptions}\n\n${exceptions}\n\n${en ? 'Test patterns are **/*.test.{ts,tsx}, **/*.spec.{ts,tsx} and **/_test-helper.{ts,tsx}. Other files do not receive these exceptions automatically. Keep additional exceptions narrow and reasoned.' : 'テストパターンは **/*.test.{ts,tsx}、**/*.spec.{ts,tsx}、**/_test-helper.{ts,tsx} です。他のファイルは自動的に除外しません。追加の例外は範囲と理由を明確にしてください。'}`
+      `${en ? '## Usage' : '## 使い方'} {#usage}\n\n${usage}\n\n${en ? 'The preset registers the plugin and enables every listed rule with error severity. Use @totto2727/oxlint/preset to combine both groups.' : 'プリセットはプラグインを登録し、以下のルールを error として有効化します。両グループを組み合わせる場合は @totto2727/oxlint/preset を使います。'}\n\n${en ? '## Included rules' : '## 収録ルール'} {#included}\n\n${links(group)}\n\n${en ? '## Exceptions' : '## 例外'} {#exceptions}\n\n${exceptions}\n\n${en ? 'Tests receive the same rules as application sources. No upstream test-file overrides are inherited. Any additional caller-defined exception must be narrow and reasoned.' : 'テストにもアプリケーションソースと同じルールを適用し、上流のテストファイル override は継承しません。利用者が追加する例外は範囲と理由を明確にしてください。'}`
   }
   return result
 }
