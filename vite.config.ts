@@ -1,45 +1,44 @@
+import { effrontAlchemy } from '@effront/alchemy/cloudflare/vite'
+import { effrontTailwind } from '@effront/tailwind'
+import { effront } from '@effront/vite'
 import { defineConfig } from 'vite-plus'
 
 export default defineConfig({
+  plugins: [effrontTailwind({ stylesheet: './src/styles.css' }), effront(), effrontAlchemy()],
   fmt: {
     arrowParens: 'always',
-    experimentalSortImports: {
-      ignoreCase: true,
-      newlinesBetween: true,
-      order: 'asc',
-    },
-    experimentalSortPackageJson: true,
     jsxSingleQuote: true,
     printWidth: 120,
     proseWrap: 'preserve',
     semi: false,
     singleQuote: true,
   },
-  lint: { options: { typeAware: true, typeCheck: true } },
-  test: { include: ['src/**/*.test.ts'] },
-  pack: { entry: ['src/main.ts'], format: ['esm'], platform: 'node', clean: true },
+  lint: {
+    plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react'],
+    options: { typeAware: true, typeCheck: true },
+  },
+  test: { include: ['src/**/*.test.{ts,tsx}'] },
   run: {
     tasks: {
+      dev: 'vp dev --config tests/vite.config.ts --host 127.0.0.1 --port 1339',
       build: {
-        command: 'bun build --compile src/main.ts --outfile build/oxlint-docs',
-        input: [{ auto: true }, '!build/**'],
-        output: ['build/**'],
-      },
-      check: 'vp check',
-      ci: {
-        command: '',
-        dependsOn: ['check', 'test', 'build', 'npm:check'],
-      },
-      fix: 'vp check --fix',
-      'npm:check': {
-        command: 'npm pack --dry-run',
-        dependsOn: ['pack'],
-      },
-      pack: {
-        command: 'vp pack',
+        command: 'vp build --config tests/vite.config.ts',
+        input: [{ auto: true }, '!dist/**', '!tmp/**'],
         output: ['dist/**'],
       },
+      preview: 'vp preview --config tests/vite.config.ts --host 127.0.0.1 --port 1339',
+      'build:production': {
+        command: 'ALCHEMY_STAGE=production vp build',
+        input: [{ auto: true }, '!dist/**', '!tmp/**'],
+        output: ['dist/**'],
+      },
+      'deploy:plan': { command: 'ALCHEMY_STAGE=production alchemy plan --stage production --no-input', cache: false },
+      deploy: { command: 'ALCHEMY_STAGE=production alchemy deploy --stage production --yes --no-input', cache: false },
+      check: 'vp check',
+      fix: 'vp check --fix',
       test: 'vp test run',
+      'test:browser': 'playwright test --config tests/playwright.config.ts',
+      ci: { command: '', dependsOn: ['check', 'test', 'build'] },
     },
   },
 })

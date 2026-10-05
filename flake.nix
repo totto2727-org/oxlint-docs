@@ -24,37 +24,15 @@
         "x86_64-linux"
       ];
       forEachSystem = nixpkgs.lib.genAttrs supportedSystems;
-      overlay = final: _previous: {
-        oxlint-docs = final.callPackage ./package.nix {
-          bun2nix = bun2nix.packages.${final.stdenv.hostPlatform.system}.default;
-        };
-      };
-      mkPkgs =
-        system:
-        import nixpkgs {
-          inherit system;
-          overlays = [
-            vite-plus-overlay.overlays.default
-            overlay
-          ];
-        };
     in
     {
-      overlays.default = overlay;
-      packages = forEachSystem (
-        system:
-        let
-          pkgs = mkPkgs system;
-        in
-        rec {
-          inherit (pkgs) oxlint-docs;
-          default = oxlint-docs;
-        }
-      );
       devShells = forEachSystem (
         system:
         let
-          pkgs = mkPkgs system;
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ vite-plus-overlay.overlays.default ];
+          };
         in
         {
           default = pkgs.mkShell {
