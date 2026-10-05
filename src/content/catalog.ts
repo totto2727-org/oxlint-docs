@@ -50,7 +50,8 @@ export function catalog(locale: DocLocale): readonly ArticleMetadata[] {
       section: 'Presets' as const,
       headings: [
         { id: 'usage', title: english ? 'Usage' : '使い方' },
-        { id: 'included', title: english ? 'Included rules' : '収録ルール' },
+        { id: 'baseline', title: english ? 'Shared native baseline' : '共通 native baseline' },
+        { id: 'included', title: english ? 'Included custom rules' : '収録カスタムルール' },
         { id: 'exceptions', title: english ? 'Exceptions' : '例外' },
       ],
     })),

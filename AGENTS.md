@@ -54,6 +54,9 @@ Every exported rule needs purpose, supported options/defaults, valid/invalid syn
 Examples show one rule's diagnostics and may omit declarations, not necessarily a complete runnable program or proof that every other rule passes.
 Group navigation only into TypeScript and Effect. Identify retained conflicting or overlapping rules as opt-in, not a third preset group.
 Read actual rule source/tests and current group/preset exports before changing content.
+The library's TypeScript and Effect presets share a pinned MIT port of native Ultracite 7.12.3 core flattened into top-level configuration, without the full Ultracite CLI dependency, upstream per-file overrides or test-only exemptions.
+Document its three native conflict settings and retained generated-file allowance separately from the 34 custom rules.
+Do not silently apply the library's Ultracite baseline to this documentation application's own Vite+ lint or formatter configuration.
 Update both locales, catalogs, explicit routes and regression tests together.
 Preserve stable heading IDs and localized links.
 Keep parsing/loading in the server graph and shared shell state persistent across route changes.

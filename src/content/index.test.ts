@@ -108,6 +108,33 @@ describe('oxlint documentation contract', () => {
       expect(corpus['presets/typescript.md']).toContain('defineConfig')
     }
   })
+  it.each(['en', 'ja'] as const)(
+    'documents the shared native baseline without inherited test exemptions in %s',
+    (locale) => {
+      const corpus = documents(locale)
+      for (const group of ['typescript', 'effect']) {
+        const text = corpus[`presets/${group}.md`]!
+        expect(text).toContain('Ultracite 7.12.3')
+        expect(text).toContain(locale === 'en' ? 'pinned MIT port' : 'MIT 固定移植')
+        expect(text).toContain(
+          locale === 'en' ? 'runtime and command remain Oxlint directly' : 'コマンドは Oxlint を直接',
+        )
+        expect(text).toContain('ultracite/oxlint/core')
+        expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs')
+        expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx')
+        expect(text).toContain('{#baseline}')
+        for (const nativeRule of ['unicorn/prefer-bigint-literals', 'preserve-caught-error', 'prefer-const']) {
+          expect(text).toContain(nativeRule)
+        }
+        expect(text).not.toContain('Test-file overrides allow')
+        expect(text).not.toContain('テストファイルでは no-effect-runtime-run')
+        expect(text).not.toContain('テストファイルでは no-let')
+        expect(text).not.toContain('**/*.test.{ts,tsx}')
+        expect(text).toContain('**/*.gen.ts')
+        expect(text).toContain('oxfmt')
+      }
+    },
+  )
   it('rejects missing pages rather than returning another article', () => {
     expect(() => getPage('/en/missing')).toThrow('missing content')
   })

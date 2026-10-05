@@ -40,6 +40,21 @@ Four upstream rules are enabled by the Effect preset. The overlapping no-js-exte
 The scanner's packages/**/src .ts scope and process-lifetime cache are documented, rather than promising unsupported flat-src coverage.
 See THIRD-PARTY-NOTICES.md for attribution.
 
+## Ultracite baseline documentation
+
+The library presets use a pinned MIT port of the native core configuration and shared ignores from [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3), corresponding to its upstream `ultracite/oxlint/core` export.
+The library includes only these native settings, not the full Ultracite CLI package or unused CLI transitive dependencies.
+This scoped port avoids the CLI dependency advisory found by the library audit without changing the native baseline policy, and the consumer runs directly with Oxlint.
+Verified package gitHead/source comparison revision: `48156546701badf2c6e60f25cf1e8511f7dc44c7`.
+Direct references: [core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [official provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
+Native rule counts are not frozen in site prose because package/runtime-enabled counts include different scopes and can change.
+This site documents that configuration and the library's conflict adjustments, without adding Ultracite as a site dependency or vendoring its source.
+Both groups retain shared native settings/ignores but discard all upstream file overrides, with no test-only exemptions.
+The library-owned generated **/*.gen.ts no-redundant-alias allowance remains.
+The native prefer-bigint-literals, preserve-caught-error and prefer-const rules are explicitly off in both groups for compatibility and duplicate-diagnostic avoidance.
+React/type-aware presets, JavaScript plugins, oxfmt integration and CLI replacement remain separate opt-in choices.
+This is authored policy documentation, not an additional site lint/formatter migration.
+
 ## Operational impact
 
 Run `vp run dev`, `build` and `preview` against the local host configuration.

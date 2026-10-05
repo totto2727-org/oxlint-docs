@@ -2,6 +2,7 @@
 
 Standalone English and Japanese documentation for [@totto2727/oxlint](https://github.com/totto2727-org/oxlint).
 The site reuses the Effront documentation shell, styles, Markdown rendering and public response-cache policy with published `@effront/*` 0.2.0 dependencies.
+The bilingual reference documents 34 custom rules and both presets' shared native Ultracite 7.12.3 core baseline, including explicit conflict adjustments and equal application/test policy.
 
 ## Run locally
 
