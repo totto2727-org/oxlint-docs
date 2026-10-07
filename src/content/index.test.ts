@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vite-plus/test'
 import { catalog } from './catalog'
 import { documents } from './documents'
 import { getPage, localizedNavigation, localizedPages, pages } from './index'
+import { effectRuleSource, externalEffectRuleNames } from './policies'
 import { ruleArticles, ruleHeadings, ruleMarkdown } from './rules'
 
 const expectedTypeScript = [
@@ -23,10 +24,6 @@ const expectedEffect = [
   'force-predicate',
   'force-string-empty',
   'no-effect-runtime-run',
-  'no-bigint-literals',
-  'no-import-from-barrel-package',
-  'no-opaque-instance-fields',
-  'no-unused-internal',
   'no-error-cause-option',
   'no-error-property-access',
   'no-fetch',
@@ -43,8 +40,8 @@ const expectedEffect = [
 ]
 
 describe('oxlint documentation contract', () => {
-  it('documents exactly the exported groups and compatibility alias', () => {
-    expect(ruleArticles).toHaveLength(34)
+  it('documents exactly the locally authored groups and three compatibility rules', () => {
+    expect(ruleArticles).toHaveLength(29)
     expect(
       ruleArticles
         .filter((rule) => rule.group === 'TypeScript' && !rule.optIn)
@@ -57,13 +54,14 @@ describe('oxlint documentation contract', () => {
         .map((rule) => rule.name)
         .sort(),
     ).toEqual(expectedEffect.toSorted())
-    expect(new Set(ruleArticles.map((rule) => rule.name)).size).toBe(34)
+    expect(new Set(ruleArticles.map((rule) => rule.name)).size).toBe(29)
     expect(
       ruleArticles
         .filter((rule) => rule.optIn)
         .map((rule) => rule.name)
         .sort(),
-    ).toEqual(['force-ts-extension', 'no-effect-import-as', 'no-effect-subpath-import', 'no-js-extension-imports'])
+    ).toEqual(['force-ts-extension', 'no-effect-import-as', 'no-effect-subpath-import'])
+    expect(ruleArticles.length + externalEffectRuleNames.length).toBe(34)
   })
   it('registers every catalog URL explicitly and nothing else', () => {
     const entry = readFileSync(new URL('../entry.effront.tsx', import.meta.url), 'utf8')
@@ -75,7 +73,7 @@ describe('oxlint documentation contract', () => {
   it.each(['en', 'ja'] as const)(
     'renders all rule pages with real prose, examples and anchors in %s',
     async (locale) => {
-      expect(catalog(locale)).toHaveLength(38)
+      expect(catalog(locale)).toHaveLength(33)
       const nav = localizedNavigation(locale)
       expect(nav.every((item) => item.slug === `/${locale}` || item.slug.startsWith(`/${locale}/`))).toBe(true)
       for (const rule of ruleArticles) {
@@ -107,6 +105,46 @@ describe('oxlint documentation contract', () => {
       }
       expect(corpus['presets/typescript.md']).toContain('defineConfig')
     }
+  })
+  it.each(['en', 'ja'] as const)('keeps external policy details out of Rules in %s', (locale) => {
+    const corpus = documents(locale)
+    const nav = localizedNavigation(locale)
+    expect(nav.filter((item) => item.section === 'Rules')).toHaveLength(29)
+    expect(nav.filter((item) => item.section === 'Presets').map((item) => item.slug)).toEqual([
+      `/${locale}/presets/typescript`,
+      `/${locale}/presets/effect`,
+    ])
+    expect(new Set(nav.filter((item) => item.section === 'Rules').map((item) => item.group))).toEqual(
+      new Set(['TypeScript', 'Effect']),
+    )
+    const effect = corpus['presets/effect.md']!
+    expect(effect).toContain(effectRuleSource)
+    expect(effect).toContain('private')
+    expect(effect).toContain(locale === 'en' ? 'vendors MIT implementations' : 'MIT 実装を vendoring')
+    expect(effect).toContain(locale === 'en' ? 'explicitly off in every preset' : 'すべてのプリセットで明示的に off')
+    expect(effect).toContain('mode js')
+    expect(effect).toContain('mjs/cjs')
+    for (const name of externalEffectRuleNames) {
+      expect(effect).toContain(`rules/${name}`)
+      expect(corpus[`rules/${name}.md`]).toBeUndefined()
+      expect(nav.some((item) => item.slug === `/${locale}/rules/${name}`)).toBe(false)
+      expect(() => getPage(`/${locale}/rules/${name}`)).toThrow('missing content')
+      for (const text of Object.values(corpus)) expect(text).not.toContain(`](/rules/${name})`)
+    }
+    expect(effect).not.toContain('{#invalid}')
+    expect(effect).not.toContain('{#options}')
+    expect(corpus['presets/typescript.md']).not.toContain('{#official-effect}')
+  })
+  it.each(['en', 'ja'] as const)('documents extension families and retained required extensions in %s', (locale) => {
+    const corpus = documents(locale)
+    for (const name of ['consistent-import-extension', 'force-ts-extension']) {
+      const text = corpus[`rules/${name}.md`]!
+      for (const family of ['.mjs/.mts', '.cjs/.cts']) expect(text).toContain(family)
+      expect(text).toContain('require-import-extension')
+    }
+    const normalization = corpus['rules/consistent-import-extension.md']!
+    expect(normalization).toContain('.js/.jsx/.ts/.tsx')
+    expect(normalization).toContain(locale === 'en' ? 'Missing extensions belong' : '拡張子なしは')
   })
   it.each(['en', 'ja'] as const)(
     'documents the shared native baseline without inherited test exemptions in %s',

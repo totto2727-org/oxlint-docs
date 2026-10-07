@@ -8,7 +8,6 @@ export interface RuleArticle {
   readonly invalid: string
   readonly valid: string
   readonly optIn?: boolean
-  readonly upstream?: string
   readonly fixable?: boolean
   readonly options?: readonly [string, string]
 }
@@ -17,90 +16,6 @@ export interface RuleArticle {
 // Examples are syntax fixtures for this individual rule, not complete runnable programs.
 export const ruleArticles: readonly RuleArticle[] = [
   {
-    name: 'no-unused-internal',
-    group: 'Effect',
-    upstream: 'src/upstream/effect/no-unused-internal.ts',
-    purpose: [
-      'Keep internal exports used and out of public API signatures.',
-      '内部 export の未使用と公開 API への漏出を防ぎます。',
-    ],
-    details: [
-      'The vendored official Effect rule scans .ts source files under cwd/packages/**/src, excluding .d.ts, dist, build and node_modules. It reports unused exported @internal declarations, public re-exports and references in public type signatures. Relative imports and workspace package names are resolved from package metadata. Flat src projects and .tsx files are outside this scan. Every matching .ts file under src, including test files, participates because the scanner has no test-file exclusion. Analysis is cached per working directory for the lifetime of the process, so restart lint after file changes. The package uses a TypeScript 6 compiler API alias for this analysis, not the TypeScript 7 checker.',
-      '公式 Effect 由来のルールです。cwd/packages/**/src 内の .ts ソースを走査し、.d.ts、dist、build、node_modules は除外します。未使用の @internal export、公開モジュールからの再 export、公開型シグネチャからの参照を報告します。相対 import と workspace パッケージ名をメタデータから解決します。フラットな src 構成と .tsx は対象外です。src 内の .ts はテストファイルも含み、テスト専用の除外はありません。解析はプロセスの生存期間中、作業ディレクトリ単位でキャッシュするため、変更後は lint を再起動してください。解析には TypeScript 7 の checker ではなく TypeScript 6 のコンパイラ API エイリアスを使います。',
-    ],
-    invalid: '// packages/example/src/value.ts\n/** @internal */\nexport const unused = 1',
-    valid: '// packages/example/src/value.ts\n/** @internal */\nexport const used = 1\nconst result = used + 1',
-  },
-  {
-    name: 'no-bigint-literals',
-    group: 'Effect',
-    upstream: 'src/upstream/effect/no-bigint-literals.ts',
-    fixable: true,
-    purpose: [
-      'Use BigInt construction instead of bigint literal syntax.',
-      'bigint リテラルではなく BigInt の構築を使います。',
-    ],
-    details: [
-      'Official Effect rule, vendored at b1d200c40a1dad69def51ebdbf0a1a612a12b8ac. Reports literal nodes whose runtime value is bigint and replaces them with BigInt("<decimal value>"). Numeric separators and alternate bases are normalized by the literal value. This does not prohibit BigInt constructor calls.',
-      '公式 Effect ルールを b1d200c40a1dad69def51ebdbf0a1a612a12b8ac から取り込みました。値が bigint のリテラルを報告し、BigInt("<10進数の値>") に修正します。区切り文字や別基数は値に基づいて正規化します。BigInt コンストラクター自体は禁止しません。',
-    ],
-    invalid: 'const value = 123n',
-    valid: 'const value = BigInt("123")',
-  },
-  {
-    name: 'no-import-from-barrel-package',
-    group: 'Effect',
-    upstream: 'src/upstream/effect/no-import-from-barrel-package.ts',
-    purpose: [
-      'Import specific modules rather than value exports from barrels.',
-      'バレルの値 export ではなく個別モジュールを import します。',
-    ],
-    details: [
-      'Official Effect rule. Reports namespace and named value specifiers from matching barrel paths. Skips whole type imports and named type specifiers; default and side-effect imports are not reported. Relative index filenames are recognized syntactically, while directory imports are checked for an existing index file using the filesystem. The preset matches Effect root/lowercase barrel paths and recommends module namespace imports, such as effect/Effect. No automatic fix is supplied.',
-      '公式 Effect ルールです。対象バレルの名前空間・名前付き値の import を報告します。型だけの import と名前付き型指定子を除外し、default と副作用だけの import は報告しません。相対 index ファイルは構文で認識し、ディレクトリはファイルシステム上の index を確認します。プリセットは Effect のルートと小文字バレルを対象とし、effect/Effect のような個別モジュールの名前空間 import を推奨します。自動修正はありません。',
-    ],
-    options: [
-      '`{ checkPatterns?: string[], checkRelativeIndexImports?: boolean }`. Rule defaults: checkPatterns is [] and relative-index checking is true. Patterns are JavaScript regular expressions, not globs. The Effect preset explicitly uses ["^effect$", "^effect/(.+/)?[a-z][a-z0-9]*$", "^@effect/[^/]+$", "^@effect/[^/]+/(.+/)?[a-z][a-z0-9]*$"] and enables relative-index checking. The example uses that preset.',
-      '`{ checkPatterns?: string[], checkRelativeIndexImports?: boolean }`。ルール単体の既定は checkPatterns が []、相対 index の検査が true です。パターンは glob ではなく JavaScript 正規表現です。Effect プリセットは ["^effect$", "^effect/(.+/)?[a-z][a-z0-9]*$", "^@effect/[^/]+$", "^@effect/[^/]+/(.+/)?[a-z][a-z0-9]*$"] と相対 index 検査を明示します。例はこのプリセットです。',
-    ],
-    invalid: "import { Effect } from 'effect'",
-    valid: "import * as Effect from 'effect/Effect'",
-  },
-  {
-    name: 'no-js-extension-imports',
-    group: 'Effect',
-    upstream: 'src/upstream/effect/no-js-extension-imports.ts',
-    optIn: true,
-    fixable: true,
-    purpose: [
-      'Official opt-in rule converting JavaScript extensions in relative imports.',
-      '相対 import の JavaScript 拡張子を変換する公式の opt-in ルールです。',
-    ],
-    details: [
-      'Checks static imports and re-exports beginning with ./ or ../ and ending exactly in .js, .jsx, .mjs or .cjs. Fixes them to .ts, .tsx, .mts or .cts using a double-quoted literal. Does not cover dynamic imports, # aliases, missing extensions or paths ending with query strings/fragments. It is not equivalent to the custom extension family: mjs/cjs coverage is unique, but js/jsx diagnostics overlap and conflict with mode js. Presets leave it disabled.',
-      './ または ../ で始まり、正確に .js、.jsx、.mjs、.cjs で終わる静的 import と再 export を検査します。.ts、.tsx、.mts、.cts へ二重引用符で修正します。動的 import、# エイリアス、拡張子なし、クエリ・フラグメント付きの末尾は対象外です。独自の拡張子ルールと同等ではありません。mjs/cjs は独自の範囲ですが js/jsx の診断は重複し mode js と衝突するためプリセットでは無効です。',
-    ],
-    invalid: "import { value } from './value.mjs'",
-    valid: "import { value } from './value.mts'",
-  },
-  {
-    name: 'no-opaque-instance-fields',
-    group: 'Effect',
-    upstream: 'src/upstream/effect/no-opaque-instance-fields.ts',
-    purpose: [
-      'Keep Schema.Opaque classes free of instance members.',
-      'Schema.Opaque クラスにインスタンスメンバーを持たせません。',
-    ],
-    details: [
-      'Official Effect rule. Tracks Schema/Opaque named imports from effect or effect/Schema and namespace imports from effect/Schema, including aliases. Detects classes extending the two-call Opaque construction pattern. Reports non-static properties and methods, including constructors, but allows static members and empty classes. It does not recognize arbitrary wrappers or inherited aliases.',
-      '公式 Effect ルールです。effect または effect/Schema の Schema/Opaque 名前付き import と、effect/Schema の名前空間 import を、別名も含めて追跡します。2段階呼び出しの Opaque 構築を継承するクラスを検出します。コンストラクターも含む非 static のプロパティ・メソッドを報告し、static と空のクラスを許可します。任意のラッパーや継承された別名は認識しません。',
-    ],
-    invalid:
-      "import * as Schema from 'effect/Schema'\nclass User extends Schema.Opaque('User')(Schema.String) { value = 1 }",
-    valid:
-      "import * as Schema from 'effect/Schema'\nclass User extends Schema.Opaque('User')(Schema.String) { static label = 'User' }",
-  },
-  {
     name: 'consistent-import-extension',
     group: 'TypeScript',
     purpose: [
@@ -108,8 +23,8 @@ export const ruleArticles: readonly RuleArticle[] = [
       '実行環境に合わせてコードモジュールの拡張子を統一します。',
     ],
     details: [
-      'Checks static imports, re-exports and literal dynamic imports for relative paths and # subpath aliases. In ts mode, .js becomes .ts and .jsx becomes .tsx. In js mode all four code extensions become .js. Missing extensions belong to require-import-extension. Asset extensions, bare packages and absolute paths are ignored. Query strings and fragments are preserved.',
-      '相対パスと # サブパスの静的 import、再 export、文字列の動的 import を検査します。ts モードは .js を .ts、.jsx を .tsx に変換し、js モードは4種類のコード拡張子を .js に統一します。拡張子なしは require-import-extension が担当します。アセット、パッケージ名、絶対パスは対象外で、クエリとフラグメントを保持します。',
+      'Checks static imports, re-exports and literal dynamic imports for relative paths and # subpath aliases. In ts mode, .js/.jsx become .ts/.tsx, .mjs becomes .mts and .cjs becomes .cts. In js mode, .js/.jsx/.ts/.tsx become .js, .mjs/.mts become .mjs and .cjs/.cts become .cjs. Missing extensions belong to require-import-extension. Asset extensions, bare packages and absolute paths are ignored. Query strings, fragments and quote style are preserved.',
+      '相対パスと # サブパスの静的 import、再 export、文字列の動的 import を検査します。ts モードは .js/.jsx を .ts/.tsx、.mjs を .mts、.cjs を .cts に変換します。js モードは .js/.jsx/.ts/.tsx を .js、.mjs/.mts を .mjs、.cjs/.cts を .cjs に統一します。拡張子なしは require-import-extension が担当します。アセット、パッケージ名、絶対パスは対象外で、クエリ、フラグメント、引用符を保持します。',
     ],
     invalid: "import { foo } from './foo.js'",
     valid: "import { foo } from './foo.ts'",
@@ -146,8 +61,8 @@ export const ruleArticles: readonly RuleArticle[] = [
       '拡張子の必須化と ts への統一を組み合わせる互換ルールです。',
     ],
     details: [
-      'Retained for existing configurations. Reports missing extensions without a fix and fixes .js/.jsx to .ts/.tsx. Shares the same relative/# scope and import/export/dynamic-import coverage as the split rules. Prefer require-import-extension plus consistent-import-extension. Presets omit this alias to avoid duplicate reports.',
-      '既存設定との互換性を保ちます。拡張子なしは修正せず報告し、.js/.jsx は .ts/.tsx に修正します。分離後のルールと同じ相対/# パス、import/export/動的 import を扱います。新規設定では2つの分離ルールを使ってください。重複報告を避けるためプリセットには含みません。',
+      'Retained for existing configurations. Reports missing extensions without a fix and normalizes all supported extension families using the same ts/js mode as consistent-import-extension, including .mjs/.mts and .cjs/.cts. Shares the same relative/# scope and import/export/dynamic-import coverage as the split rules. Prefer require-import-extension plus consistent-import-extension. Presets omit this alias to avoid duplicate reports.',
+      '既存設定との互換性を保ちます。拡張子なしは修正せず報告し、consistent-import-extension と同じ ts/js モードで .mjs/.mts と .cjs/.cts を含む拡張子の各系統を統一します。分離後のルールと同じ相対/# パス、import/export/動的 import を扱います。新規設定では require-import-extension と consistent-import-extension を使ってください。重複報告を避けるためプリセットには含みません。',
     ],
     invalid: "import { foo } from './foo.js'",
     valid: "import { foo } from './foo.ts'",
@@ -558,7 +473,7 @@ export function ruleMarkdown(rule: RuleArticle, locale: DocLocale): string {
         rule.name +
         ' -- 理由` を使います。例はこのルール単体の構文を示し、import や宣言を省略する場合があります。'
   const base = 'https://github.com/totto2727-org/oxlint/blob/main/'
-  const source = rule.upstream ?? `src/rules/${rule.name}.ts`
+  const source = `src/rules/${rule.name}.ts`
   const status = rule.optIn
     ? locale === 'en'
       ? 'Opt-in compatibility rule. Not enabled by either preset because its import convention conflicts or its diagnostics overlap with the selected default policy.'
@@ -581,6 +496,6 @@ export function ruleMarkdown(rule: RuleArticle, locale: DocLocale): string {
     exception,
     section(5),
     status,
-    `[${rule.name}.ts](${base}${source}) · [Tests](${base}${rule.upstream ? 'src/upstream/effect/rules.test.ts' : `src/rules/${rule.name}.test.ts`})`,
+    `[${rule.name}.ts](${base}${source}) · [Tests](${base}src/rules/${rule.name}.test.ts)`,
   ].join('\n\n')
 }

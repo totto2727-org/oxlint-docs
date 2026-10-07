@@ -2,7 +2,10 @@
 
 Standalone English and Japanese documentation for [@totto2727/oxlint](https://github.com/totto2727-org/oxlint).
 The site reuses the Effront documentation shell, styles, Markdown rendering and public response-cache policy with published `@effront/*` 0.2.0 dependencies.
-The bilingual reference documents 34 custom rules and both presets' shared native Ultracite 7.12.3 core baseline, including explicit conflict adjustments and equal application/test policy.
+The bilingual Rules reference documents 29 locally authored rules, including three opt-in legacy policies, grouped into TypeScript and Effect.
+Separate Presets pages describe the external native Ultracite 7.12.3 core baseline and official Effect policy layer, with source links, included rule names and concise reasons for disabled or conflicting settings, not duplicated external rule details.
+The plugin API still exports 34 rules: 29 local rules and five vendored MIT Effect adapters. These adapters are not a separately installed external npm plugin, and the upstream tools package is private.
+The Effect preset enables four adapters and explicitly disables no-js-extension-imports in every preset because the local extension family covers mjs/cjs and supports both ts and js modes. Old external-rule article URLs redirect to the localized Effect preset section.
 
 ## Run locally
 
@@ -36,7 +39,7 @@ vp run test:browser
 
 `ci` checks formatting, lint, TypeScript, rendering/cache tests and production compilation.
 Browser acceptance uses the real built application on an authentication-free local host.
-The browser suite covers localized rule pages, persistent navigation, no-JavaScript links, mobile navigation, and HTML/Flight cache headers.
+The browser suite covers all localized local-rule pages, separate Rules/Presets navigation, external policy provenance and retired URL redirects, persistent navigation, no-JavaScript links, mobile navigation, and HTML/Flight cache headers.
 It does not prove managed CDN cache hits or deploy anything.
 
 ## Production deployment

@@ -1,9 +1,9 @@
 # Third-party notices
 
-## Effect Oxc rule descriptions and syntax fixtures
+## Effect Oxc policy provenance
 
 Source: https://github.com/Effect-TS/effect/tree/b1d200c40a1dad69def51ebdbf0a1a612a12b8ac/packages/tools/oxc/src/oxlint/rules
-Only documentation fixtures reference these implementations. Runtime rule sources are vendored by the library, not this site.
+The Effect preset page references this externally defined policy layer. This site does not reproduce its rule detail pages or syntax fixtures. MIT runtime implementations are vendored and adapted by the library, not this site.
 MIT License
 
 Copyright (c) 2023 Effectful Technologies Inc.

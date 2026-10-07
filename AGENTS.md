@@ -16,6 +16,7 @@ Do not create `CLAUDE.md`.
 - `src/entry.workers.ts`: same Effront/Alchemy Worker entry and native cache opt-in as the reference site.
 - `src/components/`, `src/lib/utils.ts`, `src/styles.css`: reused shell, UI primitives, highlighting, alerts and exact theme tokens.
 - `src/content/rules.ts`: bilingual authored rule purpose, behavior, options, invalid/valid fixtures, fixes and source links.
+- `src/content/policies.ts`: externally authored Effect policy names and pinned provenance, separate from local rule articles.
 - `src/content/documents.ts`: deterministic server-side Markdown corpus for rules and guides.
 - `src/content/catalog.ts`, `en/catalog.ts`, `index.ts`, `locale.ts`: typed metadata and localized navigation, without cross-language fallback.
 - `src/content/markdown.tsx`: shared Effront Markdown collection/parser/document renderer.
@@ -50,12 +51,16 @@ Keep shared CI actions on `@main` and the existing Nix environment loading.
 
 ## Documentation contract
 
-Every exported rule needs purpose, supported options/defaults, valid/invalid syntax fixtures, fixability and practical scope limitations in English and Japanese.
+Every locally authored rule needs purpose, supported options/defaults, valid/invalid syntax fixtures, fixability and practical scope limitations in English and Japanese.
+Rules pages and navigation contain only the 29 locally authored rules, including the three opt-in legacy policies. The plugin API still exports 34 rules, including five externally derived Effect adapters, which are not locally authored rules.
+Presets pages and navigation are separate from Rules. Describe external policy provenance, included rule names and concise conflict or philosophical reasons for disabled settings there, without duplicating external rule details.
+The official Effect layer uses vendored MIT implementations adapted to the library's rules/ namespace, not an installed external npm plugin. Its upstream tools package is private.
+Retired external rule URLs redirect to the matching localized Effect preset section for HTML and Flight, preserving queries.
 Examples show one rule's diagnostics and may omit declarations, not necessarily a complete runnable program or proof that every other rule passes.
-Group navigation only into TypeScript and Effect. Identify retained conflicting or overlapping rules as opt-in, not a third preset group.
+Group local rule navigation only into TypeScript and Effect. Identify retained conflicting or overlapping local rules as opt-in, not a third preset group.
 Read actual rule source/tests and current group/preset exports before changing content.
 The library's TypeScript and Effect presets share a pinned MIT port of native Ultracite 7.12.3 core flattened into top-level configuration, without the full Ultracite CLI dependency, upstream per-file overrides or test-only exemptions.
-Document its three native conflict settings and retained generated-file allowance separately from the 34 custom rules.
+Document its three native conflict settings and retained generated-file allowance separately from local rule details. The official no-js-extension-imports remains exported but explicitly off in all presets because it overlaps the local extension family and conflicts with js mode.
 Do not silently apply the library's Ultracite baseline to this documentation application's own Vite+ lint or formatter configuration.
 Update both locales, catalogs, explicit routes and regression tests together.
 Preserve stable heading IDs and localized links.
