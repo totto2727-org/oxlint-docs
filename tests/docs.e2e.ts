@@ -112,7 +112,7 @@ test('serves navigable articles without JavaScript', async ({ browser }) => {
   await expect(page.locator('noscript a[href="/en/rules/no-let"]')).toBeVisible()
   await expect(page.locator('#baseline')).toHaveText('Shared native baseline')
   await expect(page.locator('article')).toContainText('Ultracite 7.12.3')
-  await expect(page.locator('article')).toContainText('Tests receive the same rules as application sources')
+  await expect(page.locator('article')).toContainText('Tests and application sources use the same rules')
   await expect(page.locator('#included')).toBeVisible()
   await context.close()
 })

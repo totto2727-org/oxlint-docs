@@ -14,8 +14,8 @@ export function catalog(locale: DocLocale): readonly ArticleMetadata[] {
       source: '/index',
       title: english ? 'Overview' : '概要',
       description: english
-        ? '29 locally authored rules, with externally defined policies documented separately in Presets.'
-        : '29の独自ルールと、Presets で別に説明する外部定義のポリシー。',
+        ? '29 local rules. See Presets for external policies.'
+        : '29の独自ルール。外部ポリシーは Presets を参照。',
       section: 'Getting started',
       headings: [
         { id: 'choose', title: english ? 'Choose your policy' : 'ポリシーを選ぶ' },
@@ -42,11 +42,11 @@ export function catalog(locale: DocLocale): readonly ArticleMetadata[] {
       title: group === 'typescript' ? 'TypeScript' : 'Effect',
       description: english
         ? group === 'typescript'
-          ? 'TypeScript policy with 8 local rules and the shared external native baseline.'
-          : 'Effect policy with 18 local rules, 4 official Effect rules and the shared native baseline.'
+          ? '8 local TypeScript rules and the shared native baseline.'
+          : '18 local Effect rules, 4 official rules and the shared native baseline.'
         : group === 'typescript'
-          ? '8つの独自ルールと外部 native baseline を含む TypeScript ポリシー。'
-          : '18の独自ルール、4つの公式 Effect ルール、共通 native baseline を含むポリシー。',
+          ? '8つの独自 TypeScript ルールと共通 native baseline。'
+          : '18の独自 Effect ルール、4つの公式ルール、共通 native baseline。',
       section: 'Presets' as const,
       headings: [
         { id: 'usage', title: english ? 'Usage' : '使い方' },
