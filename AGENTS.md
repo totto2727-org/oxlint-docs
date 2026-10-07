@@ -1,16 +1,6 @@
 # oxlint-docs
 
-## Boundaries
-
-- Change this application only. Treat `package/effront/app/docs` and `package/oxlint/src` as read-only references.
-- Do not merge PRs, deploy or change credentials without an explicit user request.
-- Keep README content for site users. Put maintenance and deployment instructions here.
-- Keep application npm and FlakeHub publication workflows disabled.
-- Keep temporary files under ignored `tmp/`. Do not commit them.
-- Use `AGENTS.md`. Do not create `CLAUDE.md`.
-- Read [reuse and differences](./docs/upstream-differences.md) before changing copied behavior.
-
-## Files
+## Repository structure
 
 | Path                                      | Purpose                                                  |
 | ----------------------------------------- | -------------------------------------------------------- |
@@ -26,9 +16,14 @@
 | `tests/`                                  | Local HTTP and browser acceptance tests                  |
 | `vite.config.ts`                          | Task entry points                                        |
 
-## Tasks
+## Development commands
+
+### Execution rules
 
 Run commands from the repository root inside `nix develop`.
+Local tasks do not evaluate an Alchemy deployment stack.
+
+### Standard tasks
 
 | Command                        | Result                                              |
 | ------------------------------ | --------------------------------------------------- |
@@ -41,7 +36,6 @@ Run commands from the repository root inside `nix develop`.
 | `vp run test:browser`          | Build and test the local app in Chromium            |
 
 Use `vp exec playwright install chromium` if the browser is absent.
-Local tasks do not evaluate an Alchemy deployment stack.
 After dependency changes, update the pnpm lock, Bun lock and Nix dependency file:
 
 ```sh
@@ -50,14 +44,9 @@ bun install --lockfile-only --ignore-scripts
 bun2nix -o bun.nix
 ```
 
-Keep published Effront packages and reference catalog versions pinned. Do not use workspace links.
-Keep reviewed workerd installation policy in `pnpm-workspace.yaml`.
-Change `flake.lock` only when changing Nix inputs.
-Keep strictest before node-ts, the required JSX options and current React/Effect versions.
-Keep no semicolons, single quotes, width 120 and unwrapped Markdown.
-Keep shared CI actions on `@main` and preserve their Nix environment loading.
+## Architecture
 
-## Content
+### Content
 
 - Give each local rule purpose, options/defaults, examples, fixability, limits and source links in both languages.
 - Include only the 29 local rules in rule pages and navigation. Three compatibility rules are opt-in.
@@ -74,14 +63,14 @@ Keep shared CI actions on `@main` and preserve their Nix environment loading.
 - Do not apply the library's baseline to this app's formatter or lint configuration.
 - Update both languages and relevant tests together.
 
-## Cache checks
+### Cache checks
 
 Keep the response-cache unit tests and HTML/Flight acceptance tests.
 Use this cache policy for public content only. Do not add personalized content.
 Local workerd tests prove origin headers, not managed CDN cache hits.
 Check deployed HTML and Flight headers separately after an authorized deployment.
 
-## Production
+### Production
 
 `alchemy.run.ts` owns the independent `oxlint-docs` state.
 Only production uses `oxlint.totto2727.dev`.
@@ -91,3 +80,25 @@ These tasks access Cloudflare and require authorization.
 The main-only workflow uses the protected `docs-production` environment.
 The owner manages its `CLOUDFLARE_ACCOUNT_ID` variable and `CLOUDFLARE_API_TOKEN` secret.
 Do not copy local OAuth credentials into GitHub or change unrelated cloud resources.
+
+## Development tools
+
+Keep published Effront packages and reference catalog versions pinned. Do not use workspace links.
+Keep reviewed workerd installation policy in `pnpm-workspace.yaml`.
+Change `flake.lock` only when changing Nix inputs.
+Keep strictest before node-ts, the required JSX options and current React/Effect versions.
+Keep no semicolons, single quotes, width 120 and unwrapped Markdown.
+Keep shared CI actions on `@main` and preserve their Nix environment loading.
+
+## Package-specific rules
+
+- Change this application only. Treat `package/effront/app/docs` and `package/oxlint/src` as read-only references.
+- Do not merge PRs, deploy or change credentials without an explicit user request.
+- Keep README content for site users. Put maintenance and deployment instructions here.
+- Keep application npm and FlakeHub publication workflows disabled.
+- Keep temporary files under ignored `tmp/`. Do not commit them.
+- Use `AGENTS.md`. Do not create `CLAUDE.md`.
+
+## Task-specific documentation
+
+Read [reuse and differences](./docs/upstream-differences.md) before changing copied behavior.
