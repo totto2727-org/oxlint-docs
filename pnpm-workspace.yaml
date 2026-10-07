@@ -8,7 +8,7 @@ overrides:
   '@effect/platform-node-shared': ^4.0.1
   react: 19.3.0
   react-dom: 19.3.0
-  vite: npm:@voidzero-dev/vite-plus-core@^1.1.0
+  vite: npm:@voidzero-dev/vite-plus-core@^1.0.0
 
 allowBuilds:
   workerd: true
@@ -19,15 +19,3 @@ patchedDependencies:
   '@effront/alchemy@0.2.0': patches/@effront__alchemy@0.2.0.patch
   '@effront/core@0.2.0': patches/@effront__core@0.2.0.patch
   '@effront/vite@0.2.0': patches/@effront__vite@0.2.0.patch
-
-minimumReleaseAgeExclude:
-  - '@voidzero-dev/vite-plus-core@1.1.0'
-  - '@voidzero-dev/vite-plus-darwin-arm64@1.1.0'
-  - '@voidzero-dev/vite-plus-darwin-x64@1.1.0'
-  - '@voidzero-dev/vite-plus-linux-arm64-gnu@1.1.0'
-  - '@voidzero-dev/vite-plus-linux-arm64-musl@1.1.0'
-  - '@voidzero-dev/vite-plus-linux-x64-gnu@1.1.0'
-  - '@voidzero-dev/vite-plus-linux-x64-musl@1.1.0'
-  - '@voidzero-dev/vite-plus-win32-arm64-msvc@1.1.0'
-  - '@voidzero-dev/vite-plus-win32-x64-msvc@1.1.0'
-  - vite-plus@1.1.0

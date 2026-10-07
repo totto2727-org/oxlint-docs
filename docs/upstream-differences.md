@@ -26,10 +26,10 @@ Oxlint rule descriptions, options, syntax fixtures, installation steps and prese
 `catalog.ts` keeps route/navigation metadata and stable heading IDs aligned across locales.
 `entry.effront.tsx` registers each authored route explicitly to retain framework collision checks and native 404 behavior.
 Root documents and local acceptance tests are specific to this standalone application.
-The dependency manifest retains exact published Effront `0.2.0` packages and no workspace links, while Effect and its platform packages use stable `^4.0.1` ranges and Vite Plus and the Vite core alias use `^1.1.0`.
+The dependency manifest retains exact published Effront `0.2.0` packages and no workspace links, while Effect and its platform packages use stable `^4.0.1` ranges and Vite Plus and the Vite core alias use `^1.0.0`.
 Effect imports use the stable `effect/http` module path, and dependency overrides keep the linked published packages on one Effect version.
 Vite Plus task inputs and outputs are nested under `cache` per the [run configuration](https://viteplus.dev/config/run), preserving [automatic tracking](https://viteplus.dev/guide/automatic-data-tracking) and local build output restoration.
-The development-only Nix overlay is pinned at `af16f6183aec0717d8975ee858c910ab43babee6` for the stable Vite Plus `1.0.0` global CLI, independently of the local `^1.1.0` toolchain.
+The development-only Nix overlay is pinned at `af16f6183aec0717d8975ee858c910ab43babee6` for the stable Vite Plus `1.0.0` global CLI, independently of the local `^1.0.0` toolchain.
 These are documentation-application dependency and configuration adaptations against the same reviewed baseline.
 Alchemy and its Cloudflare runtime use `2.0.0-beta.81`, whose published dependency metadata supports stable Effect 4, rather than the reference's prerelease-Effect runtime.
 The template's bootstrap CLI, npm launcher and native Nix package are replaced with site compilation and a development-only Nix shell because they were not documentation hosts.
