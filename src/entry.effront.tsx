@@ -1,15 +1,35 @@
 import { Application } from '@effront/core'
 import { Context, Effect, Layer } from 'effect'
-import { HttpServerRequest } from 'effect/unstable/http'
+import { HttpRouter, HttpServerRequest, HttpServerResponse } from 'effect/unstable/http'
 import { DocsShell } from './components/docs-shell'
 import { getPage, navigation, localizedNavigation } from './content'
-import { documentLocale } from './content/locale'
+import { documentLocale, documentPath, localizedPath } from './content/locale'
+import { externalEffectRuleNames } from './content/policies'
 import { responseCache } from './response-cache'
 
 class RequestPath extends Context.Service<RequestPath, string>()('oxlint-docs/RequestPath') {}
 const RequestPathLive = Layer.effect(
   RequestPath,
   Effect.map(HttpServerRequest.HttpServerRequest, (request) => new URL(request.url, 'https://oxlint.local').pathname),
+)
+// Retired external-rule articles redirect before route matching for both HTML and Flight.
+const ExternalRuleRedirects = HttpRouter.middleware(
+  (httpEffect) =>
+    Effect.gen(function* () {
+      const request = yield* HttpServerRequest.HttpServerRequest
+      const url = new URL(request.url, 'https://oxlint.local')
+      if (request.method === 'GET' || request.method === 'HEAD') {
+        const path = documentPath(url.pathname).replace(/\/+$/, '')
+        if (externalEffectRuleNames.some((name) => path === `/rules/${name}`)) {
+          const destination = /^\/(en|ja)(?:\/|$)/.test(url.pathname)
+            ? localizedPath('/presets/effect', documentLocale(url.pathname))
+            : '/presets/effect'
+          return HttpServerResponse.redirect(`${destination}${url.search}#official-effect`, { status: 308 })
+        }
+      }
+      return yield* httpEffect
+    }),
+  { global: true },
 )
 const EFFRONT = Application.effront<RequestPath>()
 const ResponseCache = EFFRONT.Middleware.make(responseCache)
@@ -62,21 +82,6 @@ function documentPage(slug: string) {
 // Explicit routes preserve the framework's compile-time collision checks.
 const routes = EFFRONT.withMiddleware(ResponseCache)
   .Routes.make({ layout: RootLayout })
-  .page('/rules/no-bigint-literals', documentPage('/rules/no-bigint-literals'))
-  .page('/en/rules/no-bigint-literals', documentPage('/en/rules/no-bigint-literals'))
-  .page('/ja/rules/no-bigint-literals', documentPage('/ja/rules/no-bigint-literals'))
-  .page('/rules/no-import-from-barrel-package', documentPage('/rules/no-import-from-barrel-package'))
-  .page('/en/rules/no-import-from-barrel-package', documentPage('/en/rules/no-import-from-barrel-package'))
-  .page('/ja/rules/no-import-from-barrel-package', documentPage('/ja/rules/no-import-from-barrel-package'))
-  .page('/rules/no-js-extension-imports', documentPage('/rules/no-js-extension-imports'))
-  .page('/en/rules/no-js-extension-imports', documentPage('/en/rules/no-js-extension-imports'))
-  .page('/ja/rules/no-js-extension-imports', documentPage('/ja/rules/no-js-extension-imports'))
-  .page('/rules/no-opaque-instance-fields', documentPage('/rules/no-opaque-instance-fields'))
-  .page('/en/rules/no-opaque-instance-fields', documentPage('/en/rules/no-opaque-instance-fields'))
-  .page('/ja/rules/no-opaque-instance-fields', documentPage('/ja/rules/no-opaque-instance-fields'))
-  .page('/rules/no-unused-internal', documentPage('/rules/no-unused-internal'))
-  .page('/en/rules/no-unused-internal', documentPage('/en/rules/no-unused-internal'))
-  .page('/ja/rules/no-unused-internal', documentPage('/ja/rules/no-unused-internal'))
   .page('/', documentPage('/'))
   .page('/guide/getting-started', documentPage('/guide/getting-started'))
   .page('/presets/typescript', documentPage('/presets/typescript'))
@@ -176,4 +181,4 @@ const routes = EFFRONT.withMiddleware(ResponseCache)
   .page('/ja/rules/prefer-is-nullish', documentPage('/ja/rules/prefer-is-nullish'))
   .page('/ja/rules/prefer-non-unknown-decode', documentPage('/ja/rules/prefer-non-unknown-decode'))
   .page('/ja/rules/require-top-level-decoder', documentPage('/ja/rules/require-top-level-decoder'))
-export default EFFRONT.make({ layer: RequestPathLive, routes })
+export default EFFRONT.make({ layer: Layer.mergeAll(RequestPathLive, ExternalRuleRedirects), routes })

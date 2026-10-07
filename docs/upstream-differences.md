@@ -25,6 +25,9 @@ Oxlint rule descriptions, options, syntax fixtures, installation steps and prese
 `src/content/rules.ts` authors English and Japanese rule prose together; `documents.ts` constructs deterministic Markdown documents without reading source files, Git or network at render time.
 `catalog.ts` keeps route/navigation metadata and stable heading IDs aligned across locales.
 `entry.effront.tsx` registers each authored route explicitly to retain framework collision checks and native 404 behavior.
+Rules navigation and articles contain 29 locally authored policies, grouped into TypeScript and Effect. Presets navigation separately describes external policy provenance and conflict adjustments.
+The entry adds a global HTTP middleware using the reference site's retired-article redirect pattern. GET/HEAD requests for the five retired external-rule article paths receive 308 redirects to the locale-matched Effect preset's official-effect section, preserving queries for both HTML and Flight.
+This is documentation-route customization only. The reused shell, styles, cache policy and upstream Effront runtime source are unchanged.
 Root documents and local acceptance tests are specific to this standalone application.
 The dependency manifest has exact current Effront catalog pins, published Effront packages and no workspace links.
 The template's bootstrap CLI, npm launcher and native Nix package are replaced with site compilation and a development-only Nix shell because they were not documentation hosts.
@@ -34,10 +37,11 @@ Unlike the reference's branch preview workflow, this application deploys main on
 
 ## Official Effect rule documentation
 
-Five rule descriptions reference the official Effect Oxc sources at [b1d200c40a1dad69def51ebdbf0a1a612a12b8ac](https://github.com/Effect-TS/effect/tree/b1d200c40a1dad69def51ebdbf0a1a612a12b8ac/packages/tools/oxc/src/oxlint/rules).
-Only the library vendors those MIT rule implementations. This site contains authored prose and syntax fixtures, not vendored compiler/plugin runtime sources.
-Four upstream rules are enabled by the Effect preset. The overlapping no-js-extension-imports and two legacy opposite import-convention rules remain opt-in.
-The scanner's packages/**/src .ts scope and process-lifetime cache are documented, rather than promising unsupported flat-src coverage.
+The Effect preset page references the official Effect Oxc sources at [b1d200c40a1dad69def51ebdbf0a1a612a12b8ac](https://github.com/Effect-TS/effect/tree/b1d200c40a1dad69def51ebdbf0a1a612a12b8ac/packages/tools/oxc/src/oxlint/rules), listing inclusions and a concise disabled-rule reason instead of reproducing external rule details.
+Only the library vendors those MIT implementations and adapts them to its own rules/ namespace. The upstream tools package is private, not a separately installed npm plugin. This site contains no vendored compiler/plugin runtime sources.
+Four upstream rules are enabled by the Effect preset. no-js-extension-imports remains exported but explicitly off in all presets because it overlaps the local extension family, including mjs/cjs, and conflicts with js mode.
+The local no-effect-import-as/no-effect-subpath-import compatibility rules retain detail pages but remain opt-in because they impose the opposite import convention.
+The plugin API retains 34 exported rules, but only 29 are locally authored. The site's reference follows policy authorship, not namespace or adapter count.
 See THIRD-PARTY-NOTICES.md for attribution.
 
 ## Ultracite baseline documentation

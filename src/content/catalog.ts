@@ -14,8 +14,8 @@ export function catalog(locale: DocLocale): readonly ArticleMetadata[] {
       source: '/index',
       title: english ? 'Overview' : '概要',
       description: english
-        ? '34 focused lint rules for TypeScript and Effect.'
-        : 'TypeScript と Effect のための34のルール。',
+        ? '29 locally authored rules, with externally defined policies documented separately in Presets.'
+        : '29の独自ルールと、Presets で別に説明する外部定義のポリシー。',
       section: 'Getting started',
       headings: [
         { id: 'choose', title: english ? 'Choose your policy' : 'ポリシーを選ぶ' },
@@ -42,16 +42,19 @@ export function catalog(locale: DocLocale): readonly ArticleMetadata[] {
       title: group === 'typescript' ? 'TypeScript' : 'Effect',
       description: english
         ? group === 'typescript'
-          ? 'Generic TypeScript policy with 8 rules.'
-          : 'Effect-oriented policy with 22 rules.'
+          ? 'TypeScript policy with 8 local rules and the shared external native baseline.'
+          : 'Effect policy with 18 local rules, 4 official Effect rules and the shared native baseline.'
         : group === 'typescript'
-          ? '汎用 TypeScript 向けの8ルール。'
-          : 'Effect 向けの22ルール。',
+          ? '8つの独自ルールと外部 native baseline を含む TypeScript ポリシー。'
+          : '18の独自ルール、4つの公式 Effect ルール、共通 native baseline を含むポリシー。',
       section: 'Presets' as const,
       headings: [
         { id: 'usage', title: english ? 'Usage' : '使い方' },
         { id: 'baseline', title: english ? 'Shared native baseline' : '共通 native baseline' },
-        { id: 'included', title: english ? 'Included custom rules' : '収録カスタムルール' },
+        { id: 'included', title: english ? 'Included local rules' : '収録独自ルール' },
+        ...(group === 'effect'
+          ? [{ id: 'official-effect', title: english ? 'Official Effect policy layer' : '公式 Effect ポリシー層' }]
+          : []),
         { id: 'exceptions', title: english ? 'Exceptions' : '例外' },
       ],
     })),
