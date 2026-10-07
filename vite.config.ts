@@ -23,14 +23,18 @@ export default defineConfig({
       dev: 'vp dev --config tests/vite.config.ts --host 127.0.0.1 --port 1339',
       build: {
         command: 'vp build --config tests/vite.config.ts',
-        input: [{ auto: true }, '!dist/**', '!tmp/**'],
-        output: ['dist/**'],
+        cache: {
+          input: [{ auto: true }, '!dist/**', '!tmp/**'],
+          output: ['dist/**'],
+        },
       },
       preview: 'vp preview --config tests/vite.config.ts --host 127.0.0.1 --port 1339',
       'build:production': {
         command: 'ALCHEMY_STAGE=production vp build',
-        input: [{ auto: true }, '!dist/**', '!tmp/**'],
-        output: ['dist/**'],
+        cache: {
+          input: [{ auto: true }, '!dist/**', '!tmp/**'],
+          output: ['dist/**'],
+        },
       },
       'deploy:plan': { command: 'ALCHEMY_STAGE=production alchemy plan --stage production --no-input', cache: false },
       deploy: { command: 'ALCHEMY_STAGE=production alchemy deploy --stage production --yes --no-input', cache: false },

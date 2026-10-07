@@ -41,10 +41,11 @@ Local dev/build/preview and browser tests do not evaluate an Alchemy stack.
 Only production attaches the custom domain. Never place a local OAuth token in GitHub secrets.
 
 After dependency changes run `vp install`, `bun install --lockfile-only --ignore-scripts` and `bun2nix -o bun.nix`, then review and commit all three locks.
-Keep published Effront 0.2.0 and current reference catalog versions pinned, without workspace dependencies.
+Keep published Effront 0.2.0 and unrelated reference catalog versions pinned, without workspace dependencies. Use compatible stable major ranges for Effect 4 and Vite Plus 1, including the Vite core alias and Effect overrides.
 `pnpm-workspace.yaml` centralizes overrides and reviewed workerd platform-binary installation policy.
+Keep its Effront `patchedDependencies` registration synchronized with `package.json` for Bun, and retain the narrow package patches until a compatible published release replaces them, as documented in `docs/upstream-differences.md`.
 Do not change `flake.lock` unless changing Nix inputs intentionally.
-Keep the strictest then node-ts TypeScript presets, JSX/bundler options needed by the app, and exact current React/Effect versions.
+Keep the strictest then node-ts TypeScript presets, JSX/bundler options needed by the app, and exact current React versions.
 Use Vite+ formatting with no semicolons, single quotes, width 120 and unwrapped Markdown prose.
 Keep shared CI actions on `@main` and the existing Nix environment loading.
 

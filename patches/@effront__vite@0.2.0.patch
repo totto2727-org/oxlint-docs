@@ -1,0 +1,13 @@
+diff --git a/dist/index.js b/dist/index.js
+index f3228fde33e9fe594994640fd5ccfb1e33704623..b0cdfc118ad700ebfa0233d2acb099593f509b9c 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -53,7 +53,7 @@ const effront = (options = {}) => {
+ 			},
+ 			transform(code, id) {
+ 				if (this.environment.name !== "rsc" || id.split("?", 1)[0] !== resolvedRscEntry) return;
+-				return `import "effect/unstable/schema/SchemaJITCompiler/enable";\n${code}`;
++				return `import "effect/schema/SchemaJITCompiler/enable";\n${code}`;
+ 			}
+ 		},
+ 		rawAssetUpdates(),

@@ -1,0 +1,301 @@
+diff --git a/dist/application/definition.d.ts b/dist/application/definition.d.ts
+index 0ad2e2161d867563f3bf8bb5783006f18d3df327..9b1933c5bd08aa5930da93c27b2b3cf554dc12c9 100644
+--- a/dist/application/definition.d.ts
++++ b/dist/application/definition.d.ts
+@@ -3,7 +3,7 @@ import { AbsolutePath, ReservedRoutePath } from "./route-path.js";
+ import { AnyRoutes, RoutesHasLayout, RoutesPaths } from "./routes.js";
+ import { CompiledRouteGraph } from "./route-graph.js";
+ import { Layer, Types } from "effect";
+-import { HttpRouter } from "effect/unstable/http";
++import { HttpRouter } from "effect/http";
+ //#region src/application/definition.d.ts
+ declare const ApplicationContractTypeId: unique symbol;
+ export interface ApplicationDefinition<Services, out ApplicationError = never, out Requirements = never> extends EFFRONTStatefulMember<Services, "Application", ApplicationImplementationState<Services, ApplicationError, Requirements>> {
+diff --git a/dist/application/middleware.d.ts b/dist/application/middleware.d.ts
+index b41af26acbfddc94501241294ee6f9934b3fe384..ff381517b6b685ba54a9cb93faf165906ae112a3 100644
+--- a/dist/application/middleware.d.ts
++++ b/dist/application/middleware.d.ts
+@@ -1,6 +1,6 @@
+ import { EFFRONTIdentity, EFFRONTStatefulMember } from "./effront-identity.js";
+ import { Effect } from "effect";
+-import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
++import { HttpRouter, HttpServerResponse } from "effect/http";
+ //#region src/application/middleware.d.ts
+ type MiddlewareConfig = {
+   readonly provides?: unknown;
+diff --git a/dist/application/middleware.js b/dist/application/middleware.js
+index d3729c3083643d513fff9aa685b28734214e677d..814855eca44504d33261a89a79a66e4cd9bbe59a 100644
+--- a/dist/application/middleware.js
++++ b/dist/application/middleware.js
+@@ -1,5 +1,5 @@
+ import { EFFRONTIdentityTypeId, EFFRONTMemberKindTypeId, EFFRONTStateTypeId, isEFFRONTMember } from "./effront-identity.js";
+-import { HttpRouter } from "effect/unstable/http";
++import { HttpRouter } from "effect/http";
+ //#region src/application/middleware.ts
+ var MiddlewareImpl = class {
+ 	[EFFRONTIdentityTypeId];
+diff --git a/dist/client/browser-effect-runner.d.ts b/dist/client/browser-effect-runner.d.ts
+index 52c73326c9e19a157212db072586cf00ed7b4caf..e5846df2f6e5019df1b42c95b490f3f880a5d2d4 100644
+--- a/dist/client/browser-effect-runner.d.ts
++++ b/dist/client/browser-effect-runner.d.ts
+@@ -1,5 +1,5 @@
+ import { Context, Layer, Scope } from "effect";
+-import { HttpClient } from "effect/unstable/http";
++import { HttpClient } from "effect/http";
+ //#region src/client/browser-effect-runner.d.ts
+ declare const BrowserEffectRunner_base: Context.ServiceClass<BrowserEffectRunner, "effront/client/BrowserEffectRunner", <XE extends unknown, XA extends unknown>(effect: import("effect/Effect").Effect<XA, XE, HttpClient.HttpClient | Scope.Scope>, options?: (import("effect/Effect").RunOptions & {
+   readonly propagateInterruption?: boolean | undefined;
+diff --git a/dist/client/entry.d.ts b/dist/client/entry.d.ts
+index ed6659f2fe023dd3aac959388d305a3a6dc63a6b..ff1ede0db9a967bbdd4d9146ac9c1fc7364e13be 100644
+--- a/dist/client/entry.d.ts
++++ b/dist/client/entry.d.ts
+@@ -1 +1 @@
+-import "effect/unstable/schema/SchemaJITCompiler/enable";
+\ No newline at end of file
++import "effect/schema/SchemaJITCompiler/enable";
+diff --git a/dist/client/entry.js b/dist/client/entry.js
+index 4855cc5610ef13a461b4b62f4f8dc8a366980ed6..0bc4917f9d73e8a8b7ca25550bff616d6f6d8ea4 100644
+--- a/dist/client/entry.js
++++ b/dist/client/entry.js
+@@ -1,5 +1,5 @@
+ import { browserMain } from "./application.js";
+-import "effect/unstable/schema/SchemaJITCompiler/enable";
++import "effect/schema/SchemaJITCompiler/enable";
+ import * as BrowserRuntime from "@effect/platform-browser/BrowserRuntime";
+ //#region src/client/entry.ts
+ BrowserRuntime.runMain(browserMain);
+diff --git a/dist/client/flight-client.d.ts b/dist/client/flight-client.d.ts
+index 0719aa27ed1d54cdb30432f8e7451305dcb49bb7..0e0ea1b08d2899af72b28772bd3de71d2e13d963 100644
+--- a/dist/client/flight-client.d.ts
++++ b/dist/client/flight-client.d.ts
+@@ -1,7 +1,7 @@
+ import { FlightPayload, ServerFnResult } from "../rsc/flight.js";
+ import { InitialFlightStream } from "./initial-flight-stream.js";
+ import { Context, Effect, Layer, Schema, Scope } from "effect";
+-import { HttpClient } from "effect/unstable/http";
++import { HttpClient } from "effect/http";
+ import { createTemporaryReferenceSet } from "@vitejs/plugin-rsc/browser";
+ //#region src/client/flight-client.d.ts
+ declare const FlightLoadError_base: Schema.Class<FlightLoadError, Schema.TaggedStruct<"FlightLoadError", {
+diff --git a/dist/client/flight-client.js b/dist/client/flight-client.js
+index 137044225bc0df73b6d41a2a64879560b5eab521..5dc17a4a0fc555c050fcd17f443d486206a51c9d 100644
+--- a/dist/client/flight-client.js
++++ b/dist/client/flight-client.js
+@@ -1,7 +1,7 @@
+ import { FlightMediaType, ServerFnIdHeader } from "../rsc/flight.js";
+ import { InitialFlightStream } from "./initial-flight-stream.js";
+ import { Context, Deferred, Effect, Exit, Layer, Schema, Scope, Stream } from "effect";
+-import { HttpBody, HttpClient, HttpClientRequest } from "effect/unstable/http";
++import { HttpBody, HttpClient, HttpClientRequest } from "effect/http";
+ import { createFromReadableStream } from "@vitejs/plugin-rsc/browser";
+ //#region src/client/flight-client.ts
+ var FlightLoadError = class extends Schema.TaggedError()("FlightLoadError", {
+diff --git a/dist/client/query.d.ts b/dist/client/query.d.ts
+index 3a263535dbb9ac83f388a9cf56dfabe9bf908e37..3eef4a065296b081ffc14b9aceb78d2ae6c5ec42 100644
+--- a/dist/client/query.d.ts
++++ b/dist/client/query.d.ts
+@@ -1,6 +1,6 @@
+ import { ServerFnError } from "../rsc/server-fn-error.js";
+ import { Cause, Effect, Stream } from "effect";
+-import { Atom } from "effect/unstable/reactivity";
++import { Atom } from "effect/reactivity";
+ //#region src/client/query.d.ts
+ type AnyReadable = ReadableStream<unknown>;
+ type NotStreaming<Output> = [Extract<Output, AnyReadable>] extends [never] ? unknown : {
+diff --git a/dist/client/query.js b/dist/client/query.js
+index 61802002637d164c0a27935a3847754b21ec8052..75d507707fefcdd6084c86caa7ca4dfb8e5ad861 100644
+--- a/dist/client/query.js
++++ b/dist/client/query.js
+@@ -1,6 +1,6 @@
+ import { callQuery, callQueryStream } from "./server-fn-protocol.js";
+ import { Stream } from "effect";
+-import { Atom } from "effect/unstable/reactivity";
++import { Atom } from "effect/reactivity";
+ //#region src/client/query.ts
+ const query = (serverFn) => (...args) => callQuery(serverFn, args);
+ const queryAtom = (serverFn) => Atom.fn((args) => callQuery(serverFn, args));
+diff --git a/dist/http.d.ts b/dist/http.d.ts
+index 28ae3750727ec7757edf25130c5c6afc6a895dd1..f0f95c7fc359aeb47ae7af36c83f4bcffa24ee56 100644
+--- a/dist/http.d.ts
++++ b/dist/http.d.ts
+@@ -2,7 +2,7 @@ import { ApplicationDefinition } from "./application/definition.js";
+ import { HtmlRenderError } from "./server/html-renderer.js";
+ import { ServerFnRequestFailure } from "./server/server-fn-request.js";
+ import { Effect, Layer, Scope } from "effect";
+-import { HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from "effect/unstable/http";
++import { HttpRouter, HttpServerError, HttpServerRequest, HttpServerResponse } from "effect/http";
+ import { PlatformError } from "effect/PlatformError";
+ //#region src/http.d.ts
+ type HttpRequirements<Requirements> = Scope.Scope | HttpServerRequest.HttpServerRequest | Exclude<HttpRouter.Request.Without<Requirements>, HttpRouter.HttpRouter> | HttpRouter.Request.Only<"Requires", Requirements> | HttpRouter.Request.Only<"GlobalRequires", Requirements>;
+diff --git a/dist/http.js b/dist/http.js
+index 5faaa3eef92161c8816d9f562185c42402dd7b2b..9ee84c2f333ab3c99260eeac524416971ffd7b02 100644
+--- a/dist/http.js
++++ b/dist/http.js
+@@ -1,6 +1,6 @@
+ import { ServerApplication } from "./server/application.js";
+ import { Context, Effect, Layer, Scope } from "effect";
+-import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/unstable/http";
++import { HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
+ //#region src/http.ts
+ const maxRequestBodySize = 10485760;
+ /**
+diff --git a/dist/server/application.d.ts b/dist/server/application.d.ts
+index fe38756d2d07a276d6f8572700274fc197d4d2fa..82376f7b1320efc362cf2cc33c23480abd4ec9d3 100644
+--- a/dist/server/application.d.ts
++++ b/dist/server/application.d.ts
+@@ -2,7 +2,7 @@ import { ApplicationDefinition } from "../application/definition.js";
+ import { HtmlRenderError } from "./html-renderer.js";
+ import { ServerFnRequestFailure } from "./server-fn-request.js";
+ import { Layer } from "effect";
+-import { HttpRouter } from "effect/unstable/http";
++import { HttpRouter } from "effect/http";
+ import { PlatformError } from "effect/PlatformError";
+ //#region src/server/application.d.ts
+ type HttpApplicationRequirements = HttpRouter.HttpRouter | HttpRouter.Request.From<"Error", HtmlRenderError | ServerFnRequestFailure>;
+diff --git a/dist/server/application.js b/dist/server/application.js
+index 8434ef48a89df64837c37cd11e8884c2220facd9..593ebf9d7a0e51fc8936513c190fd316cde51767 100644
+--- a/dist/server/application.js
++++ b/dist/server/application.js
+@@ -9,7 +9,7 @@ import { HtmlRenderer } from "./html-renderer.js";
+ import { prepareServerFnRequest } from "./server-fn-request.js";
+ import { prepareServerFnQuery } from "./server-fn-query.js";
+ import { Context, Effect, Layer, Option, Schema, Stream } from "effect";
+-import { HttpEffect, HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/unstable/http";
++import { HttpEffect, HttpRouter, HttpServerRequest, HttpServerResponse } from "effect/http";
+ //#region src/server/application.ts
+ const RenderersLayer = Layer.mergeAll(FlightRenderer.layer, HtmlRenderer.layer);
+ const EmptyEncodedPageParams = Object.freeze({});
+diff --git a/dist/server/server-fn-query.d.ts b/dist/server/server-fn-query.d.ts
+index f41ba624589ad1395b0d7e3e1237915221972af2..701419c911b4ee2823ec5667c593a9794a2ebc1d 100644
+--- a/dist/server/server-fn-query.d.ts
++++ b/dist/server/server-fn-query.d.ts
+@@ -3,7 +3,7 @@ import { AnyMiddleware } from "../application/middleware.js";
+ import { ServerFnResult } from "../rsc/flight.js";
+ import { ServerFnRequestError } from "./server-fn-request.js";
+ import { Effect, Scope } from "effect";
+-import { HttpServerRequest } from "effect/unstable/http";
++import { HttpServerRequest } from "effect/http";
+ import { createTemporaryReferenceSet } from "@vitejs/plugin-rsc/rsc/server";
+ //#region src/server/server-fn-query.d.ts
+ export type PreparedServerFnQuery<Services> = {
+diff --git a/dist/server/server-fn-query.js b/dist/server/server-fn-query.js
+index 9b4c9130ab62d1065672708e4121e5e5a954b7d5..0d7cc7721620bc380ff7177eae3d484235e799ac 100644
+--- a/dist/server/server-fn-query.js
++++ b/dist/server/server-fn-query.js
+@@ -2,7 +2,7 @@ import { ServerFnIdHeader } from "../rsc/flight.js";
+ import { serverFnResponse } from "./server-fn-outcome.js";
+ import { ServerFnRequestError, decodeServerFnCall, validateOrigin } from "./server-fn-request.js";
+ import { Cause, Effect, Option } from "effect";
+-import { HttpServerRequest } from "effect/unstable/http";
++import { HttpServerRequest } from "effect/http";
+ //#region src/server/server-fn-query.ts
+ const prepareServerFnQueryRaw = Effect.fnUntraced(function* (request, identity) {
+ 	yield* validateOrigin(request);
+diff --git a/dist/server/server-fn-request.d.ts b/dist/server/server-fn-request.d.ts
+index ff3e38022603aa746e72acf6b572bede860fb0d2..1b8a53752a2b265c714f640be3fa8159a3ae2b42 100644
+--- a/dist/server/server-fn-request.d.ts
++++ b/dist/server/server-fn-request.d.ts
+@@ -4,7 +4,7 @@ import { ServerFnInputError } from "../rsc/server-fn-error.js";
+ import { ServerFnOperationError } from "../application/server-fn.js";
+ import { RequestOutcome } from "./request-outcome.js";
+ import { Cause, Effect, Schema, Scope } from "effect";
+-import { HttpServerRequest } from "effect/unstable/http";
++import { HttpServerRequest } from "effect/http";
+ //#region src/server/server-fn-request.d.ts
+ declare const ServerFnRequestError_base: Schema.Class<ServerFnRequestError, Schema.TaggedStruct<"ServerFnRequestError", {
+   readonly cause: Schema.Defect;
+@@ -29,6 +29,6 @@ export declare const decodeServerFnCall: <ApplicationServices>(request: Request,
+   operation: ServerFnOperation<ApplicationServices>;
+   temporaryReferences: unknown;
+ }, ServerFnExecutionError | ServerFnRequestError, never>;
+-export declare const prepareServerFnRequest: <Services>(request: HttpServerRequest.HttpServerRequest, identity: EFFRONTIdentity<Services>) => Effect.Effect<PreparedServerFnRequest<Services>, ServerFnExecutionError | ServerFnRequestError | import("effect/unstable/http/HttpServerError").RequestError, Scope.Scope>;
++export declare const prepareServerFnRequest: <Services>(request: HttpServerRequest.HttpServerRequest, identity: EFFRONTIdentity<Services>) => Effect.Effect<PreparedServerFnRequest<Services>, ServerFnExecutionError | ServerFnRequestError | import("effect/http/HttpServerError").RequestError, Scope.Scope>;
+ export type ServerFnRequestFailure = Effect.Error<ReturnType<typeof prepareServerFnRequest>>;
+ //#endregion
+diff --git a/dist/server/server-fn-request.js b/dist/server/server-fn-request.js
+index 1a47535b9168d29901aaee0c53e3d2cde6a0d912..ef0d3069a785011949b5b9c10c921eb47fe3f215 100644
+--- a/dist/server/server-fn-request.js
++++ b/dist/server/server-fn-request.js
+@@ -2,7 +2,7 @@ import { ServerFnIdHeader } from "../rsc/flight.js";
+ import { matchServerFnInvocation } from "../application/server-fn.js";
+ import { serverFnOutcome } from "./server-fn-outcome.js";
+ import { Cause, Effect, Schema } from "effect";
+-import { HttpServerRequest } from "effect/unstable/http";
++import { HttpServerRequest } from "effect/http";
+ //#region src/server/server-fn-request.ts
+ const ServerFnArraySizeLimit = 1e4;
+ const ServerFnBodySizeLimit = 10485760;
+diff --git a/dist/server/ssr.d.ts b/dist/server/ssr.d.ts
+index 439f19186234f2d82ff350b7b092a6df0d7bce1b..3defde97016d5c1e8600063193bb36eee3e2c2c7 100644
+--- a/dist/server/ssr.d.ts
++++ b/dist/server/ssr.d.ts
+@@ -1,5 +1,5 @@
+ import { HtmlRenderOptions } from "./html-renderer.js";
+-import "effect/unstable/schema/SchemaJITCompiler/enable";
++import "effect/schema/SchemaJITCompiler/enable";
+ //#region src/server/ssr.d.ts
+ export declare const renderHtml: (stream: ReadableStream<Uint8Array>, options: HtmlRenderOptions) => Promise<ReadableStream<Uint8Array>>;
+ //#endregion
+diff --git a/dist/server/ssr.js b/dist/server/ssr.js
+index 5583de4ee7dcbdf9482e044b816f8dc0a035ed8a..b767d8e5843aedaa807a39d18a2e18c6cc09e033 100644
+--- a/dist/server/ssr.js
++++ b/dist/server/ssr.js
+@@ -2,7 +2,7 @@ import { RouteTree } from "../client/route-tree.js";
+ import { injectFlightPayload } from "./flight-html-stream.js";
+ import { use } from "react";
+ import { jsx } from "react/jsx-runtime";
+-import "effect/unstable/schema/SchemaJITCompiler/enable";
++import "effect/schema/SchemaJITCompiler/enable";
+ import { createFromReadableStream, getClientEntryUrl } from "@vitejs/plugin-rsc/ssr";
+ import { renderToReadableStream } from "react-dom/server.edge";
+ //#region src/server/ssr.tsx
+diff --git a/dist/workers.d.ts b/dist/workers.d.ts
+index 940e79984ce8128d5646cd2ea23022b0c25621bb..d16626c47d5f4984860836e36117526c0ad671a7 100644
+--- a/dist/workers.d.ts
++++ b/dist/workers.d.ts
+@@ -1,6 +1,6 @@
+ import { ApplicationDefinition } from "./application/definition.js";
+ import { Context, Effect } from "effect";
+-import { HttpRouter, HttpServerRequest } from "effect/unstable/http";
++import { HttpRouter, HttpServerRequest } from "effect/http";
+ //#region src/workers.d.ts
+ /**
+  * Per-request values supplied by a Fetch host.
+diff --git a/dist/workers.js b/dist/workers.js
+index f40c7ec103378fc4e98444679726228b8c72dcda..bbb21e98091765093662678ae66156f873c4bd40 100644
+--- a/dist/workers.js
++++ b/dist/workers.js
+@@ -1,6 +1,6 @@
+ import { toHttpEffect } from "./http.js";
+ import { Context, Effect } from "effect";
+-import { HttpEffect } from "effect/unstable/http";
++import { HttpEffect } from "effect/http";
+ //#region src/workers.ts
+ const WorkersRequestContext = Context.Reference("effront/workers/WorkersRequestContext", { defaultValue: () => {
+ 	throw new TypeError("Workers request context is only available while handling a Fetch request.");
+diff --git a/package.json b/package.json
+index 1c02ad44bb5b2b35b1afcd32c2c8e0dfd91850a9..e283889fcc4ab9a2dec1ba900f4e564f244029fd 100644
+--- a/package.json
++++ b/package.json
+@@ -56,17 +56,17 @@
+     "@vitejs/plugin-rsc": "0.5.35"
+   },
+   "devDependencies": {
+-    "@effect/platform-browser": "4.0.0-rc.116",
++    "@effect/platform-browser": "^4.0.1",
+     "@types/react": "19.3.0",
+     "@types/react-dom": "19.3.0",
+-    "effect": "4.0.0-rc.116",
++    "effect": "^4.0.1",
+     "react": "19.3.0",
+     "react-dom": "19.3.0",
+     "vitest": "4.1.11"
+   },
+   "peerDependencies": {
+-    "@effect/platform-browser": "4.0.0-rc.116",
+-    "effect": "4.0.0-rc.116",
++    "@effect/platform-browser": "^4.0.1",
++    "effect": "^4.0.1",
+     "react": "19.3.0",
+     "react-dom": "19.3.0"
+   }

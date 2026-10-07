@@ -6,7 +6,7 @@ Reference repository: <https://github.com/totto2727-org/effront>.
 Reviewed source revision: `b561905cd773363a8d834ecf1a8279d551eee379`.
 Source application: `app/docs` at that revision.
 Published runtime packages: `@effront/core`, `@effront/markdown`, `@effront/vite`, `@effront/tailwind`, and `@effront/alchemy`, all version `0.2.0` from npm.
-No Effront runtime source is vendored or changed by this repository.
+No Effront runtime source is vendored by this repository. Published package artifacts receive the narrowly scoped compatibility patches documented below.
 The source Effront repository is read-only during site work.
 
 ## Reused areas
@@ -26,11 +26,28 @@ Oxlint rule descriptions, options, syntax fixtures, installation steps and prese
 `catalog.ts` keeps route/navigation metadata and stable heading IDs aligned across locales.
 `entry.effront.tsx` registers each authored route explicitly to retain framework collision checks and native 404 behavior.
 Root documents and local acceptance tests are specific to this standalone application.
-The dependency manifest has exact current Effront catalog pins, published Effront packages and no workspace links.
+The dependency manifest retains exact published Effront `0.2.0` packages and no workspace links, while Effect and its platform packages use stable `^4.0.1` ranges and Vite Plus and the Vite core alias use `^1.1.0`.
+Effect imports use the stable `effect/http` module path, and dependency overrides keep the linked published packages on one Effect version.
+Vite Plus task inputs and outputs are nested under `cache` per the [run configuration](https://viteplus.dev/config/run), preserving [automatic tracking](https://viteplus.dev/guide/automatic-data-tracking) and local build output restoration.
+The development-only Nix overlay is pinned at `af16f6183aec0717d8975ee858c910ab43babee6` for the stable Vite Plus `1.0.0` global CLI, independently of the local `^1.1.0` toolchain.
+These are documentation-application dependency and configuration adaptations against the same reviewed baseline.
+Alchemy and its Cloudflare runtime use `2.0.0-beta.81`, whose published dependency metadata supports stable Effect 4, rather than the reference's prerelease-Effect runtime.
 The template's bootstrap CLI, npm launcher and native Nix package are replaced with site compilation and a development-only Nix shell because they were not documentation hosts.
 Application publication workflows remain disabled.
 The Alchemy stack and deployment workflow reuse Effront's Cloudflare-backed state/provider architecture, with independent oxlint-docs identity and a production-only oxlint.totto2727.dev custom domain.
 Unlike the reference's branch preview workflow, this application deploys main only, validates before deployment and checks published content afterward.
+
+## Published Effront compatibility patches
+
+Official npm `latest` metadata on 2026-10-07 still identifies all five Effront packages as `0.2.0`.
+The published `@effront/core`, `@effront/vite`, and `@effront/alchemy` artifacts import or inject removed `effect/unstable/*` module paths, which prevents real site compilation with stable Effect 4.
+Committed `patches/@effront__*.patch` files relocate only HTTP, reactivity, and Schema JIT imports in distributed JavaScript and declarations, and align relevant Effect and Alchemy package metadata.
+The import relocation matches [Effront PR #21](https://github.com/totto2727-org/effront/pull/21), implemented at `1c18b401`, and reviewed in the source tree at `4071c4ea38e8792f2ab84669233d8f3d4daf74d0`.
+No routing, rendering, cache, service-lifetime or request-handling behavior is intentionally changed.
+`pnpm-workspace.yaml` registers pnpm patches, while `package.json` registers the same patches for the mirrored Bun lock.
+The installation remains registry-based and reproducible, without local file links, workspace dependencies or package publication.
+Remove each patch and both registrations when a published stable-compatible Effront release incorporates the corresponding module and metadata updates, then regenerate all three locks and validate site compilation and local browser acceptance.
+The original Effront source comparison and attribution remain intact.
 
 ## Official Effect rule documentation
 
