@@ -151,40 +151,30 @@ ${code('sh', 'npx oxlint\nnpx oxlint --fix')}
     const baseline = en
       ? `## Shared native baseline {#baseline}
 
-Both group presets and the combined preset use a pinned MIT port of the native core configuration and shared ignores from [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3), corresponding to its upstream \`ultracite/oxlint/core\` export.
-This is externally defined native policy, not a set of locally authored plugin rules. The full Ultracite CLI package is not imported. The runtime and command remain Oxlint directly.
-Verified version sources: [native core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [official Oxlint provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
-The library flattens its native core configuration and rules into each preset's top-level configuration, rather than adding a second preset to extends.
-Native core settings and shared ignore patterns are retained. All upstream per-file overrides are discarded, including test-specific relaxations. Test files are not excluded by this policy.
-The library's own **/*.gen.ts no-redundant-alias allowance remains in TypeScript and combined presets.
+Both groups and the combined preset apply a pinned MIT port of [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) native core and shared ignores, corresponding to \`ultracite/oxlint/core\`. The full Ultracite CLI is not imported. The runtime and command remain Oxlint directly.
+Sources: [native core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [Oxlint provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
 
-Three native rules are explicitly off in every group, including TypeScript, to make composition safe in either order:
+Three native rules are off in every group for safe composition:
 
-- \`unicorn/prefer-bigint-literals\`: the opposite fix of the official Effect \`rules/no-bigint-literals\` policy.
-- \`preserve-caught-error\`: assumes native Error.cause, while the custom Effect error convention preserves the original cause in an error field.
-- \`prefer-const\`: duplicates declarations already covered by the broader custom \`rules/no-let\` policy when TypeScript is selected.
+- \`unicorn/prefer-bigint-literals\`: opposite to the official Effect no-bigint-literals policy.
+- \`preserve-caught-error\`: assumes native Error.cause instead of the local Effect error field convention.
+- \`prefer-const\`: duplicates the broader local no-let policy.
 
-The plugin exports 29 locally authored rules and 5 externally derived Effect adapters, not 34 locally authored policies. The three adjustments above are native baseline settings, not additional plugin rules.
-React presets, type-aware presets, Ultracite JavaScript plugins and oxfmt configuration are not imported automatically.
-Keep the existing Oxlint/Vite+ command entrypoints and formatter configuration unless you independently opt into another integration.`
+No upstream per-file overrides or test-only relaxations are inherited, but the local **/*.gen.ts no-redundant-alias allowance remains in TypeScript and combined presets.
+React/type-aware presets, JavaScript plugins and oxfmt integration are not included.`
       : `## 共通 native baseline {#baseline}
 
-両グループと統合プリセットは [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) の native core 設定と共通 ignore の MIT 固定移植を使います。上流の \`ultracite/oxlint/core\` export に対応します。
-これは外部定義の native ポリシーであり、独自のプラグインルールではありません。Ultracite CLI パッケージ全体は取り込みません。実行時とコマンドは Oxlint を直接使います。
-このバージョンの確認済み出典は [native core 設定](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) と [公式 Oxlint provider ドキュメント](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx) です。
-native core の設定とルールを各プリセットのトップレベルに展開し、extends に別のプリセットを追加する方式ではありません。
-native core の設定と共通 ignore パターンは保持します。テスト向けの緩和を含め、上流のファイル別 override はすべて除外します。このポリシーはテストファイルを ignore しません。
-ライブラリ独自の **/*.gen.ts に対する no-redundant-alias の許可は TypeScript と統合プリセットに残ります。
+両グループと統合プリセットは [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) の native core と共通 ignore の MIT 固定移植を適用します。\`ultracite/oxlint/core\` に対応し、Ultracite CLI 全体は取り込みません。実行時とコマンドは Oxlint を直接使います。
+出典: [native core 設定](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) と [Oxlint provider ドキュメント](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx)。
 
-どちらの順序でグループを合成しても競合しないよう、TypeScript を含む全グループで3つの native ルールを明示的に off にします。
+安全に合成するため、全グループで次の3つの native ルールを off にします。
 
-- \`unicorn/prefer-bigint-literals\`: 公式 Effect の \`rules/no-bigint-literals\` と逆方向の修正になります。
-- \`preserve-caught-error\`: native Error.cause を前提とする一方、カスタム Effect 規約は元のエラーを error フィールドに保持します。
-- \`prefer-const\`: TypeScript 選択時は、より広いカスタム \`rules/no-let\` と宣言の診断が重複します。
+- \`unicorn/prefer-bigint-literals\`: 公式 Effect の no-bigint-literals と逆のポリシーです。
+- \`preserve-caught-error\`: 独自の Effect error フィールド規約ではなく native Error.cause を前提にします。
+- \`prefer-const\`: より広い独自の no-let と診断が重複します。
 
-プラグインは29の独自ルールと5つの外部由来の Effect アダプターを公開します。34すべてが独自ポリシーではありません。上記3つの調整は native baseline の設定であり、追加のプラグインルールではありません。
-React プリセット、type-aware プリセット、Ultracite JavaScript plugins、oxfmt 設定は自動的に取り込みません。
-別の統合を個別に選ぶまでは、既存の Oxlint/Vite+ コマンドと formatter 設定を維持します。`
+上流のファイル別 override やテスト専用の緩和は継承せず、独自の **/*.gen.ts no-redundant-alias 許可だけを TypeScript と統合プリセットに残します。
+React/type-aware プリセット、JavaScript plugins、oxfmt 統合は含みません。`
     const officialRules = externalEffectRuleNames
       .filter((name) => name !== 'no-js-extension-imports')
       .map((name) => `- \`rules/${name}\``)
@@ -201,9 +191,7 @@ Included at error severity:
 
 ${officialRules}
 
-The selected import convention permits module namespace imports and rejects Effect package-root/lowercase barrel value imports and relative index imports.
-\`rules/no-js-extension-imports\` remains exported but is explicitly off in every preset. It overlaps the local extension family, including mjs/cjs, and its TS-only conversion conflicts with mode js. Use the local require-import-extension and consistent-import-extension rules instead.
-External rule details belong to the linked upstream sources, not the local Rules reference.`
+\`rules/no-js-extension-imports\` remains exported but is explicitly off in every preset. It overlaps the local extension family, including mjs/cjs, and its TS-only conversion conflicts with mode js. Use the local require-import-extension and consistent-import-extension rules instead.`
           : `## 公式 Effect ポリシー層 {#official-effect}
 
 Effect プリセットは[公式 Effect Oxc ルールのソース](${effectRuleSource})に由来する4つの外部定義ルールも有効化します。
@@ -212,9 +200,7 @@ Effect プリセットは[公式 Effect Oxc ルールのソース](${effectRuleS
 
 ${officialRules}
 
-選択した import 規約は個別モジュールの namespace import を許可し、Effect パッケージルート・小文字 barrel の値 import と相対 index import を拒否します。
-\`rules/no-js-extension-imports\` は export を維持しますが、すべてのプリセットで明示的に off です。mjs/cjs を含む独自の拡張子ルールと重複し、TS 方向だけの変換が mode js と競合します。代わりに独自の require-import-extension と consistent-import-extension を使います。
-外部ルールの詳細はリンク先の上流ソースを参照し、独自の Rules リファレンスでは再解説しません。`
+\`rules/no-js-extension-imports\` は export を維持しますが、すべてのプリセットで明示的に off です。mjs/cjs を含む独自の拡張子ルールと重複し、TS 方向だけの変換が mode js と競合します。代わりに独自の require-import-extension と consistent-import-extension を使います。`
     const exceptions =
       group === 'TypeScript'
         ? en
