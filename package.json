@@ -12,9 +12,9 @@
   "dependencies": {
     "@comark/react": "0.6.2",
     "@effect/platform-browser": "^4.0.1",
-    "@effront/alchemy": "0.2.0",
-    "@effront/core": "0.2.0",
-    "@effront/markdown": "0.2.0",
+    "@effront/alchemy": "0.3.1",
+    "@effront/core": "0.3.1",
+    "@effront/markdown": "0.3.1",
     "alchemy": "2.0.0-beta.81",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
@@ -29,8 +29,8 @@
   "devDependencies": {
     "@alchemy.run/cloudflare-runtime": "2.0.0-beta.81",
     "@effect/platform-node": "^4.0.1",
-    "@effront/tailwind": "0.2.0",
-    "@effront/vite": "0.2.0",
+    "@effront/tailwind": "0.3.1",
+    "@effront/vite": "0.3.1",
     "@playwright/test": "1.63.0",
     "@tailwindcss/typography": "0.5.20",
     "@tsconfig/node-ts": "23.6.4",
@@ -49,10 +49,5 @@
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "pnpm@12.4.1",
-  "patchedDependencies": {
-    "@effront/alchemy@0.2.0": "patches/@effront__alchemy@0.2.0.patch",
-    "@effront/core@0.2.0": "patches/@effront__core@0.2.0.patch",
-    "@effront/vite@0.2.0": "patches/@effront__vite@0.2.0.patch"
-  }
+  "packageManager": "pnpm@12.4.1"
 }

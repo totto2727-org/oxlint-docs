@@ -198,11 +198,6 @@
     hash = "sha512-RsnobWEnffdkRH/wZ3ARIAgMxtGLyfrD0R3iVS+dwQCdYrSbotlJHEoVHEgzcOn5RzMsHG6FHkfdgRMwvcM7kg==";
     name = "platform-browser-4.0.1.tgz";
   };
-  "@effect/platform-node-shared@4.0.0-rc.116" = fetchurl {
-    url = "https://npm.flatt.tech/@effect/platform-node-shared/-/platform-node-shared-4.0.0-rc.116.tgz";
-    hash = "sha512-4FB6UriGqArWFUaFqVchhfCRmmtOVzmD/k/bH6LErlKY8a9amt5dk6c3Arsi7AvUpChsdO+3jsG+P85HsxMkNA==";
-    name = "platform-node-shared-4.0.0-rc.116.tgz";
-  };
   "@effect/platform-node-shared@4.0.1" = fetchurl {
     url = "https://npm.flatt.tech/@effect/platform-node-shared/-/platform-node-shared-4.0.1.tgz";
     hash = "sha512-VanaejudEhKJ4mpmqnEzdncVUhN6sGSO9ZDND54mRxAlZxj+4dYAWjDTYAy9o4tJo9aALeP2U8cVcOFzEdSeLg==";
@@ -223,30 +218,30 @@
     hash = "sha512-tS+qQok3xKsycnnhvIDX+6nvlM4Y2ouvru3voOzxtDQqX96NSOMX2xReLf4Feb6GN3jnzgEEtVGDDWk3YLrpsg==";
     name = "sql-sqlite-do-4.0.1.tgz";
   };
-  "@effront/alchemy@0.2.0" = fetchurl {
-    url = "https://npm.flatt.tech/@effront/alchemy/-/alchemy-0.2.0.tgz";
-    hash = "sha512-s+tHA+IYj8DbWBUv+u7kLyrc7VJQaYI+ZCULu7zLBD3/BopFvKyZBnAHUL+JVua3IzmKDiurA6kL6pPYPPpUig==";
-    name = "alchemy-0.2.0.tgz";
+  "@effront/alchemy@0.3.1" = fetchurl {
+    url = "https://npm.flatt.tech/@effront/alchemy/-/alchemy-0.3.1.tgz";
+    hash = "sha512-Jty4pn4Ijzy9jQDMifdmdURySnOhBlv4GE1LN0ZiUwcqihVg705SEBUNh0E6ZPYfh5CVc7F7DQHP0ez0tAM/zg==";
+    name = "alchemy-0.3.1.tgz";
   };
-  "@effront/core@0.2.0" = fetchurl {
-    url = "https://npm.flatt.tech/@effront/core/-/core-0.2.0.tgz";
-    hash = "sha512-+5WJQXhqJwvSr7tqi+BKCe+8qvHOUujOmRYNp0Zs3tP3yrcAg4n17iCWSFTbjT3Ytv+2IXJTpGjhbDvompO1GQ==";
-    name = "core-0.2.0.tgz";
+  "@effront/core@0.3.1" = fetchurl {
+    url = "https://npm.flatt.tech/@effront/core/-/core-0.3.1.tgz";
+    hash = "sha512-XLXX8s17CDd4M9AsW/UMSohu5dQUk+FWgTle/dJD+vRNcV3zng5yBConbLOVwKeS9enctMFu9Q09rx7sAGjXGw==";
+    name = "core-0.3.1.tgz";
   };
-  "@effront/markdown@0.2.0" = fetchurl {
-    url = "https://npm.flatt.tech/@effront/markdown/-/markdown-0.2.0.tgz";
-    hash = "sha512-IGzvhOESiTgVn9eTKDr26WMQusrfGWo0ftRb/OolusfVIBx6gvJKqp/1goacyZ8jLR4JSu/fhGHF97Ag5FOzBw==";
-    name = "markdown-0.2.0.tgz";
+  "@effront/markdown@0.3.1" = fetchurl {
+    url = "https://npm.flatt.tech/@effront/markdown/-/markdown-0.3.1.tgz";
+    hash = "sha512-9BxOTKrFc2t9l6RModOR6h/quVfBCCa8+5TPOo3ZFM3xNeJu+SyutawV2rScCC+Z5UBLJEX/+b8WrWMfMM+fMg==";
+    name = "markdown-0.3.1.tgz";
   };
-  "@effront/tailwind@0.2.0" = fetchurl {
-    url = "https://npm.flatt.tech/@effront/tailwind/-/tailwind-0.2.0.tgz";
-    hash = "sha512-RZXeGMvotmOM13aYO2STGTUaGbnoyIZfYjpfzRpisZA9WHJECb32QKANKHKpSN0yhWf53seH1uM3AEcWqCkjzA==";
-    name = "tailwind-0.2.0.tgz";
+  "@effront/tailwind@0.3.1" = fetchurl {
+    url = "https://npm.flatt.tech/@effront/tailwind/-/tailwind-0.3.1.tgz";
+    hash = "sha512-UxkGMl9xZ0U2z450tuqExhGqaQ9jrgrIUcfEhXBbH66i/ay0nKWDwIsQR63aIi4oz2c6E5IdpclbkfO5C/wp/Q==";
+    name = "tailwind-0.3.1.tgz";
   };
-  "@effront/vite@0.2.0" = fetchurl {
-    url = "https://npm.flatt.tech/@effront/vite/-/vite-0.2.0.tgz";
-    hash = "sha512-mXFU6VBsMyLxBalz9ukZ12RTCICRURzklhqN+OHmyQh8hyOfxbavjn8xyFgfKuTCePqXeRuHKBRFpcBXfgs5bw==";
-    name = "vite-0.2.0.tgz";
+  "@effront/vite@0.3.1" = fetchurl {
+    url = "https://npm.flatt.tech/@effront/vite/-/vite-0.3.1.tgz";
+    hash = "sha512-JZSuyd3UM+jv4R3WZL9xOMBwar6ooMEJkmDsu6tuh4ItDy/eQMavDYBHlqeAd8XuUcmsbja9LwHuR9+DqEh4DA==";
+    name = "vite-0.3.1.tgz";
   };
   "@electric-sql/pglite-socket@0.0.20" = fetchurl {
     url = "https://npm.flatt.tech/@electric-sql/pglite-socket/-/pglite-socket-0.0.20.tgz";
@@ -2152,11 +2147,6 @@
     url = "https://npm.flatt.tech/domutils/-/domutils-4.0.2.tgz";
     hash = "sha512-qI4JLRKnSzqFqr7hAlS5xQDusBCjKSEG4t4+7aNrIQMHBcsC2TGEhuyABJdYkgSewL57PNLYEiibY2iPKhKpaA==";
     name = "domutils-4.0.2.tgz";
-  };
-  "effect@4.0.0-rc.116" = fetchurl {
-    url = "https://npm.flatt.tech/effect/-/effect-4.0.0-rc.116.tgz";
-    hash = "sha512-nawqJHSjHV8XIBRZNZ+D7cLZpN3kkSjzy6aiT9ofKENsl7xAMFKEoDa0itN5JFl3GUQ1PIN1T1HNlva5+xyO/A==";
-    name = "effect-4.0.0-rc.116.tgz";
   };
   "effect@4.0.1" = fetchurl {
     url = "https://npm.flatt.tech/effect/-/effect-4.0.1.tgz";

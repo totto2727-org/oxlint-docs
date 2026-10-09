@@ -5,8 +5,8 @@
 Reference repository: <https://github.com/totto2727-org/effront>.
 Reviewed source revision: `b561905cd773363a8d834ecf1a8279d551eee379`.
 Source application: `app/docs` at that revision.
-Published runtime packages: `@effront/core`, `@effront/markdown`, `@effront/vite`, `@effront/tailwind`, and `@effront/alchemy`, all version `0.2.0` from npm.
-No Effront runtime source is vendored by this repository. Published package artifacts receive the narrowly scoped compatibility patches documented below.
+Published runtime packages: `@effront/core`, `@effront/markdown`, `@effront/vite`, `@effront/tailwind`, and `@effront/alchemy`, all version `0.3.1` from npm.
+No Effront runtime source is vendored or patched by this repository.
 The source Effront repository is read-only during site work.
 
 ## Reused areas
@@ -26,8 +26,8 @@ Oxlint rule descriptions, options, syntax fixtures, installation steps and prese
 `catalog.ts` keeps route/navigation metadata and stable heading IDs aligned across locales.
 `entry.effront.tsx` registers each authored route explicitly to retain framework collision checks and native 404 behavior.
 Root documents and local acceptance tests are specific to this standalone application.
-The dependency manifest retains exact published Effront `0.2.0` packages and no workspace links, while Effect and its platform packages use stable `^4.0.1` ranges and Vite Plus and the Vite core alias use `^1.0.0`.
-Effect imports use the stable `effect/http` module path, and dependency overrides keep the linked published packages on one Effect version.
+The dependency manifest retains exact published Effront `0.3.1` packages and no workspace links, while Effect and its platform packages use stable `^4.0.1` ranges and Vite Plus and the Vite core alias use `^1.0.0`.
+Effect imports use the stable `effect/http` module path, and published dependency metadata resolves to one Effect version without overrides.
 Vite Plus task inputs and outputs are nested under `cache` per the [run configuration](https://viteplus.dev/config/run), preserving [automatic tracking](https://viteplus.dev/guide/automatic-data-tracking) and local build output restoration.
 The development-only Nix overlay is pinned at `af16f6183aec0717d8975ee858c910ab43babee6` for the stable Vite Plus `1.0.0` global CLI, independently of the local `^1.0.0` toolchain.
 These are documentation-application dependency and configuration adaptations against the same reviewed baseline.
@@ -37,16 +37,15 @@ Application publication workflows remain disabled.
 The Alchemy stack and deployment workflow reuse Effront's Cloudflare-backed state/provider architecture, with independent oxlint-docs identity and a production-only oxlint.totto2727.dev custom domain.
 Unlike the reference's branch preview workflow, this application deploys main only, validates before deployment and checks published content afterward.
 
-## Published Effront compatibility patches
+## Published Effront compatibility
 
-Official npm `latest` metadata on 2026-10-07 still identifies all five Effront packages as `0.2.0`.
-The published `@effront/core`, `@effront/vite`, and `@effront/alchemy` artifacts import or inject removed `effect/unstable/*` module paths, which prevents real site compilation with stable Effect 4.
-Committed `patches/@effront__*.patch` files relocate only HTTP, reactivity, and Schema JIT imports in distributed JavaScript and declarations, and align relevant Effect and Alchemy package metadata.
-The import relocation matches [Effront PR #21](https://github.com/totto2727-org/effront/pull/21), implemented at `1c18b401`, and reviewed in the source tree at `4071c4ea38e8792f2ab84669233d8f3d4daf74d0`.
-No routing, rendering, cache, service-lifetime or request-handling behavior is intentionally changed.
-`pnpm-workspace.yaml` registers pnpm patches, while `package.json` registers the same patches for the mirrored Bun lock.
+Official npm `latest` metadata on 2026-10-09 identifies all five Effront packages as `0.3.1`.
+Published metadata: [core](https://www.npmjs.com/package/@effront/core/v/0.3.1), [markdown](https://www.npmjs.com/package/@effront/markdown/v/0.3.1), [vite](https://www.npmjs.com/package/@effront/vite/v/0.3.1), [tailwind](https://www.npmjs.com/package/@effront/tailwind/v/0.3.1) and [alchemy](https://www.npmjs.com/package/@effront/alchemy/v/0.3.1).
+The published artifacts include the stable Effect module paths and compatible dependency metadata that previously required local patches for `0.2.0`.
+All three compatibility patches and their pnpm and Bun registrations are removed.
+No dependency overrides are required: the dependency graph resolves Effect and its platform packages to `4.0.1`, React and React DOM to `19.3.0`, and Vite peers to the application's direct Vite Plus core alias.
 The installation remains registry-based and reproducible, without local file links, workspace dependencies or package publication.
-Remove each patch and both registrations when a published stable-compatible Effront release incorporates the corresponding module and metadata updates, then regenerate all three locks and validate site compilation and local browser acceptance.
+The unpatched packages pass the local formatting, lint, type, unit, build and browser acceptance tasks.
 The original Effront source comparison and attribution remain intact.
 
 ## Official Effect rule documentation
