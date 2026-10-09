@@ -3,6 +3,15 @@ import { effectRuleSource, externalEffectRuleNames } from '../src/content/polici
 import { ruleArticles } from '../src/content/rules'
 
 for (const locale of ['en', 'ja'] as const) {
+  test(`getting started shows the npm install route in ${locale}`, async ({ page }) => {
+    await page.goto(`/${locale}/guide/getting-started`)
+    const article = page.locator('article')
+    await expect(article.locator('#install')).toBeVisible()
+    await expect(article).toContainText('npm install --save-dev @totto2727/oxlint oxlint')
+    await expect(article).toContainText('npx oxlint --config .oxlintrc.mjs src')
+    await expect(article).not.toContainText('.tgz')
+    await expect(article).not.toContainText('npm pack')
+  })
   test(`all 29 local rule pages render the authored content and anchors in ${locale}`, async ({ request }) => {
     expect(ruleArticles).toHaveLength(29)
     for (const rule of ruleArticles) {
@@ -112,7 +121,7 @@ test('serves navigable articles without JavaScript', async ({ browser }) => {
   await expect(page.locator('noscript a[href="/en/rules/no-let"]')).toBeVisible()
   await expect(page.locator('#baseline')).toHaveText('Shared native baseline')
   await expect(page.locator('article')).toContainText('Ultracite 7.12.3')
-  await expect(page.locator('article')).toContainText('Tests receive the same rules as application sources')
+  await expect(page.locator('article')).toContainText('Tests and application sources use the same rules')
   await expect(page.locator('#included')).toBeVisible()
   await context.close()
 })

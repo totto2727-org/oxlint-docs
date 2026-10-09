@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { Effect } from 'effect'
+import { Array as EffectArray, DateTime, Effect } from 'effect'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vite-plus/test'
 import { catalog } from './catalog'
@@ -40,6 +40,28 @@ const expectedEffect = [
 ]
 
 describe('oxlint documentation contract', () => {
+  it('uses supported Effect APIs in the array and DateTime examples', () => {
+    const array = ruleArticles.find((rule) => rule.name === 'force-array-empty')!
+    const date = ruleArticles.find((rule) => rule.name === 'no-js-date')!
+    expect(array.valid).toBe('if (Array.isArrayEmpty(arr)) {}')
+    expect(EffectArray.isArrayEmpty([])).toBe(true)
+    expect(EffectArray.isArrayEmpty([1])).toBe(false)
+    expect(date.valid).toBe('const d = DateTime.now')
+    expect(Effect.isEffect(DateTime.now)).toBe(true)
+  })
+  it.each(['en', 'ja'] as const)('installs the published npm packages in %s', (locale) => {
+    const guide = documents(locale)['guide/getting-started.md']!
+    expect(guide).toContain('```sh\nnpm install --save-dev @totto2727/oxlint oxlint\n```')
+    expect(guide).not.toMatch(/\.tgz|npm pack|archive|アーカイブ|Before publication|After npm publication/)
+  })
+  it.each(['en', 'ja'] as const)('selects the documented configuration explicitly in %s', (locale) => {
+    const guide = documents(locale)['guide/getting-started.md']!
+    expect(guide).toContain('```js\nimport { defineConfig }')
+    expect(guide).toContain('npx oxlint --config .oxlintrc.mjs src')
+    expect(guide).toContain('npx oxlint --config .oxlintrc.mjs --fix src')
+    expect(guide).toContain('--config .oxlintrc.json')
+    expect(guide).not.toContain('oxlint.config.ts')
+  })
   it('documents exactly the locally authored groups and three compatibility rules', () => {
     expect(ruleArticles).toHaveLength(29)
     expect(
@@ -137,6 +159,12 @@ describe('oxlint documentation contract', () => {
   })
   it.each(['en', 'ja'] as const)('documents extension families and retained required extensions in %s', (locale) => {
     const corpus = documents(locale)
+    for (const name of ['consistent-import-extension', 'require-import-extension', 'force-ts-extension']) {
+      const text = corpus[`rules/${name}.md`]!
+      expect(text).toContain(locale === 'en' ? 'aliases containing a slash' : '/ を含む #')
+      expect(text.toLowerCase()).toContain(locale === 'en' ? 'slashless aliases' : '/ のないエイリアス')
+      expect(text).toContain('#utils')
+    }
     for (const name of ['consistent-import-extension', 'force-ts-extension']) {
       const text = corpus[`rules/${name}.md`]!
       for (const family of ['.mjs/.mts', '.cjs/.cts']) expect(text).toContain(family)
@@ -144,7 +172,9 @@ describe('oxlint documentation contract', () => {
     }
     const normalization = corpus['rules/consistent-import-extension.md']!
     expect(normalization).toContain('.js/.jsx/.ts/.tsx')
-    expect(normalization).toContain(locale === 'en' ? 'Missing extensions belong' : '拡張子なしは')
+    expect(normalization).toContain(
+      locale === 'en' ? 'Use require-import-extension for missing extensions' : '拡張子なしは',
+    )
   })
   it.each(['en', 'ja'] as const)(
     'documents the shared native baseline without inherited test exemptions in %s',
@@ -154,9 +184,7 @@ describe('oxlint documentation contract', () => {
         const text = corpus[`presets/${group}.md`]!
         expect(text).toContain('Ultracite 7.12.3')
         expect(text).toContain(locale === 'en' ? 'pinned MIT port' : 'MIT 固定移植')
-        expect(text).toContain(
-          locale === 'en' ? 'runtime and command remain Oxlint directly' : 'コマンドは Oxlint を直接',
-        )
+        expect(text).toContain(locale === 'en' ? 'Run Oxlint directly' : 'Oxlint を直接実行')
         expect(text).toContain('ultracite/oxlint/core')
         expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs')
         expect(text).toContain('48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx')
