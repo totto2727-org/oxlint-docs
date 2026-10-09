@@ -17,7 +17,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## Effront documentation shell
 
 Copied documentation-shell, UI, styles, cache, Markdown and reusable test code derives from <https://github.com/totto2727-org/effront> at `b561905cd773363a8d834ecf1a8279d551eee379`.
-Site-specific changes are documented in [reuse and differences](docs/upstream-differences.md).
+Site-specific changes are documented in [documentation reuse](docs/reuse.md).
 
 MIT License
 

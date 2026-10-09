@@ -1,6 +1,6 @@
 import { Application } from '@effront/core'
 import { Context, Effect, Layer } from 'effect'
-import { HttpRouter, HttpServerRequest, HttpServerResponse } from 'effect/unstable/http'
+import { HttpRouter, HttpServerRequest, HttpServerResponse } from 'effect/http'
 import { DocsShell } from './components/docs-shell'
 import { getPage, navigation, localizedNavigation } from './content'
 import { documentLocale, documentPath, localizedPath } from './content/locale'
