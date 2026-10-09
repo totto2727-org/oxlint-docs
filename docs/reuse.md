@@ -5,11 +5,11 @@
 Reference: [Effront](https://github.com/totto2727-org/effront), `app/docs` at `b561905cd773363a8d834ecf1a8279d551eee379`.
 Effront is the source of reused site components, not an upstream repository for this independent application.
 This app uses published `@effront/*` runtime packages with `^0.3.0` ranges.
-The lockfiles select the latest version that satisfies pnpm's default 24-hour release age.
+The Bun lock selects the latest version that satisfies the preserved 24-hour release-age policy.
 Version `0.3.1` was published less than 24 hours before this update, so it is not selected yet.
 Other npm dependencies use compatible caret ranges, including prereleases.
 Only the official Vite+ core alias and bundled Vitest overrides remain, as required by [manual installation](https://viteplus.dev/guide/local-cli#manual-installation).
-The pnpm configuration keeps strict age enforcement and contains no release-age exclusions.
+Bun is the only package manager, with `minimumReleaseAge = 86400` and no release-age exclusions.
 It does not incorporate or change Effront runtime source.
 Licenses are in [third-party notices](../THIRD-PARTY-NOTICES.md).
 
@@ -42,29 +42,22 @@ Style and cache behavior remain unchanged.
   Keep validation in the separate CI workflow. Deployment does not run validation or wait for CI completion.
 
 These are application changes. The shared shell behavior, styles, cache policy and Effront runtime source are unchanged.
-<<<<<<< HEAD
 
 ## Published runtime compatibility
 
-The five published Effront packages use version `0.3.1` without workspace links.
-Published metadata: [core](https://www.npmjs.com/package/@effront/core/v/0.3.1), [markdown](https://www.npmjs.com/package/@effront/markdown/v/0.3.1), [vite](https://www.npmjs.com/package/@effront/vite/v/0.3.1), [tailwind](https://www.npmjs.com/package/@effront/tailwind/v/0.3.1) and [alchemy](https://www.npmjs.com/package/@effront/alchemy/v/0.3.1).
-These packages provide stable Effect module paths and compatible dependency metadata.
-All three local compatibility patches and their pnpm and Bun registrations are removed.
-No dependency overrides are required.
-Effect and its platform packages use `^4.0.1` and resolve to `4.0.1`.
+The five published Effront packages use `^0.3.0` and resolve to mature `0.3.0` without workspace links.
+Published metadata: [core](https://www.npmjs.com/package/@effront/core/v/0.3.0), [markdown](https://www.npmjs.com/package/@effront/markdown/v/0.3.0), [vite](https://www.npmjs.com/package/@effront/vite/v/0.3.0), [tailwind](https://www.npmjs.com/package/@effront/tailwind/v/0.3.0) and [alchemy](https://www.npmjs.com/package/@effront/alchemy/v/0.3.0).
+All three local compatibility patches and their package-manager registrations are removed.
+Only the official Vite+ core `1.1.0` and bundled Vitest `5.0.3` exact overrides remain.
+Effect and its platform packages use `^4.0.2` and resolve to `4.0.2`.
 React and React DOM resolve to `19.3.0`.
-Vite Plus and the Vite core alias use `^1.0.0`.
-Alchemy and its Cloudflare runtime use `2.0.0-beta.81`, which supports stable Effect 4.
+Vite Plus and the Vite core alias use `^1.1.0` and resolve to `1.1.0`.
+Alchemy and its Cloudflare runtime use `^2.0.0-beta.81`, which supports stable Effect 4.
 Effect HTTP imports use `effect/http`.
 The development-only Nix overlay uses revision `af16f6183aec0717d8975ee858c910ab43babee6` for the global Vite Plus `1.0.0` CLI.
 Vite Plus task inputs and outputs use the nested `cache` configuration.
 See [run configuration](https://viteplus.dev/config/run) and [automatic tracking](https://viteplus.dev/guide/automatic-data-tracking).
 The original Effront source attribution remains unchanged.
-||||||| b0abc79
-These are application changes. The shared shell behavior, styles, cache policy and upstream runtime source are unchanged.
-=======
-
-> > > > > > > origin/ci/docs-workflow-cleanup
 
 ## External policy documentation
 

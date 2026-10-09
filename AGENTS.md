@@ -25,22 +25,21 @@ Local tasks do not evaluate an Alchemy deployment stack.
 
 ### Standard tasks
 
-| Command                        | Result                                              |
-| ------------------------------ | --------------------------------------------------- |
-| `vp install --frozen-lockfile` | Install locked dependencies                         |
-| `vp run dev`                   | Serve locally at `127.0.0.1:1339`                   |
-| `vp run build`                 | Build the local Worker and assets in `dist/`        |
-| `vp run preview`               | Serve the local build                               |
-| `vp run fix`                   | Format and apply supported lint fixes               |
-| `vp run ci`                    | Check formatting, lint, types, unit tests and build |
-| `vp run test:browser`          | Build and test the local app in Chromium            |
+| Command                         | Result                                              |
+| ------------------------------- | --------------------------------------------------- |
+| `bun install --frozen-lockfile` | Install locked dependencies                         |
+| `vp run dev`                    | Serve locally at `127.0.0.1:1339`                   |
+| `vp run build`                  | Build the local Worker and assets in `dist/`        |
+| `vp run preview`                | Serve the local build                               |
+| `vp run fix`                    | Format and apply supported lint fixes               |
+| `vp run ci`                     | Check formatting, lint, types, unit tests and build |
+| `vp run test:browser`           | Build and test the local app in Chromium            |
 
 Use `vp exec playwright install chromium` if the browser is absent.
-After dependency changes, update the pnpm lock, Bun lock and Nix dependency file:
+After dependency changes, update the Bun lock and Nix dependency file:
 
 ```sh
-vp install
-bun install --lockfile-only --ignore-scripts
+bun install
 bun2nix -o bun.nix
 ```
 
@@ -85,12 +84,11 @@ Do not copy local OAuth credentials into GitHub or change unrelated cloud resour
 ## Development tools
 
 Use compatible caret ranges for published npm dependencies, including prereleases. Do not use workspace links.
-Select the newest installable versions that satisfy pnpm's default 24-hour release age. Do not add release-age exclusions.
-Keep `minimumReleaseAgeStrict: true` so installs cannot approve young releases automatically.
-Keep Vite Plus and its Vite core alias aligned. Only the [official Vite+ core and bundled Vitest overrides](https://viteplus.dev/guide/local-cli#manual-installation) are permitted.
-Keep the same official overrides in the pnpm workspace and the Bun manifest. Update both lockfiles and `bun.nix` together.
+Use Bun as the only package manager. Select the newest installable versions that satisfy `minimumReleaseAge = 86400` in `bunfig.toml`. Do not add release-age exclusions.
+Keep Vite Plus and its Vite core alias aligned. Only the [official Vite+ core and bundled Vitest overrides](https://viteplus.dev/guide/local-cli#manual-installation) are permitted, with exact versions matching the installed toolchain.
+Keep those official overrides in `package.json`. Update `bun.lock` and `bun.nix` together. Do not add another package-manager lockfile.
 Resolve other dependency coherence through compatible manifest and peer ranges, not overrides.
-Keep reviewed workerd installation policy in `pnpm-workspace.yaml`.
+Keep reviewed workerd and esbuild installation policy in `trustedDependencies`.
 Change `flake.lock` only when changing Nix inputs.
 Keep strictest before node-ts, the required JSX options and current React/Effect versions.
 Keep no semicolons, single quotes, width 120 and unwrapped Markdown.
