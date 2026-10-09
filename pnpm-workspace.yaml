@@ -1,16 +1,16 @@
 packages:
   - .
 
-overrides:
-  effect: ^4.0.0-rc.116
-  '@effect/platform-browser': ^4.0.0-rc.116
-  '@effect/platform-node': ^4.0.0-rc.116
-  '@effect/platform-node-shared': ^4.0.0-rc.116
-  react: ^19.3.0
-  react-dom: ^19.3.0
-  vite: npm:@voidzero-dev/vite-plus-core@^0.3.1
-
 allowBuilds:
   workerd: true
   esbuild: true
   msgpackr-extract: false
+
+# Enforce pnpm's default 24-hour release age without automatic exclusions.
+minimumReleaseAgeStrict: true
+
+# https://viteplus.dev/guide/local-cli#manual-installation
+# Vite consumers share Vite+ core, and vp test shares its bundled Vitest.
+overrides:
+  'vite@*': npm:@voidzero-dev/vite-plus-core@^1.1.0
+  'vitest@*': 5.0.3

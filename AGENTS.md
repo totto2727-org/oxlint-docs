@@ -83,8 +83,9 @@ Do not copy local OAuth credentials into GitHub or change unrelated cloud resour
 
 ## Development tools
 
-Use caret ranges for published npm dependencies, including prereleases and overrides. Do not use workspace links.
-Keep concrete lockfile resolutions and the package-manager toolchain version.
+Keep published Effront packages at `0.3.1` and unrelated reference catalog versions pinned. Do not use workspace links.
+Use compatible stable major ranges for Effect 4 and Vite Plus 1, including the Vite core alias.
+Published Effront packages need no local compatibility patches or dependency overrides.
 Keep reviewed workerd installation policy in `pnpm-workspace.yaml`.
 Change `flake.lock` only when changing Nix inputs.
 Keep strictest before node-ts, the required JSX options and current React/Effect versions.
@@ -102,4 +103,4 @@ Keep shared CI actions on `@main` and preserve their Nix environment loading.
 
 ## Task-specific documentation
 
-Read [reuse and differences](./docs/upstream-differences.md) before changing copied behavior.
+Read [documentation reuse](./docs/reuse.md) before changing copied behavior.
