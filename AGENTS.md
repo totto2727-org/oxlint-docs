@@ -83,7 +83,8 @@ Do not copy local OAuth credentials into GitHub or change unrelated cloud resour
 
 ## Development tools
 
-Keep published Effront packages and reference catalog versions pinned. Do not use workspace links.
+Use caret ranges for published npm dependencies, including prereleases and overrides. Do not use workspace links.
+Keep concrete lockfile resolutions and the package-manager toolchain version.
 Keep reviewed workerd installation policy in `pnpm-workspace.yaml`.
 Change `flake.lock` only when changing Nix inputs.
 Keep strictest before node-ts, the required JSX options and current React/Effect versions.

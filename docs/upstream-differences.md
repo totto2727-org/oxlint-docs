@@ -3,7 +3,9 @@
 ## Baseline
 
 Reference: [Effront](https://github.com/totto2727-org/effront), `app/docs` at `b561905cd773363a8d834ecf1a8279d551eee379`.
-This app uses published `@effront/*` runtime packages at `0.2.0`.
+This app uses published `@effront/*` runtime packages with `^0.2.0` ranges.
+Runtime and development npm dependencies, including prereleases, aliases and overrides, use caret ranges.
+Concrete lockfile resolutions and the package-manager toolchain version remain fixed.
 It does not incorporate or change Effront runtime source.
 Licenses are in [third-party notices](../THIRD-PARTY-NOTICES.md).
 
