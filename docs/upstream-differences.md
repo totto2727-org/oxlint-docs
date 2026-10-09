@@ -30,9 +30,10 @@ Style and cache behavior remain unchanged.
 - Redirect five external-rule URLs to the localized Effect preset's `official-effect` section.
   GET/HEAD redirects use status 308 and preserve queries for HTML and Flight.
 - Build a documentation Worker and use a development-only Nix shell. Do not export an npm CLI or native executable.
-- Keep application publication workflows disabled.
+- Omit npm and FlakeHub publication workflows for this application.
 - Use independent `oxlint-docs` Alchemy state and the production-only domain `oxlint.totto2727.dev`.
-- Deploy main only through the existing validation and deployment workflow, not branch previews.
+- Deploy main directly through the deployment workflow, not branch previews.
+  Keep validation in the separate CI workflow. Deployment does not run validation or wait for CI completion.
 
 These are application changes. The shared shell behavior, styles, cache policy and upstream runtime source are unchanged.
 

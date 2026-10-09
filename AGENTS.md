@@ -78,6 +78,7 @@ Only production uses `oxlint.totto2727.dev`.
 `deploy:plan` and `deploy` use `ALCHEMY_STAGE=production` and `--stage production`.
 These tasks access Cloudflare and require authorization.
 The main-only workflow uses the protected `docs-production` environment.
+Keep validation in CI. Deployment must not run validation or wait for the CI workflow.
 The owner manages its `CLOUDFLARE_ACCOUNT_ID` variable and `CLOUDFLARE_API_TOKEN` secret.
 Do not copy local OAuth credentials into GitHub or change unrelated cloud resources.
 
@@ -95,7 +96,7 @@ Keep shared CI actions on `@main` and preserve their Nix environment loading.
 - Change this application only. Treat `package/effront/app/docs` and `package/oxlint/src` as read-only references.
 - Do not merge PRs, deploy or change credentials without an explicit user request.
 - Keep README content for site users. Put maintenance and deployment instructions here.
-- Keep application npm and FlakeHub publication workflows disabled.
+- Do not retain npm or FlakeHub publication workflows for this site.
 - Keep temporary files under ignored `tmp/`. Do not commit them.
 - Use `AGENTS.md`. Do not create `CLAUDE.md`.
 
