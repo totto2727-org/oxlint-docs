@@ -4,7 +4,12 @@
 
 Reference: [Effront](https://github.com/totto2727-org/effront), `app/docs` at `b561905cd773363a8d834ecf1a8279d551eee379`.
 Effront is the source of reused site components, not an upstream repository for this independent application.
-This app uses published `@effront/*` runtime packages at `0.3.1`.
+This app uses published `@effront/*` runtime packages with `^0.3.0` ranges.
+The lockfiles select the latest version that satisfies pnpm's default 24-hour release age.
+Version `0.3.1` was published less than 24 hours before this update, so it is not selected yet.
+Other npm dependencies use compatible caret ranges, including prereleases.
+Only the official Vite+ core alias and bundled Vitest overrides remain, as required by [manual installation](https://viteplus.dev/guide/local-cli#manual-installation).
+The pnpm configuration keeps strict age enforcement and contains no release-age exclusions.
 It does not incorporate or change Effront runtime source.
 Licenses are in [third-party notices](../THIRD-PARTY-NOTICES.md).
 
@@ -31,11 +36,13 @@ Style and cache behavior remain unchanged.
 - Redirect five external-rule URLs to the localized Effect preset's `official-effect` section.
   GET/HEAD redirects use status 308 and preserve queries for HTML and Flight.
 - Build a documentation Worker and use a development-only Nix shell. Do not export an npm CLI or native executable.
-- Keep application publication workflows disabled.
+- Omit npm and FlakeHub publication workflows for this application.
 - Use independent `oxlint-docs` Alchemy state and the production-only domain `oxlint.totto2727.dev`.
-- Deploy main only through the existing validation and deployment workflow, not branch previews.
+- Deploy main directly through the deployment workflow, not branch previews.
+  Keep validation in the separate CI workflow. Deployment does not run validation or wait for CI completion.
 
 These are application changes. The shared shell behavior, styles, cache policy and Effront runtime source are unchanged.
+<<<<<<< HEAD
 
 ## Published runtime compatibility
 
@@ -53,6 +60,10 @@ The development-only Nix overlay uses revision `af16f6183aec0717d8975ee858c910ab
 Vite Plus task inputs and outputs use the nested `cache` configuration.
 See [run configuration](https://viteplus.dev/config/run) and [automatic tracking](https://viteplus.dev/guide/automatic-data-tracking).
 The original Effront source attribution remains unchanged.
+||||||| b0abc79
+These are application changes. The shared shell behavior, styles, cache policy and upstream runtime source are unchanged.
+=======
+>>>>>>> origin/ci/docs-workflow-cleanup
 
 ## External policy documentation
 

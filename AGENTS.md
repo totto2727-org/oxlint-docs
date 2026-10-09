@@ -78,14 +78,18 @@ Only production uses `oxlint.totto2727.dev`.
 `deploy:plan` and `deploy` use `ALCHEMY_STAGE=production` and `--stage production`.
 These tasks access Cloudflare and require authorization.
 The main-only workflow uses the protected `docs-production` environment.
+Keep validation in CI. Deployment must not run validation or wait for the CI workflow.
 The owner manages its `CLOUDFLARE_ACCOUNT_ID` variable and `CLOUDFLARE_API_TOKEN` secret.
 Do not copy local OAuth credentials into GitHub or change unrelated cloud resources.
 
 ## Development tools
 
-Keep published Effront packages at `0.3.1` and unrelated reference catalog versions pinned. Do not use workspace links.
-Use compatible stable major ranges for Effect 4 and Vite Plus 1, including the Vite core alias.
-Published Effront packages need no local compatibility patches or dependency overrides.
+Use compatible caret ranges for published npm dependencies, including prereleases. Do not use workspace links.
+Select the newest installable versions that satisfy pnpm's default 24-hour release age. Do not add release-age exclusions.
+Keep `minimumReleaseAgeStrict: true` so installs cannot approve young releases automatically.
+Keep Vite Plus and its Vite core alias aligned. Only the [official Vite+ core and bundled Vitest overrides](https://viteplus.dev/guide/local-cli#manual-installation) are permitted.
+Keep the same official overrides in the pnpm workspace and the Bun manifest. Update both lockfiles and `bun.nix` together.
+Resolve other dependency coherence through compatible manifest and peer ranges, not overrides.
 Keep reviewed workerd installation policy in `pnpm-workspace.yaml`.
 Change `flake.lock` only when changing Nix inputs.
 Keep strictest before node-ts, the required JSX options and current React/Effect versions.
@@ -97,7 +101,7 @@ Keep shared CI actions on `@main` and preserve their Nix environment loading.
 - Change this application only. Treat `package/effront/app/docs` and `package/oxlint/src` as read-only references.
 - Do not merge PRs, deploy or change credentials without an explicit user request.
 - Keep README content for site users. Put maintenance and deployment instructions here.
-- Keep application npm and FlakeHub publication workflows disabled.
+- Do not retain npm or FlakeHub publication workflows for this site.
 - Keep temporary files under ignored `tmp/`. Do not commit them.
 - Use `AGENTS.md`. Do not create `CLAUDE.md`.
 
