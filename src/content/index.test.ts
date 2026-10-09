@@ -49,6 +49,11 @@ describe('oxlint documentation contract', () => {
     expect(date.valid).toBe('const d = DateTime.now')
     expect(Effect.isEffect(DateTime.now)).toBe(true)
   })
+  it.each(['en', 'ja'] as const)('installs the published npm packages in %s', (locale) => {
+    const guide = documents(locale)['guide/getting-started.md']!
+    expect(guide).toContain('```sh\nnpm install --save-dev @totto2727/oxlint oxlint\n```')
+    expect(guide).not.toMatch(/\.tgz|npm pack|archive|アーカイブ|Before publication|After npm publication/)
+  })
   it.each(['en', 'ja'] as const)('selects the documented configuration explicitly in %s', (locale) => {
     const guide = documents(locale)['guide/getting-started.md']!
     expect(guide).toContain('```js\nimport { defineConfig }')

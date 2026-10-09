@@ -87,10 +87,7 @@ ${links('Effect', true)}`
     'json',
     '{\n  "jsPlugins": ["@totto2727/oxlint"],\n  "rules": {\n    "rules/require-import-extension": "error",\n    "rules/consistent-import-extension": ["error", { "mode": "ts" }]\n  }\n}',
   )
-  const install = code(
-    'sh',
-    '# Before publication, install a supplied package archive:\nnpm install --save-dev ./totto2727-oxlint-0.1.0.tgz oxlint\n# After npm publication:\nnpm install --save-dev @totto2727/oxlint oxlint',
-  )
+  const install = code('sh', 'npm install --save-dev @totto2727/oxlint oxlint')
   const preset = code(
     'js',
     "import { defineConfig } from 'oxlint'\nimport typescript from '@totto2727/oxlint/typescript'\n\nexport default defineConfig({ extends: [typescript] })",
@@ -99,9 +96,7 @@ ${links('Effect', true)}`
     ? `## Install {#install}
 
 Use Node.js 24 or later.
-Install the plugin and Oxlint in your TypeScript project.
-Use a supplied npm pack archive until the package is available on npm.
-Do not substitute workspace paths.
+Install the plugin and Oxlint as development dependencies in your TypeScript project.
 
 ${install}
 
@@ -144,9 +139,7 @@ See the [TypeScript preset](/presets/typescript), [Effect preset](/presets/effec
     : `## インストール {#install}
 
 Node.js 24 以降を使ってください。
-TypeScript プロジェクトにプラグインと Oxlint を導入します。
-npm で利用可能になるまでは、配布された npm pack アーカイブを使ってください。
-workspace パスで代用しないでください。
+TypeScript プロジェクトの開発用依存としてプラグインと Oxlint を導入します。
 
 ${install}
 
