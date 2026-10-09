@@ -102,4 +102,4 @@ Keep shared CI actions on `@main` and preserve their Nix environment loading.
 
 ## Task-specific documentation
 
-Read [reuse and differences](./docs/upstream-differences.md) before changing copied behavior.
+Read [documentation reuse](./docs/reuse.md) before changing copied behavior.

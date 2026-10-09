@@ -36,3 +36,5 @@ jobs:
         run: |
           eval "$(nix print-dev-env "$GITHUB_WORKSPACE#default")"
           vp run deploy
+      - name: Deployment summary
+        run: echo '[Production documentation](https://oxlint.totto2727.dev)' >> "$GITHUB_STEP_SUMMARY"

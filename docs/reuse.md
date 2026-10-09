@@ -1,8 +1,9 @@
-# Documentation reuse and differences
+# Documentation reuse
 
 ## Baseline
 
 Reference: [Effront](https://github.com/totto2727-org/effront), `app/docs` at `b561905cd773363a8d834ecf1a8279d551eee379`.
+Effront is the source of reused site components, not an upstream repository for this independent application.
 This app uses published `@effront/*` runtime packages at `0.2.0`.
 It does not incorporate or change Effront runtime source.
 Licenses are in [third-party notices](../THIRD-PARTY-NOTICES.md).
@@ -35,7 +36,7 @@ Style and cache behavior remain unchanged.
 - Deploy main directly through the deployment workflow, not branch previews.
   Keep validation in the separate CI workflow. Deployment does not run validation or wait for CI completion.
 
-These are application changes. The shared shell behavior, styles, cache policy and upstream runtime source are unchanged.
+These are application changes. The shared shell behavior, styles, cache policy and Effront runtime source are unchanged.
 
 ## External policy documentation
 
