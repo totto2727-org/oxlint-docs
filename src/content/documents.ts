@@ -1,4 +1,5 @@
 import type { DocLocale } from './locale'
+import { effectRuleSource, externalEffectRuleNames } from './policies'
 import { ruleArticles, ruleMarkdown } from './rules'
 
 const code = (language: string, text: string) => `\`\`\`${language}\n${text}\n\`\`\``
@@ -8,135 +9,175 @@ export function documents(locale: DocLocale): Record<string, string> {
   const result: Record<string, string> = Object.fromEntries(
     ruleArticles.map((rule) => [`rules/${rule.name}.md`, ruleMarkdown(rule, locale)]),
   )
-  const links = (group: 'TypeScript' | 'Effect') =>
+  const links = (group: 'TypeScript' | 'Effect', includeOptIn = false) =>
     ruleArticles
-      .filter((rule) => rule.group === group && !rule.optIn)
+      .filter((rule) => rule.group === group && (includeOptIn || !rule.optIn))
       .map((rule) => `- [${rule.name}](/rules/${rule.name}): ${rule.purpose[en ? 0 : 1]}`)
       .join('\n')
   result['index.md'] = en
     ? `## Choose your policy {#choose}
 
-@totto2727/oxlint supplies an Oxlint JavaScript plugin for generic TypeScript conventions and Effect-oriented application policies.
-Use the [TypeScript preset](/presets/typescript) for 8 custom generic rules, the [Effect preset](/presets/effect) for 22 custom Effect rules, or the combined package preset for both.
-Both groups also share the native Ultracite 7.12.3 core baseline, with the explicit conflict adjustments described on the preset pages.
-[Getting started](/guide/getting-started) walks through installation and configuration.
+@totto2727/oxlint is an Oxlint JavaScript plugin for TypeScript and Effect policies.
+Choose a preset:
+
+- [TypeScript](/presets/typescript): 8 local rules.
+- [Effect](/presets/effect): 18 local rules and 4 official Effect rules.
+- @totto2727/oxlint/preset: both groups.
+
+All presets include the native Ultracite 7.12.3 core baseline.
+Follow [Getting started](/guide/getting-started) to install and configure the plugin.
 
 > [!NOTE]
-> These rules are opinionated syntax checks, not type-level proofs. Review each rule's scope before enabling it.
+> These rules check syntax, not type safety. Check each rule’s scope before enabling it.
 
 ## Rule reference {#rules}
 
-There are 34 documented custom rules: 30 preset rules and four opt-in compatibility policies. Native Ultracite core rules are additional baseline policy, not part of this count.
-[force-ts-extension](/rules/force-ts-extension) overlaps the split extension rules; [no-js-extension-imports](/rules/no-js-extension-imports) additionally handles mjs/cjs but conflicts with js mode and overlaps js/jsx checks.
-[no-effect-import-as](/rules/no-effect-import-as) and [no-effect-subpath-import](/rules/no-effect-subpath-import) impose the opposite import convention to the official Effect barrel rule. They remain available but are not enabled by presets.
+Rules covers 29 locally authored rules: 26 preset rules and 3 opt-in compatibility rules.
+The plugin exports 34 rules, including 5 external Effect adapters.
+Native Ultracite rules are separate from these exports.
+Presets covers external sources, included rules and disabled settings, without external rule detail pages.
+
+The presets omit these local compatibility rules:
+
+- [force-ts-extension](/rules/force-ts-extension): duplicates the two extension rules.
+- [no-effect-import-as](/rules/no-effect-import-as) and [no-effect-subpath-import](/rules/no-effect-subpath-import): conflict with the [official Effect import policy](/presets/effect#official-effect).
 
 ### TypeScript
 
-${links('TypeScript')}
+${links('TypeScript', true)}
 
 ### Effect
 
-${links('Effect')}`
+${links('Effect', true)}`
     : `## ポリシーを選ぶ {#choose}
 
-@totto2727/oxlint は、汎用 TypeScript の規約と Effect アプリケーションのポリシーを提供する Oxlint JavaScript プラグインです。
-[TypeScript プリセット](/presets/typescript) は8つのカスタムルール、[Effect プリセット](/presets/effect) は22のカスタムルールです。両方を使う場合はパッケージの統合プリセットを選びます。
-両グループは native Ultracite 7.12.3 core の共通 baseline も含みます。明示的な競合調整は各プリセットのページで説明します。
-導入手順は[はじめに](/guide/getting-started)をご覧ください。
+@totto2727/oxlint は TypeScript と Effect のポリシーを提供する Oxlint JavaScript プラグインです。
+プリセットを選んでください。
+
+- [TypeScript](/presets/typescript): 8つの独自ルール。
+- [Effect](/presets/effect): 18の独自ルールと4つの公式 Effect ルール。
+- @totto2727/oxlint/preset: 両グループ。
+
+全プリセットが native Ultracite 7.12.3 core baseline を含みます。
+導入と設定は[はじめに](/guide/getting-started)を参照してください。
 
 > [!NOTE]
-> これらは意見を持った構文検査であり、型による証明ではありません。有効化する前に各ルールの対象範囲を確認してください。
+> 構文を検査するルールであり、型安全性は証明しません。有効化する前に各ルールの対象範囲を確認してください。
 
 ## ルールリファレンス {#rules}
 
-30のプリセットルールと4つの opt-in 互換ポリシー、合計34のカスタムルールを解説します。native Ultracite core のルールは追加の baseline であり、この数には含みません。
-[force-ts-extension](/rules/force-ts-extension) は分割された拡張子ルールと重複します。[no-js-extension-imports](/rules/no-js-extension-imports) は mjs/cjs も扱いますが js モードと衝突し、js/jsx の診断が重複します。
-[no-effect-import-as](/rules/no-effect-import-as) と [no-effect-subpath-import](/rules/no-effect-subpath-import) は公式 Effect barrel ルールと逆の import 規約です。互換用に残しますがプリセットでは有効化しません。
+Rules は26のプリセットルールと3つの opt-in 互換ルール、計29の独自ルールを解説します。
+プラグインは外部 Effect アダプター5つを含む34ルールを公開します。
+native Ultracite ルールは、この公開ルールとは別です。
+Presets は外部の出典、収録ルール、無効設定を説明します。外部ルールの詳細ページはありません。
+
+次の独自互換ルールはプリセットに含みません。
+
+- [force-ts-extension](/rules/force-ts-extension): 2つの拡張子ルールと重複します。
+- [no-effect-import-as](/rules/no-effect-import-as) と [no-effect-subpath-import](/rules/no-effect-subpath-import): [公式 Effect import ポリシー](/presets/effect#official-effect)と競合します。
 
 ### TypeScript
 
-${links('TypeScript')}
+${links('TypeScript', true)}
 
 ### Effect
 
-${links('Effect')}`
+${links('Effect', true)}`
   const manual = code(
     'json',
     '{\n  "jsPlugins": ["@totto2727/oxlint"],\n  "rules": {\n    "rules/require-import-extension": "error",\n    "rules/consistent-import-extension": ["error", { "mode": "ts" }]\n  }\n}',
   )
-  const install = code(
-    'sh',
-    '# Before publication, install a supplied package archive:\nnpm install --save-dev ./totto2727-oxlint-0.0.0.tgz oxlint\n# After npm publication:\nnpm install --save-dev @totto2727/oxlint oxlint',
-  )
+  const install = code('sh', 'npm install --save-dev @totto2727/oxlint oxlint')
   const preset = code(
-    'ts',
+    'js',
     "import { defineConfig } from 'oxlint'\nimport typescript from '@totto2727/oxlint/typescript'\n\nexport default defineConfig({ extends: [typescript] })",
   )
   result['guide/getting-started.md'] = en
     ? `## Install {#install}
 
-Install the package and Oxlint in your TypeScript project. The package targets Node.js 24 or later.
-The npm release workflow is enabled, but the first owner publication and Trusted Publisher setup are pending. Until the package is actually available in the registry, use a supplied npm pack archive. Do not substitute workspace paths.
+Use Node.js 24 or later.
+Install the plugin and Oxlint as development dependencies in your TypeScript project.
 
 ${install}
 
 ## Configure {#configure}
 
-Create an ESM oxlint.config.ts and import a preset object:
+Create an ESM .oxlintrc.mjs with a preset:
 
 ${preset}
 
-Use @totto2727/oxlint/effect for Effect-only policy, or @totto2727/oxlint/preset for both groups.
-The exported default plugin uses the rules/ namespace. Named exports typescriptRuleNames, effectRuleNames and compatibilityRuleNames expose group membership.
-The presets already include a pinned MIT port of the native Ultracite 7.12.3 core configuration. The library does not depend on the full Ultracite CLI package, and runs directly with Oxlint. You do not need a second Ultracite preset or CLI wrapper.
-React, type-aware rules, Ultracite JavaScript plugins and oxfmt integration are separate opt-in choices, not automatically enabled.
-For explicit per-rule configuration in .oxlintrc.json instead of a preset (this does not apply the native core baseline):
+Use @totto2727/oxlint/effect for Effect, or @totto2727/oxlint/preset for both groups.
+Presets include the [native Ultracite baseline](/presets/typescript#baseline) and run directly with Oxlint.
+You do not need the Ultracite CLI or another Ultracite preset.
+React, type-aware rules, Ultracite JavaScript plugins and oxfmt integration require separate configuration.
+
+To select individual rules, use .oxlintrc.json instead.
+This configuration does not include the native baseline:
 
 ${manual}
 
-Use mode js for emitted JavaScript imports, or mode ts for TypeScript source execution. Missing extensions cannot be automatically inferred.
-Do not enable force-ts-extension alongside the two replacement rules.
+The default plugin uses the rules/ namespace.
+The named exports typescriptRuleNames, effectRuleNames and compatibilityRuleNames list each group’s rules.
+Use mode js for emitted JavaScript imports.
+Use mode ts for TypeScript source execution.
+The rules do not infer missing extensions.
+Do not combine force-ts-extension with require-import-extension and consistent-import-extension.
 
 ## Run and review {#run}
 
-${code('sh', 'npx oxlint\nnpx oxlint --fix')}
+Run the preset configuration:
 
-Review diagnostics and fixes before committing. Only rules with a documented automatic fix change code.
-Preset rules apply to test files as well as application sources. There are no test-only rule exemptions.
-Use an oxlint-disable-next-line comment with -- and a concrete reason only when a genuine boundary exception is required.
-See [TypeScript](/presets/typescript), [Effect](/presets/effect), and the [Oxlint configuration documentation](https://oxc.rs/docs/guide/usage/linter/config.html).`
+${code('sh', 'npx oxlint --config .oxlintrc.mjs src\nnpx oxlint --config .oxlintrc.mjs --fix src')}
+
+Replace src with your source directory if needed.
+For individual rules, use --config .oxlintrc.json instead.
+Review diagnostics and fixes before committing.
+Only rules with automatic fixes change code.
+Preset rules apply to tests and application sources, without test-only exemptions.
+For a necessary boundary exception, use oxlint-disable-next-line with -- and a specific reason.
+See the [TypeScript preset](/presets/typescript), [Effect preset](/presets/effect) and [Oxlint configuration reference](https://oxc.rs/docs/guide/usage/linter/config.html).`
     : `## インストール {#install}
 
-TypeScript プロジェクトにパッケージと Oxlint を導入します。対象は Node.js 24 以降です。
-npm リリース workflow は有効ですが、owner による初回公開と Trusted Publisher 設定は未完了です。レジストリで実際に利用可能になるまでは npm pack の配布アーカイブを使います。workspace パスで代用しないでください。
+Node.js 24 以降を使ってください。
+TypeScript プロジェクトの開発用依存としてプラグインと Oxlint を導入します。
 
 ${install}
 
 ## 設定 {#configure}
 
-ESM の oxlint.config.ts を作成し、プリセットオブジェクトを import します。
+ESM の .oxlintrc.mjs にプリセットを設定します。
 
 ${preset}
 
-Effect のみには @totto2727/oxlint/effect、両グループには @totto2727/oxlint/preset を使います。
-default export のプラグインは rules/ 名前空間です。名前付き export の typescriptRuleNames、effectRuleNames、compatibilityRuleNames で所属を参照できます。
-プリセットは native Ultracite 7.12.3 core 設定の MIT 固定移植を含みます。ライブラリは Ultracite CLI パッケージ全体に依存せず、Oxlint で直接実行します。別の Ultracite プリセットや CLI wrapper は不要です。
-React、type-aware ルール、Ultracite JavaScript plugins、oxfmt 統合は個別の opt-in であり、自動的には有効化しません。
-プリセットを使わず .oxlintrc.json で明示的にルールを選ぶ場合 (native core baseline は適用しません):
+Effect には @totto2727/oxlint/effect、両グループには @totto2727/oxlint/preset を使います。
+プリセットは [native Ultracite baseline](/presets/typescript#baseline) を含み、Oxlint で直接実行します。
+Ultracite CLI や別の Ultracite プリセットは不要です。
+React、type-aware ルール、Ultracite JavaScript plugins、oxfmt 統合は別途設定してください。
+
+ルールを個別に選ぶ場合は .oxlintrc.json を使います。
+この設定は native baseline を含みません。
 
 ${manual}
 
-JavaScript 出力の import には mode js、TypeScript ソース実行には mode ts を選びます。欠けた拡張子は自動推測できません。
-force-ts-extension を2つの置換ルールと同時に有効にしないでください。
+default export のプラグインは rules/ 名前空間を使います。
+名前付き export の typescriptRuleNames、effectRuleNames、compatibilityRuleNames は各グループのルール一覧です。
+JavaScript 出力の import には mode js、TypeScript ソース実行には mode ts を使います。
+欠けた拡張子は推測しません。
+force-ts-extension を require-import-extension と consistent-import-extension に併用しないでください。
 
 ## 実行と確認 {#run}
 
-${code('sh', 'npx oxlint\nnpx oxlint --fix')}
+プリセットの設定を実行します。
 
-コミット前に診断と修正を確認します。自動修正を明記したルールのみがコードを変更します。
-プリセットのルールはアプリケーションソースとテストファイルに同じように適用します。テスト専用のルール免除はありません。
-本当に必要な境界例外だけに、-- と具体的な理由を持つ oxlint-disable-next-line を使います。
-[TypeScript](/presets/typescript)、[Effect](/presets/effect)、[Oxlint の設定ドキュメント](https://oxc.rs/docs/guide/usage/linter/config.html)も参照してください。`
+${code('sh', 'npx oxlint --config .oxlintrc.mjs src\nnpx oxlint --config .oxlintrc.mjs --fix src')}
+
+必要なら src をソースディレクトリに置き換えてください。
+個別ルールの設定には --config .oxlintrc.json を使ってください。
+コミット前に診断と修正を確認してください。
+自動修正のあるルールだけがコードを変更します。
+プリセットはテストとアプリケーションに同じルールを適用し、テスト専用の免除はありません。
+必要な境界例外には、-- と具体的な理由を付けた oxlint-disable-next-line を使います。
+[TypeScript プリセット](/presets/typescript)、[Effect プリセット](/presets/effect)、[Oxlint 設定リファレンス](https://oxc.rs/docs/guide/usage/linter/config.html)を参照してください。`
   for (const group of ['TypeScript', 'Effect'] as const) {
     const subpath = group.toLowerCase()
     const usage = code(
@@ -146,50 +187,84 @@ ${code('sh', 'npx oxlint\nnpx oxlint --fix')}
     const baseline = en
       ? `## Shared native baseline {#baseline}
 
-Both group presets and the combined preset use a pinned MIT port of the native core configuration and shared ignores from [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3), corresponding to its upstream \`ultracite/oxlint/core\` export.
-Only these native configuration sources are included in the library. The full Ultracite CLI package and its unnecessary transitive dependencies are not imported. This avoids the unused CLI dependency advisory identified during the package audit, without changing the selected native rule policy. The runtime and command remain Oxlint directly.
-Verified version sources: [native core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [official Oxlint provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
-The library flattens its native core configuration and rules into each preset's top-level configuration, rather than adding a second preset to extends.
-Native core settings and shared ignore patterns are retained. All upstream per-file overrides are discarded, including test-specific relaxations. Test files are not excluded by this policy.
-The library's own **/*.gen.ts no-redundant-alias allowance remains in TypeScript and combined presets.
+All presets include a pinned MIT port of [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) native core and shared ignores.
+This baseline corresponds to \`ultracite/oxlint/core\`.
+Run Oxlint directly, without the full Ultracite CLI.
+Sources: [native core configuration](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) and [Oxlint provider documentation](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx).
 
-Three native rules are explicitly off in every group, including TypeScript, to make composition safe in either order:
+All presets disable these native rules:
 
-- \`unicorn/prefer-bigint-literals\`: the opposite fix of the official Effect \`rules/no-bigint-literals\` policy.
-- \`preserve-caught-error\`: assumes native Error.cause, while the custom Effect error convention preserves the original cause in an error field.
-- \`prefer-const\`: duplicates declarations already covered by the broader custom \`rules/no-let\` policy when TypeScript is selected.
+- \`unicorn/prefer-bigint-literals\`: conflicts with the official Effect no-bigint-literals policy.
+- \`preserve-caught-error\`: requires native Error.cause instead of the local error field convention.
+- \`prefer-const\`: duplicates the broader local no-let rule.
 
-The count of 34 custom rules is unchanged. These three adjustments are native baseline settings, not new custom rules.
-React presets, type-aware presets, Ultracite JavaScript plugins and oxfmt configuration are not imported automatically.
-Keep the existing Oxlint/Vite+ command entrypoints and formatter configuration unless you independently opt into another integration.`
+Tests and application sources use the same rules.
+Presets exclude upstream per-file overrides and test-only exemptions.
+TypeScript and combined presets allow no-redundant-alias in **/*.gen.ts files.
+React and type-aware presets, JavaScript plugins and oxfmt integration require separate configuration.`
       : `## 共通 native baseline {#baseline}
 
-両グループと統合プリセットは [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) の native core 設定と共通 ignore の MIT 固定移植を使います。上流の \`ultracite/oxlint/core\` export に対応します。
-ライブラリにはこれらの native 設定ソースのみを取り込み、Ultracite CLI パッケージ全体と不要な間接依存を取り込みません。パッケージ監査で確認された未使用 CLI 依存の advisory を回避し、選択した native ルールのポリシーは変えません。実行時とコマンドは Oxlint を直接使います。
-このバージョンの確認済み出典は [native core 設定](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) と [公式 Oxlint provider ドキュメント](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx) です。
-native core の設定とルールを各プリセットのトップレベルに展開し、extends に別のプリセットを追加する方式ではありません。
-native core の設定と共通 ignore パターンは保持します。テスト向けの緩和を含め、上流のファイル別 override はすべて除外します。このポリシーはテストファイルを ignore しません。
-ライブラリ独自の **/*.gen.ts に対する no-redundant-alias の許可は TypeScript と統合プリセットに残ります。
+全プリセットが [Ultracite 7.12.3](https://www.npmjs.com/package/ultracite/v/7.12.3) native core と共通 ignore の MIT 固定移植を含みます。
+この baseline は \`ultracite/oxlint/core\` に対応します。
+Ultracite CLI 全体は使わず、Oxlint を直接実行してください。
+出典: [native core 設定](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) と [Oxlint provider ドキュメント](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/apps/docs/docs/provider/oxlint.mdx)。
 
-どちらの順序でグループを合成しても競合しないよう、TypeScript を含む全グループで3つの native ルールを明示的に off にします。
+全プリセットで次の native ルールを無効にします。
 
-- \`unicorn/prefer-bigint-literals\`: 公式 Effect の \`rules/no-bigint-literals\` と逆方向の修正になります。
-- \`preserve-caught-error\`: native Error.cause を前提とする一方、カスタム Effect 規約は元のエラーを error フィールドに保持します。
-- \`prefer-const\`: TypeScript 選択時は、より広いカスタム \`rules/no-let\` と宣言の診断が重複します。
+- \`unicorn/prefer-bigint-literals\`: 公式 Effect no-bigint-literals と競合します。
+- \`preserve-caught-error\`: 独自の error フィールドではなく native Error.cause を要求します。
+- \`prefer-const\`: より広い独自の no-let と重複します。
 
-カスタムルールの合計34は変わりません。これら3つの調整は native baseline の設定であり、新しいカスタムルールではありません。
-React プリセット、type-aware プリセット、Ultracite JavaScript plugins、oxfmt 設定は自動的に取り込みません。
-別の統合を個別に選ぶまでは、既存の Oxlint/Vite+ コマンドと formatter 設定を維持します。`
+テストとアプリケーションに同じルールを適用します。
+上流のファイル別 override とテスト専用の免除は含みません。
+TypeScript と統合プリセットは **/*.gen.ts の no-redundant-alias を許可します。
+React・type-aware プリセット、JavaScript plugins、oxfmt 統合は別途設定してください。`
+    const officialRules = externalEffectRuleNames
+      .filter((name) => name !== 'no-js-extension-imports')
+      .map((name) => `- \`rules/${name}\``)
+      .join('\n')
+    const officialEffect =
+      group !== 'Effect'
+        ? ''
+        : en
+          ? `## Official Effect policy layer {#official-effect}
+
+The Effect preset enables four rules from the [official Effect Oxc sources](${effectRuleSource}).
+The upstream tools package is private.
+The library vendors MIT implementations in its rules/ namespace.
+It does not install an external npm plugin or include the full upstream native configuration.
+These rules use error severity:
+
+${officialRules}
+
+\`rules/no-js-extension-imports\` is exported but explicitly off in every preset.
+It duplicates the local extension rules, including mjs/cjs handling.
+Its TypeScript-only conversion conflicts with mode js.
+Use require-import-extension and consistent-import-extension instead.`
+          : `## 公式 Effect ポリシー層 {#official-effect}
+
+Effect プリセットは[公式 Effect Oxc ソース](${effectRuleSource})の4ルールを有効にします。
+上流の tools パッケージは private です。
+ライブラリは MIT 実装を vendoring し、rules/ 名前空間に配置します。
+外部 npm プラグインや上流の native 設定全体は取り込みません。
+次のルールを error として使います。
+
+${officialRules}
+
+\`rules/no-js-extension-imports\` は公開しますが、すべてのプリセットで明示的に off です。
+mjs/cjs を含む独自の拡張子ルールと重複します。
+TypeScript への変換だけを行うため、mode js と競合します。
+代わりに require-import-extension と consistent-import-extension を使ってください。`
     const exceptions =
       group === 'TypeScript'
         ? en
-          ? 'Generated **/*.gen.ts files allow no-redundant-alias. The compatibility force-ts-extension rule is not enabled. Extension normalization defaults to ts, and can be overridden with mode js.'
-          : '生成された **/*.gen.ts では no-redundant-alias を許可します。互換ルール force-ts-extension は有効化しません。拡張子の統一は既定で ts、必要なら mode js に変更できます。'
+          ? 'The preset omits force-ts-extension to avoid duplicate reports. Extension normalization defaults to ts. Set mode js for JavaScript imports.'
+          : '重複報告を避けるため force-ts-extension は含みません。拡張子の統一は既定で ts です。JavaScript import には mode js を設定してください。'
         : en
-          ? 'The preset includes four official Effect rules, not the entire upstream native lint configuration. It permits module namespace imports and configures the barrel rule with regex patterns for effect/@effect package roots and lowercase subpaths, plus relative index imports. Legacy no-effect-import-as/no-effect-subpath-import are opt-in because they impose the opposite convention. The overlapping no-js-extension-imports is also off. no-unused-internal only scans cwd/packages/**/src .ts files and caches analysis per process. The no-node-imports preset allowlist contains child_process, crypto, os and util; other node: names require an explicit override.'
-          : '公式 Effect の4ルールを含みますが、上流の native lint 設定全体ではありません。モジュールの namespace import を許可し、barrel ルールには effect/@effect のパッケージルートと小文字サブパスの正規表現および相対 index import を設定します。逆の規約を持つ no-effect-import-as/no-effect-subpath-import と重複する no-js-extension-imports は opt-in です。no-unused-internal は cwd/packages/**/src の .ts のみを走査し、解析をプロセス内でキャッシュします。no-node-imports の既定の許可リストは child_process、crypto、os、util です。他の node: 名には明示的な上書きが必要です。'
+          ? 'no-effect-import-as and no-effect-subpath-import are opt-in because they conflict with the official Effect module namespace policy. The no-node-imports allowlist contains child_process, crypto, os and util. Override the rule to allow other node: names.'
+          : 'no-effect-import-as と no-effect-subpath-import は公式 Effect モジュール名前空間ポリシーと競合するため opt-in です。no-node-imports は child_process、crypto、os、util を許可します。他の node: 名にはルールを上書きしてください。'
     result[`presets/${subpath}.md`] =
-      `${en ? '## Usage' : '## 使い方'} {#usage}\n\n${usage}\n\n${en ? 'The preset registers the plugin and enables every listed rule with error severity. Use @totto2727/oxlint/preset to combine both groups.' : 'プリセットはプラグインを登録し、以下のルールを error として有効化します。両グループを組み合わせる場合は @totto2727/oxlint/preset を使います。'}\n\n${baseline}\n\n${en ? '## Included custom rules' : '## 収録カスタムルール'} {#included}\n\n${links(group)}\n\n${en ? '## Exceptions' : '## 例外'} {#exceptions}\n\n${exceptions}\n\n${en ? 'Tests receive the same rules as application sources. No upstream test-file overrides are inherited. Any additional caller-defined exception must be narrow and reasoned.' : 'テストにもアプリケーションソースと同じルールを適用し、上流のテストファイル override は継承しません。利用者が追加する例外は範囲と理由を明確にしてください。'}`
+      `${en ? '## Usage' : '## 使い方'} {#usage}\n\n${usage}\n\n${en ? 'The preset registers the plugin and enables the local rules below at error severity. Use @totto2727/oxlint/preset for both groups.' : 'プリセットはプラグインを登録し、以下の独自ルールを error で有効にします。両グループには @totto2727/oxlint/preset を使ってください。'}\n\n${baseline}\n\n${en ? '## Included local rules' : '## 収録独自ルール'} {#included}\n\n${links(group)}\n\n${officialEffect}\n\n${en ? '## Exceptions' : '## 例外'} {#exceptions}\n\n${exceptions}\n\n${en ? 'Keep additional exceptions narrow and give specific reasons.' : '追加の例外は範囲を絞り、具体的な理由を付けてください。'}`
   }
   return result
 }

@@ -1,9 +1,9 @@
 # Third-party notices
 
-## Effect Oxc rule descriptions and syntax fixtures
+## Effect Oxc policy provenance
 
 Source: https://github.com/Effect-TS/effect/tree/b1d200c40a1dad69def51ebdbf0a1a612a12b8ac/packages/tools/oxc/src/oxlint/rules
-Only documentation fixtures reference these implementations. Runtime rule sources are vendored by the library, not this site.
+The Effect preset page references this externally defined policy layer. This site does not reproduce its rule detail pages or syntax fixtures. MIT runtime implementations are vendored and adapted by the library, not this site.
 MIT License
 
 Copyright (c) 2023 Effectful Technologies Inc.
@@ -17,7 +17,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ## Effront documentation shell
 
 Copied documentation-shell, UI, styles, cache, Markdown and reusable test code derives from <https://github.com/totto2727-org/effront> at `b561905cd773363a8d834ecf1a8279d551eee379`.
-Site-specific changes are documented in [reuse and differences](docs/upstream-differences.md).
+Site-specific changes are documented in [documentation reuse](docs/reuse.md).
 
 MIT License
 

@@ -1,72 +1,106 @@
 # oxlint-docs
 
-## Scope and boundaries
+## Repository structure
 
-Own this standalone documentation application only.
-`package/effront/app/docs` and `package/oxlint/src` are read-only references.
-Production deployment is explicitly configured for oxlint.totto2727.dev with Alchemy/Cloudflare.
-Do not change unrelated cloud resources, publish this application to npm, or commit credentials.
-Keep application npm/FlakeHub publication workflows disabled.
-Read [reuse and differences](docs/upstream-differences.md) before changing copied shell or cache behavior.
-Do not create `CLAUDE.md`.
+| Path                                      | Purpose                                                  |
+| ----------------------------------------- | -------------------------------------------------------- |
+| `src/entry.effront.tsx`                   | Routes, layout, metadata, redirects and cache middleware |
+| `src/entry.workers.ts`                    | Production Worker entry and native cache integration     |
+| `src/components/`, `src/styles.css`       | Shared shell, controls and styles                        |
+| `src/content/rules.ts`                    | English and Japanese local rule reference                |
+| `src/content/policies.ts`                 | External Effect rule names and source revision           |
+| `src/content/documents.ts`                | Rendered guides, presets and rule articles               |
+| `src/content/catalog.ts`, `en/catalog.ts` | Metadata and navigation                                  |
+| `src/content/markdown.tsx`                | Server-side Markdown rendering                           |
+| `src/response-cache.ts`                   | Public response-cache policy                             |
+| `tests/`                                  | Local HTTP and browser acceptance tests                  |
+| `vite.config.ts`                          | Task entry points                                        |
 
-## File layout
+## Development commands
 
-- `src/entry.effront.tsx`: explicit routes, persistent shared layout, article metadata and public cache middleware.
-- `src/entry.workers.ts`: same Effront/Alchemy Worker entry and native cache opt-in as the reference site.
-- `src/components/`, `src/lib/utils.ts`, `src/styles.css`: reused shell, UI primitives, highlighting, alerts and exact theme tokens.
-- `src/content/rules.ts`: bilingual authored rule purpose, behavior, options, invalid/valid fixtures, fixes and source links.
-- `src/content/documents.ts`: deterministic server-side Markdown corpus for rules and guides.
-- `src/content/catalog.ts`, `en/catalog.ts`, `index.ts`, `locale.ts`: typed metadata and localized navigation, without cross-language fallback.
-- `src/content/markdown.tsx`: shared Effront Markdown collection/parser/document renderer.
-- `src/response-cache.ts`: public-doc-only origin cache headers, with reusable unit tests.
-- `tests/`: real local site browser and cache acceptance, without cloud authentication.
-- `vite.config.ts`: all task entrypoints, formatting, lint, type checking and test policy.
-- `flake.nix`: pinned development shell. No obsolete CLI package or executable is exported.
-- `pnpm-lock.yaml`, `bun.lock`, `bun.nix`: installation lock and mirrored Bun/Nix dependency sources.
+### Execution rules
 
-## Development
+Run commands from the repository root inside `nix develop`.
+Local tasks do not evaluate an Alchemy deployment stack.
 
-Run commands from this repository root inside `nix develop`.
-Install with `vp install --frozen-lockfile`.
-`vp run dev` starts the authentication-free host on 127.0.0.1:1339.
-`vp run build` compiles the Worker and assets into `dist/`; `vp run preview` serves that build locally.
-`vp run fix` applies Vite+ formatting and lint fixes.
-`vp run ci` runs independent checks, unit tests and production compilation with default caching.
-`vp run test:browser` builds and exercises the actual local app. Browser setup uses `vp exec playwright install chromium` if necessary.
-Browser traces stay under ignored `tmp/`.
-Local dev/build/preview and browser tests do not evaluate an Alchemy stack.
-`build:production` evaluates the production host integration, while uncached `deploy:plan` and `deploy` access Cloudflare using the production stage.
-`alchemy.run.ts` owns the independent oxlint-docs state, and `.github/workflows/deploy-docs.yml` deploys main only using the protected docs-production environment.
-Only production attaches the custom domain. Never place a local OAuth token in GitHub secrets.
+### Standard tasks
 
-After dependency changes run `vp install`, `bun install --lockfile-only --ignore-scripts` and `bun2nix -o bun.nix`, then review and commit all three locks.
-Keep published Effront 0.2.0 and unrelated reference catalog versions pinned, without workspace dependencies. Use compatible stable major ranges for Effect 4 and Vite Plus 1, including the Vite core alias and Effect overrides.
-`pnpm-workspace.yaml` centralizes overrides and reviewed workerd platform-binary installation policy.
-Keep its Effront `patchedDependencies` registration synchronized with `package.json` for Bun, and retain the narrow package patches until a compatible published release replaces them, as documented in `docs/upstream-differences.md`.
-Do not change `flake.lock` unless changing Nix inputs intentionally.
-Keep the strictest then node-ts TypeScript presets, JSX/bundler options needed by the app, and exact current React versions.
-Use Vite+ formatting with no semicolons, single quotes, width 120 and unwrapped Markdown prose.
-Keep shared CI actions on `@main` and the existing Nix environment loading.
+| Command                        | Result                                              |
+| ------------------------------ | --------------------------------------------------- |
+| `vp install --frozen-lockfile` | Install locked dependencies                         |
+| `vp run dev`                   | Serve locally at `127.0.0.1:1339`                   |
+| `vp run build`                 | Build the local Worker and assets in `dist/`        |
+| `vp run preview`               | Serve the local build                               |
+| `vp run fix`                   | Format and apply supported lint fixes               |
+| `vp run ci`                    | Check formatting, lint, types, unit tests and build |
+| `vp run test:browser`          | Build and test the local app in Chromium            |
 
-## Documentation contract
+Use `vp exec playwright install chromium` if the browser is absent.
+After dependency changes, update the pnpm lock, Bun lock and Nix dependency file:
 
-Every exported rule needs purpose, supported options/defaults, valid/invalid syntax fixtures, fixability and practical scope limitations in English and Japanese.
-Examples show one rule's diagnostics and may omit declarations, not necessarily a complete runnable program or proof that every other rule passes.
-Group navigation only into TypeScript and Effect. Identify retained conflicting or overlapping rules as opt-in, not a third preset group.
-Read actual rule source/tests and current group/preset exports before changing content.
-The library's TypeScript and Effect presets share a pinned MIT port of native Ultracite 7.12.3 core flattened into top-level configuration, without the full Ultracite CLI dependency, upstream per-file overrides or test-only exemptions.
-Document its three native conflict settings and retained generated-file allowance separately from the 34 custom rules.
-Do not silently apply the library's Ultracite baseline to this documentation application's own Vite+ lint or formatter configuration.
-Update both locales, catalogs, explicit routes and regression tests together.
-Preserve stable heading IDs and localized links.
-Keep parsing/loading in the server graph and shared shell state persistent across route changes.
-Never fetch GitHub, execute Git or read external rule files during page rendering.
-Do not restore obsolete Effront architecture excerpts or their tests.
+```sh
+vp install
+bun install --lockfile-only --ignore-scripts
+bun2nix -o bun.nix
+```
 
-## Cache validation
+## Architecture
 
-Keep reused response-cache unit tests and local HTML/Flight policy tests.
-Only public documentation may use this middleware. Never cache personalized content with it.
-Local workerd does not prove managed CDN HITs. Verify deployed HTML and Flight origin policy separately after deployment.
-Temporary task artifacts belong under ignored `tmp/` and are excluded from commits.
+### Content
+
+- Give each local rule purpose, options/defaults, examples, fixability, limits and source links in both languages.
+- Include only the 29 local rules in rule pages and navigation. Three compatibility rules are opt-in.
+- Keep Rules and Presets separate. Group rules into TypeScript and Effect only.
+- Describe external source, included names and disabled-rule reasons on preset pages. Do not duplicate external rule details.
+- Identify Effect rules as incorporated MIT implementations, not a separately installed plugin.
+- Keep old external-rule URL redirects to the localized Effect preset. Preserve queries for HTML and Flight.
+- Read actual rule source, tests and preset exports before changing a claim.
+- Treat examples as single-rule demonstrations. State when declarations are omitted.
+- Preserve heading IDs, localized links, explicit routes and persistent shell state.
+- Parse Markdown on the server. Do not fetch sources or run Git during rendering.
+- Apply English writing principles to source prose. Review Japanese translation accuracy separately.
+- Keep the shared Ultracite configuration, its three conflict settings and generated-file allowance in preset documentation.
+- Do not apply the library's baseline to this app's formatter or lint configuration.
+- Update both languages and relevant tests together.
+
+### Cache checks
+
+Keep the response-cache unit tests and HTML/Flight acceptance tests.
+Use this cache policy for public content only. Do not add personalized content.
+Local workerd tests prove origin headers, not managed CDN cache hits.
+Check deployed HTML and Flight headers separately after an authorized deployment.
+
+### Production
+
+`alchemy.run.ts` owns the independent `oxlint-docs` state.
+Only production uses `oxlint.totto2727.dev`.
+`build:production` evaluates the production integration.
+`deploy:plan` and `deploy` use `ALCHEMY_STAGE=production` and `--stage production`.
+These tasks access Cloudflare and require authorization.
+The main-only workflow uses the protected `docs-production` environment.
+The owner manages its `CLOUDFLARE_ACCOUNT_ID` variable and `CLOUDFLARE_API_TOKEN` secret.
+Do not copy local OAuth credentials into GitHub or change unrelated cloud resources.
+
+## Development tools
+
+Keep published Effront packages at `0.3.1` and unrelated reference catalog versions pinned. Do not use workspace links.
+Use compatible stable major ranges for Effect 4 and Vite Plus 1, including the Vite core alias.
+Published Effront packages need no local compatibility patches or dependency overrides.
+Keep reviewed workerd installation policy in `pnpm-workspace.yaml`.
+Change `flake.lock` only when changing Nix inputs.
+Keep strictest before node-ts, the required JSX options and current React/Effect versions.
+Keep no semicolons, single quotes, width 120 and unwrapped Markdown.
+Keep shared CI actions on `@main` and preserve their Nix environment loading.
+
+## Package-specific rules
+
+- Change this application only. Treat `package/effront/app/docs` and `package/oxlint/src` as read-only references.
+- Do not merge PRs, deploy or change credentials without an explicit user request.
+- Keep README content for site users. Put maintenance and deployment instructions here.
+- Keep application npm and FlakeHub publication workflows disabled.
+- Keep temporary files under ignored `tmp/`. Do not commit them.
+- Use `AGENTS.md`. Do not create `CLAUDE.md`.
+
+## Task-specific documentation
+
+Read [documentation reuse](./docs/reuse.md) before changing copied behavior.
