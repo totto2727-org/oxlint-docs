@@ -63,7 +63,8 @@ The original Effront source attribution remains unchanged.
 ||||||| b0abc79
 These are application changes. The shared shell behavior, styles, cache policy and upstream runtime source are unchanged.
 =======
->>>>>>> origin/ci/docs-workflow-cleanup
+
+> > > > > > > origin/ci/docs-workflow-cleanup
 
 ## External policy documentation
 

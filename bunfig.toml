@@ -1,0 +1,3 @@
+[install]
+# Match pnpm's default 24-hour release-age policy when regenerating the Bun lock.
+minimumReleaseAge = 86400
