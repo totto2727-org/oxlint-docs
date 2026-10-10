@@ -8,6 +8,8 @@ import application from '../vite.config'
 // are built unchanged, without evaluating alchemy.run.ts or touching cloud state.
 export default defineConfig({
   ...application,
+  // Vite+ 1.1 permits type-aware lint options only in the root configuration.
+  lint: {},
   root: fileURLToPath(new URL('../', import.meta.url)),
   plugins: [
     application.plugins,
