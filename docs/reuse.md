@@ -5,11 +5,13 @@
 Reference: [Effront](https://github.com/totto2727-org/effront), `app/docs` at `b561905cd773363a8d834ecf1a8279d551eee379`.
 Effront is the source of reused site components, not an upstream repository for this independent application.
 This app uses published `@effront/*` runtime packages with `^0.3.0` ranges.
-The Bun lock selects the latest version that satisfies the preserved 24-hour release-age policy.
+The pnpm lock records versions that satisfy the preserved 24-hour release-age policy.
 Version `0.3.1` was published less than 24 hours before this update, so it is not selected yet.
 Other npm dependencies use compatible caret ranges, including prereleases.
 Only the official Vite+ core alias and bundled Vitest overrides remain, as required by [manual installation](https://viteplus.dev/guide/local-cli#manual-installation).
-Bun is the only package manager, with `minimumReleaseAge = 86400` and no release-age exclusions.
+Node.js, pnpm and Vite+ manage installation and project tasks, with `minimumReleaseAge: 1440`, `minimumReleaseAgeStrict: true` and no release-age exclusions.
+The sole package-manager lockfile is `pnpm-lock.yaml`. Official overrides are in `pnpm-workspace.yaml` under `vite@*` and `vitest@*`.
+Local dev and preview use the existing workerd host, not an Effront Bun server. The published Alchemy CLI supports Node.js 24, so the app has no direct Bun runtime requirement. The development shell does not build a Bun dependency closure.
 It does not incorporate or change Effront runtime source.
 Licenses are in [third-party notices](../THIRD-PARTY-NOTICES.md).
 

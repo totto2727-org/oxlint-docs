@@ -25,23 +25,19 @@ Local tasks do not evaluate an Alchemy deployment stack.
 
 ### Standard tasks
 
-| Command                         | Result                                              |
-| ------------------------------- | --------------------------------------------------- |
-| `bun install --frozen-lockfile` | Install locked dependencies                         |
-| `vp run dev`                    | Serve locally at `127.0.0.1:1339`                   |
-| `vp run build`                  | Build the local Worker and assets in `dist/`        |
-| `vp run preview`                | Serve the local build                               |
-| `vp run fix`                    | Format and apply supported lint fixes               |
-| `vp run ci`                     | Check formatting, lint, types, unit tests and build |
-| `vp run test:browser`           | Build and test the local app in Chromium            |
+| Command                        | Result                                              |
+| ------------------------------ | --------------------------------------------------- |
+| `vp install --frozen-lockfile` | Install locked dependencies                         |
+| `vp run dev`                   | Serve locally at `127.0.0.1:1339`                   |
+| `vp run build`                 | Build the local Worker and assets in `dist/`        |
+| `vp run preview`               | Serve the local build                               |
+| `vp run fix`                   | Format and apply supported lint fixes               |
+| `vp run ci`                    | Check formatting, lint, types, unit tests and build |
+| `vp run test:browser`          | Build and test the local app in Chromium            |
 
 Use `vp exec playwright install chromium` if the browser is absent.
-After dependency changes, update the Bun lock and Nix dependency file:
-
-```sh
-bun install
-bun2nix -o bun.nix
-```
+After dependency changes, update the pnpm lock with `vp install`.
+Do not generate a Bun lock or a Bun Nix dependency file.
 
 ## Architecture
 
@@ -84,11 +80,13 @@ Do not copy local OAuth credentials into GitHub or change unrelated cloud resour
 ## Development tools
 
 Use compatible caret ranges for published npm dependencies, including prereleases. Do not use workspace links.
-Use Bun as the only package manager. Select the newest installable versions that satisfy `minimumReleaseAge = 86400` in `bunfig.toml`. Do not add release-age exclusions.
+Use Node.js, pnpm and Vite+ for installation and project tasks. Keep `minimumReleaseAge: 1440` and `minimumReleaseAgeStrict: true` in `pnpm-workspace.yaml`. Do not add release-age exclusions.
+Local dev and preview use workerd through `tests/vite.config.ts`, not an Effront Bun server. The published Alchemy CLI supports Node.js 24. This app has no direct Bun runtime requirement. Do not add Bun unless a new direct runtime requirement is demonstrated.
 Keep Vite Plus and its Vite core alias aligned. Only the [official Vite+ core and bundled Vitest overrides](https://viteplus.dev/guide/local-cli#manual-installation) are permitted, with exact versions matching the installed toolchain.
-Keep those official overrides in `package.json`. Update `bun.lock` and `bun.nix` together. Do not add another package-manager lockfile.
+Keep those official overrides under `vite@*` and `vitest@*` in `pnpm-workspace.yaml`. Commit only `pnpm-lock.yaml` as the package-manager lockfile.
+The pinned nixpkgs pnpm bootstraps the exact `packageManager` version, currently `12.4.1`. Do not downgrade the project pin to the bootstrap version.
 Resolve other dependency coherence through compatible manifest and peer ranges, not overrides.
-Keep reviewed workerd and esbuild installation policy in `trustedDependencies`.
+Keep reviewed workerd and esbuild installation policy in `allowBuilds` in `pnpm-workspace.yaml`.
 Change `flake.lock` only when changing Nix inputs.
 Keep strictest before node-ts, the required JSX options and current React/Effect versions.
 Keep no semicolons, single quotes, width 120 and unwrapped Markdown.
