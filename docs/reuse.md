@@ -6,7 +6,7 @@ Reference: [Effront](https://github.com/totto2727-org/effront), `app/docs` at `b
 Effront is the source of reused site components, not an upstream repository for this independent application.
 This app uses published `@effront/*` runtime packages with `^0.3.0` ranges.
 The pnpm lock records versions that satisfy the preserved 24-hour release-age policy.
-Version `0.3.1` was published less than 24 hours before this update, so it is not selected yet.
+The locked Effront runtime is `0.3.0`. The `^0.3.0` ranges allow later compatible releases that satisfy the release-age policy.
 Other npm dependencies use compatible caret ranges, including prereleases.
 Only the official Vite+ core alias and bundled Vitest overrides remain, as required by [manual installation](https://viteplus.dev/guide/local-cli#manual-installation).
 Node.js, pnpm and Vite+ manage installation and project tasks, with `minimumReleaseAge: 1440`, `minimumReleaseAgeStrict: true` and no release-age exclusions.
