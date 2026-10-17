@@ -113,10 +113,10 @@ test('preserves shell state across client navigation and switches article langua
   expect(errors).toEqual([])
 })
 
-test('serves navigable articles without JavaScript', async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false })
+test('serves navigable articles without JavaScript', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL })
   const page = await context.newPage()
-  await page.goto('http://127.0.0.1:4394/en/presets/typescript')
+  await page.goto('/en/presets/typescript')
   await expect(page.locator('h1')).toHaveText('TypeScript')
   await expect(page.locator('noscript a[href="/en/rules/no-let"]')).toBeVisible()
   await expect(page.locator('#baseline')).toHaveText('Shared native baseline')
