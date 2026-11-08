@@ -8,7 +8,9 @@ This app requests published `@effront/*` runtime packages with `^0.4.0` ranges.
 The pnpm lock records installed versions under the preserved 24-hour release-age policy.
 Other npm dependencies use compatible caret ranges, including prereleases.
 Only the official Vite+ core alias and bundled Vitest overrides remain, as required by [manual installation](https://viteplus.dev/guide/local-cli#manual-installation).
-Node.js, pnpm and Vite+ manage installation and project tasks, with `minimumReleaseAge: 1440`, `minimumReleaseAgeStrict: true` and no release-age exclusions.
+Node.js, pnpm and Vite+ manage installation and project tasks, with `minimumReleaseAge: 1440` and `minimumReleaseAgeStrict: true`.
+Five temporary, user-authorized release-age exceptions apply only to the exact Effront `0.4.0` packages in `pnpm-workspace.yaml`.
+Remove those exceptions after `2026-11-09T16:30:51.871Z`, when all five releases satisfy the 24-hour policy.
 The sole package-manager lockfile is `pnpm-lock.yaml`. Official overrides are in `pnpm-workspace.yaml` under `vite@*` and `vitest@*`.
 Local dev and preview use the existing workerd host, not an Effront Bun server. The published Alchemy CLI supports Node.js 24, so the app has no direct Bun runtime requirement. The development shell does not build a Bun dependency closure.
 It does not incorporate or change Effront runtime source.
@@ -46,7 +48,7 @@ These are application changes. The shared shell behavior, styles, cache policy a
 
 ## Published runtime compatibility
 
-The five published Effront packages use `^0.4.0` without workspace links.
+The five published Effront packages use `^0.4.0` and resolve to `0.4.0` without workspace links.
 Published metadata: [core](https://www.npmjs.com/package/@effront/core/v/0.4.0), [markdown](https://www.npmjs.com/package/@effront/markdown/v/0.4.0), [vite](https://www.npmjs.com/package/@effront/vite/v/0.4.0), [tailwind](https://www.npmjs.com/package/@effront/tailwind/v/0.4.0) and [alchemy](https://www.npmjs.com/package/@effront/alchemy/v/0.4.0).
 The Worker imports `makeApplicationHttpEffect` from `@effront/alchemy/cloudflare/application` and calls `makeApplicationHttpEffect<typeof application>()`.
 Its type-only application import refers to `src/entry.effront.tsx`, the same module configured in `effront({ application: './src/entry.effront.tsx' })`.
