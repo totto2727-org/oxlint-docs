@@ -1,11 +1,15 @@
 import { effrontAlchemy } from '@effront/alchemy/cloudflare/vite'
 import { effrontTailwind } from '@effront/tailwind'
 import { effront } from '@effront/vite'
+import { generateIgnorePatterns } from '@totto2727/gitignore-patterns'
 import { defineConfig } from 'vite-plus'
+
+const ignorePatterns = await generateIgnorePatterns(new URL('.', import.meta.url))
 
 export default defineConfig({
   plugins: [effrontTailwind({ stylesheet: './src/styles.css' }), effront(), effrontAlchemy()],
   fmt: {
+    ignorePatterns,
     arrowParens: 'always',
     jsxSingleQuote: true,
     printWidth: 120,
@@ -14,6 +18,7 @@ export default defineConfig({
     singleQuote: true,
   },
   lint: {
+    ignorePatterns,
     plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react'],
     options: { typeAware: true, typeCheck: true },
   },
