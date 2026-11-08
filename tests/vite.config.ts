@@ -9,7 +9,7 @@ import application from '../vite.config'
 export default defineConfig({
   ...application,
   // Vite+ 1.1 permits type-aware lint options only in the root configuration.
-  lint: { ignorePatterns: application.lint?.ignorePatterns },
+  lint: {},
   root: fileURLToPath(new URL('../', import.meta.url)),
   plugins: [
     application.plugins,
