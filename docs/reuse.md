@@ -55,7 +55,11 @@ Its type-only application import refers to `src/entry.effront.tsx`, the same mod
 The adapter supplies the static application import only in the RSC compilation graph, so infrastructure planning does not evaluate the application.
 Keep `effront(...)` before `effrontAlchemy()` and preserve the Tailwind plugin.
 
-All three local compatibility patches and their package-manager registrations are removed.
+The three legacy compatibility patches and their package-manager registrations remain removed.
+A separate temporary patch for `@effront/alchemy@0.4.0` repairs generated declaration imports that refer to nonpublic Alchemy module paths.
+It replaces `alchemy/Cloudflare/CloudflareEnvironmentService` with the public `alchemy/Cloudflare` export and `alchemy/Cloudflare/index` with `alchemy/Cloudflare/Workers` in four declaration files.
+The patch changes no JavaScript or runtime behavior and adds no casts, shims or type-check suppressions.
+Remove this patch and its registration after upgrading to a release with the declaration-generation fix in [Effront PR #33](https://github.com/totto2727-org/effront/pull/33).
 Only the official Vite+ core `1.1.0` and bundled Vitest `5.0.3` exact overrides remain.
 Effect and its platform packages use `^4.0.2` and resolve to `4.0.2`.
 React and React DOM resolve to `19.3.0`.

@@ -166,6 +166,9 @@ overrides:
   vite@*: npm:@voidzero-dev/vite-plus-core@1.1.0
   vitest@*: 5.0.3
 
+patchedDependencies:
+  '@effront/alchemy@0.4.0': 6fd41fd71d65517fb752597addad4177ebccb3227422d178ca68774ece8e5267
+
 importers:
 
   .:
@@ -178,7 +181,7 @@ importers:
         version: 4.0.2(effect@4.0.2)
       '@effront/alchemy':
         specifier: ^0.4.0
-        version: 0.4.0(bc6e907dec9ebfff98a5b353ec484954)
+        version: 0.4.0(patch_hash=6fd41fd71d65517fb752597addad4177ebccb3227422d178ca68774ece8e5267)(bc6e907dec9ebfff98a5b353ec484954)
       '@effront/core':
         specifier: ^0.4.0
         version: 0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -4128,7 +4131,7 @@ snapshots:
     dependencies:
       effect: 4.0.2
 
-  '@effront/alchemy@0.4.0(bc6e907dec9ebfff98a5b353ec484954)':
+  '@effront/alchemy@0.4.0(patch_hash=6fd41fd71d65517fb752597addad4177ebccb3227422d178ca68774ece8e5267)(bc6e907dec9ebfff98a5b353ec484954)':
     dependencies:
       '@effront/core': 0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@effront/vite': 0.4.0(@effront/core@0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)

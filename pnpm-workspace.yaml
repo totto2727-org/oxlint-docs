@@ -17,6 +17,10 @@ minimumReleaseAgeExclude:
   - '@effront/tailwind@0.4.0'
   - '@effront/vite@0.4.0'
 
+# TODO: Remove after a release fixes public declaration imports: https://github.com/totto2727-org/effront/pull/33
+patchedDependencies:
+  '@effront/alchemy@0.4.0': patches/@effront__alchemy@0.4.0.patch
+
 # https://viteplus.dev/guide/local-cli#manual-installation
 # Match the installed Vite+ core and bundled Vitest exactly.
 overrides:
