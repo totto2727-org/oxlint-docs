@@ -9,6 +9,15 @@ allowBuilds:
 minimumReleaseAge: 1440
 minimumReleaseAgeStrict: true
 
+# TODO: Remove after 2026-11-10T12:45:19.626Z, 24 hours after the latest 0.4.1 publication.
+# User-authorized exception for the published Effront 0.4.1 consumer upgrade only.
+minimumReleaseAgeExclude:
+  - '@effront/alchemy@0.4.1'
+  - '@effront/core@0.4.1'
+  - '@effront/markdown@0.4.1'
+  - '@effront/tailwind@0.4.1'
+  - '@effront/vite@0.4.1'
+
 # https://viteplus.dev/guide/local-cli#manual-installation
 # Match the installed Vite+ core and bundled Vitest exactly.
 overrides:

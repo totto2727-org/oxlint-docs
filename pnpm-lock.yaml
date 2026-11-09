@@ -166,9 +166,6 @@ overrides:
   vite@*: npm:@voidzero-dev/vite-plus-core@1.1.0
   vitest@*: 5.0.3
 
-patchedDependencies:
-  '@effront/alchemy@0.4.0': 6fd41fd71d65517fb752597addad4177ebccb3227422d178ca68774ece8e5267
-
 importers:
 
   .:
@@ -180,14 +177,14 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2(effect@4.0.2)
       '@effront/alchemy':
-        specifier: ^0.4.0
-        version: 0.4.0(patch_hash=6fd41fd71d65517fb752597addad4177ebccb3227422d178ca68774ece8e5267)(bc6e907dec9ebfff98a5b353ec484954)
+        specifier: ^0.4.1
+        version: 0.4.1(9b6b3d7a68f21f5c0dee984073ccda69)
       '@effront/core':
-        specifier: ^0.4.0
-        version: 0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.4.1
+        version: 0.4.1(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@effront/markdown':
-        specifier: ^0.4.0
-        version: 0.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.4.1
+        version: 0.4.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       alchemy:
         specifier: ^2.0.0-beta.81
         version: 2.0.0-beta.81(@effect/platform-node@4.0.2(effect@4.0.2)(redis@6.3.0))(@types/node@22.20.5)(@types/react@19.3.0)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(hono@4.11.4)(typescript@7.0.2)(ws@8.22.0)
@@ -226,11 +223,11 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2(effect@4.0.2)(redis@6.3.0)
       '@effront/tailwind':
-        specifier: ^0.4.0
-        version: 0.4.0(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))
+        specifier: ^0.4.1
+        version: 0.4.1(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))
       '@effront/vite':
-        specifier: ^0.4.0
-        version: 0.4.0(@effront/core@0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+        specifier: ^0.4.1
+        version: 0.4.1(@effront/core@0.4.1(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@playwright/test':
         specifier: ^1.64.0
         version: 1.64.0
@@ -510,38 +507,38 @@ packages:
     peerDependencies:
       effect: ^4.0.2
 
-  '@effront/alchemy@0.4.0':
-    resolution: {integrity: sha512-VNAokqJt1hkc9W9mpV6zJSGOKxSOuRJBYe6rkAFGDcHa09Wf96hPfxIilXMcO5ulbgsDerCF6HT4MlB33wqFqQ==}
+  '@effront/alchemy@0.4.1':
+    resolution: {integrity: sha512-MkgPc3MH49tomJsI5bp2KLV2WCVkEcvqHayFAJ0zPqdkNnsopKAEdWbe6LQrBusaiipLTuK+ZMnLhLMpIM8fpg==}
     peerDependencies:
-      '@effront/core': ^0.4.0
-      '@effront/vite': ^0.4.0
+      '@effront/core': ^0.4.1
+      '@effront/vite': ^0.4.1
       alchemy: ^2.0.0-beta.81
       effect: ^4.0.2
       vite: '*'
 
-  '@effront/core@0.4.0':
-    resolution: {integrity: sha512-QMlw65zBd0lE6CZHwAFJQtvn+BQ2Fh5mbhiYRxPEGGbx4ccufB4UV4qggW9llyxrdRQr+A1LAxUv+mMorOoRlQ==}
+  '@effront/core@0.4.1':
+    resolution: {integrity: sha512-b97JB6UkRCacSwJ007D18UZWyGxJu3YKKvgpHk8KmdbrBgXGshd4GW4pVGxARS1ewAVoiWgbzPcRTVSC5spdWw==}
     peerDependencies:
       '@effect/platform-browser': ^4.0.2
       effect: ^4.0.2
       react: ^19.3.0
       react-dom: ^19.3.0
 
-  '@effront/markdown@0.4.0':
-    resolution: {integrity: sha512-f5P9Zmj+LGWE/vGYlGOzNrljtEVW/zY9cRIIYiSQJnya8TNDC+N4CZQ2vZnnfzWNriQmPC4IoUSmTxwqsCbXhg==}
+  '@effront/markdown@0.4.1':
+    resolution: {integrity: sha512-WwlK1fVn857mlE6RUFAQL/OSk2VgYG6rr9HQRbdCaLo8cKgMz80xkhNMFaZVezmhfmpyxdn4RC7k2PA8AnehvA==}
     peerDependencies:
       react: ^19.3.0
       react-dom: ^19.3.0
 
-  '@effront/tailwind@0.4.0':
-    resolution: {integrity: sha512-7a0KI3MNXsvmFQ7SJJCDtV7fV+vNXq0k77UvE1kOpAlFPMuqb9v4XoxWDHpZQ3t2ZgeriUSD7Ll3d10KkKG01Q==}
+  '@effront/tailwind@0.4.1':
+    resolution: {integrity: sha512-etCh4o0//d4NyEX4RmNSqroQv8e88D8capP6OG8iJhNQu4WiNy4GquaGBLexbmCw9rkRYI0PAUw5OA9m8HyNxA==}
     peerDependencies:
       vite: '*'
 
-  '@effront/vite@0.4.0':
-    resolution: {integrity: sha512-OJousxDowbGlph79djmQcuMkSn2bf+8x39nTr68dLeOCe3gajUkL/vDH/966Ug73NX5uHwpI685dIs/phRh7MQ==}
+  '@effront/vite@0.4.1':
+    resolution: {integrity: sha512-ti8+MDjK69rz2enSZTphpbAFg7GuV/yDRbj2RBu+2KV1QBJGfVbPF3PK1LWse4UllwoBXRS7zb/ZEF+qcy7WrA==}
     peerDependencies:
-      '@effront/core': ^0.4.0
+      '@effront/core': ^0.4.1
       vite: '*'
 
   '@electric-sql/pglite-socket@0.0.20':
@@ -4131,15 +4128,15 @@ snapshots:
     dependencies:
       effect: 4.0.2
 
-  '@effront/alchemy@0.4.0(patch_hash=6fd41fd71d65517fb752597addad4177ebccb3227422d178ca68774ece8e5267)(bc6e907dec9ebfff98a5b353ec484954)':
+  '@effront/alchemy@0.4.1(9b6b3d7a68f21f5c0dee984073ccda69)':
     dependencies:
-      '@effront/core': 0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@effront/vite': 0.4.0(@effront/core@0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@effront/core': 0.4.1(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@effront/vite': 0.4.1(@effront/core@0.4.1(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       alchemy: 2.0.0-beta.81(@effect/platform-node@4.0.2(effect@4.0.2)(redis@6.3.0))(@types/node@22.20.5)(@types/react@19.3.0)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(hono@4.11.4)(typescript@7.0.2)(ws@8.22.0)
       effect: 4.0.2
       vite: '@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1)'
 
-  '@effront/core@0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@effront/core@0.4.1(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@effect/platform-browser': 4.0.2(effect@4.0.2)
       '@vitejs/plugin-rsc': 0.5.36(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -4150,7 +4147,7 @@ snapshots:
       - react-server-dom-webpack
       - vite
 
-  '@effront/markdown@0.4.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@effront/markdown@0.4.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@comark/react': 0.6.2(beautiful-mermaid@1.1.3)(katex@0.17.0)(react@19.3.0)(shiki@4.5.0)
       '@effect/platform-node-shared': 4.0.2(effect@4.0.2)
@@ -4166,15 +4163,15 @@ snapshots:
       - rangi
       - utf-8-validate
 
-  '@effront/tailwind@0.4.0(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))':
+  '@effront/tailwind@0.4.1(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))':
     dependencies:
       '@tailwindcss/vite': 4.3.3(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))
       tailwindcss: 4.3.3
       vite: '@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1)'
 
-  '@effront/vite@0.4.0(@effront/core@0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
+  '@effront/vite@0.4.1(@effront/core@0.4.1(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
-      '@effront/core': 0.4.0(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@effront/core': 0.4.1(@effect/platform-browser@4.0.2(effect@4.0.2))(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@vitejs/plugin-react': 6.2.1(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(oxc-transform-react@0.145.0)
       '@vitejs/plugin-rsc': 0.5.36(@voidzero-dev/vite-plus-core@1.1.0(@types/node@22.20.5)(jiti@2.7.0)(typescript@7.0.2)(yaml@2.9.1))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       oxc-transform-react: 0.145.0

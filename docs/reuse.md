@@ -5,7 +5,9 @@
 Reference: [Effront](https://github.com/totto2727-org/effront), `app/docs` at `b561905cd773363a8d834ecf1a8279d551eee379`.
 Effront is the source of reused site components, not an upstream repository for this independent application.
 This app requests published `@effront/*` runtime packages with `^0.4.1` ranges.
-Installation must satisfy the strict 24-hour release-age policy before the lockfile can record this upgrade.
+The lockfile and installed dependency tree resolve all five packages to the published `0.4.1` releases without local patches.
+The user authorized temporary exact-version release-age exceptions for these five releases only.
+Remove those exceptions after `2026-11-10T12:45:19.626Z`, 24 hours after the latest package publication.
 Other npm dependencies use compatible caret ranges, including prereleases.
 Only the official Vite+ core alias and bundled Vitest overrides remain, as required by [manual installation](https://viteplus.dev/guide/local-cli#manual-installation).
 Node.js, pnpm and Vite+ manage installation and project tasks, with `minimumReleaseAge: 1440` and `minimumReleaseAgeStrict: true`.
@@ -46,7 +48,10 @@ These are application changes. The shared shell behavior, styles, cache policy a
 
 ## Published runtime compatibility
 
-The five Effront packages request `^0.4.1` without workspace links, local patches or release-age exceptions.
+The five Effront packages request `^0.4.1` without workspace links or local patches.
+The strict 24-hour release-age policy remains enabled, with only the five temporary `@effront/*@0.4.1` exceptions listed in `pnpm-workspace.yaml`.
+Official `nix develop -c vp install` regenerated the lockfile and removed the obsolete 0.4.0 patch metadata.
+The old 0.4.0 entries required user-authorized exact-version exceptions for that regeneration only. Those exceptions were removed immediately afterward, and frozen installation passed with only the 0.4.1 exceptions.
 The Worker imports `makeApplicationHttpEffect` from `@effront/alchemy/cloudflare/application` and calls `makeApplicationHttpEffect<typeof application>()`.
 Its type-only application import refers to `src/entry.effront.tsx`, the same module configured in `effront({ application: './src/entry.effront.tsx' })`.
 The adapter supplies the static application import only in the RSC compilation graph, so infrastructure planning does not evaluate the application.
