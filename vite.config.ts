@@ -7,7 +7,11 @@ import { defineConfig } from 'vite-plus'
 const ignorePatterns = await generateIgnorePatterns(new URL('.', import.meta.url))
 
 export default defineConfig({
-  plugins: [effrontTailwind({ stylesheet: './src/styles.css' }), effront(), effrontAlchemy()],
+  plugins: [
+    effrontTailwind({ stylesheet: './src/styles.css' }),
+    effront({ application: './src/entry.effront.tsx' }),
+    effrontAlchemy(),
+  ],
   fmt: {
     ignorePatterns,
     arrowParens: 'always',

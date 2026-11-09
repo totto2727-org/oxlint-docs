@@ -12,9 +12,9 @@
   "dependencies": {
     "@comark/react": "^0.6.2",
     "@effect/platform-browser": "^4.0.2",
-    "@effront/alchemy": "^0.3.0",
-    "@effront/core": "^0.3.0",
-    "@effront/markdown": "^0.3.0",
+    "@effront/alchemy": "^0.4.1",
+    "@effront/core": "^0.4.1",
+    "@effront/markdown": "^0.4.1",
     "alchemy": "^2.0.0-beta.81",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -29,8 +29,8 @@
   "devDependencies": {
     "@alchemy.run/cloudflare-runtime": "^2.0.0-beta.81",
     "@effect/platform-node": "^4.0.2",
-    "@effront/tailwind": "^0.3.0",
-    "@effront/vite": "^0.3.0",
+    "@effront/tailwind": "^0.4.1",
+    "@effront/vite": "^0.4.1",
     "@playwright/test": "^1.64.0",
     "@tailwindcss/typography": "^0.5.20",
     "@totto2727/gitignore-patterns": "^0.1.0",
