@@ -59,21 +59,27 @@ describe('docs cache middleware', () => {
     'text/html;q=0, */*',
     'text/*;q=0, */*',
     'text/html;q=invalid, */*',
-    'text/html;q=1.1, */*',
-    'text/html;q=1;q=0, */*',
     'text/html;q = 0, */*',
-    'text/html;q, */*',
-    'text/html;q=1=0, */*',
     '*/*;q=invalid',
-    'text/html;q=0, text/html;q=1',
     'application/text/html',
   ])('does not opt unsupported Accept %s into caching', async (accept) =>
     expectPolicy(await run(pageRequest({ accept })), false),
   )
 
   it.each([
+    'text/html;q=1.1, */*',
+    'text/html;q=1;q=0, */*',
+    'text/html;q, */*',
+    'text/html;q=1=0, */*',
+    'text/html;q=0, text/html;q=1',
+  ])('uses negotiator quality handling for %s', async (accept) =>
+    expectPolicy(await run(pageRequest({ accept })), true),
+  )
+
+  it.each([
     ['text/x-component', true],
-    ['text/x-component; charset=utf-8', true],
+    ['TEXT/X-COMPONENT', true],
+    ['text/x-component; charset=utf-8', false],
     ['text/x-component;q=0.5, */*', true],
     ['text/x-component;q=0, */*', false],
     ['text/html', false],
@@ -81,6 +87,20 @@ describe('docs cache middleware', () => {
     ['text/*', false],
   ])('checks Flight response eligibility for %s', async (accept, isPublic) => {
     const original = HttpServerResponse.text('flight', { contentType: 'text/x-component' })
+    const response = await run(pageRequest({ accept }), Effect.succeed(original))
+    expectPolicy(response, isPublic)
+    expect(response.body).toBe(original.body)
+  })
+
+  it.each([
+    ['text/html; charset=utf-8', 'text/html; charset=utf-8', true],
+    ['text/html; charset=iso-8859-1', 'text/html; charset=utf-8', false],
+    ['text/html; profile="a,b"', 'text/html; profile="a,b"', true],
+    ['text/html; profile="a,b"', 'text/html; profile="other"', false],
+    ['text/x-component; charset=utf-8', 'text/x-component; charset=utf-8', true],
+    ['text/x-component; charset=iso-8859-1', 'text/x-component; charset=utf-8', false],
+  ])('matches Accept %s against response %s', async (accept, contentType, isPublic) => {
+    const original = HttpServerResponse.text('body', { contentType })
     const response = await run(pageRequest({ accept }), Effect.succeed(original))
     expectPolicy(response, isPublic)
     expect(response.body).toBe(original.body)
