@@ -28,7 +28,8 @@ Licenses are in [third-party notices](../THIRD-PARTY-NOTICES.md).
 | Local Cloudflare-runtime test host    | `tests/vite.config.ts`, `tests/playwright.config.ts`           |
 
 The shell changes only product text and destination links.
-Style and cache behavior remain unchanged.
+Style behavior remains unchanged.
+The response-cache policy differs from the referenced Effront revision as described below.
 
 ## Site changes
 
@@ -44,7 +45,21 @@ Style and cache behavior remain unchanged.
 - Deploy main directly through the deployment workflow, not branch previews.
   Keep validation in the separate CI workflow. Deployment does not run validation or wait for CI completion.
 
-These are application changes. The shared shell behavior, styles, cache policy and Effront runtime source are unchanged.
+These are application changes. The shared shell behavior, styles and Effront runtime source are unchanged.
+
+## Response-cache customization
+
+The local cache middleware and its tests extend the behavior copied from Effront `b561905cd773363a8d834ecf1a8279d551eee379`.
+Public GET responses with status 200 and an HTML or Flight content type use the same public cache policy when Accept permits the actual response.
+Both representations permit matching explicit media ranges, `text/*` and `*/*`.
+The most specific matching media range determines eligibility, so an explicit `q=0` exclusion prevents a less specific wildcard fallback.
+The middleware does not select a representation or require explicit Flight acceptance in addition to HTTP negotiation.
+The middleware uses [negotiator](https://github.com/jshttp/negotiator) for Accept parsing, quality values, media-range precedence and response parameter matching.
+Duplicate ranges and malformed quality values follow the library's behavior instead of a separate local parser policy.
+Missing Accept headers, unsupported response types, non-GET requests and other response statuses remain outside the public policy.
+The policy keeps `Vary: Accept` and does not read or change response bodies.
+This is an application cache customization, not an Effront runtime source change.
+Local workerd tests check origin headers and representation bodies, not deployed CDN cache hits.
 
 ## Published runtime compatibility
 
