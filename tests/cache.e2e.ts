@@ -11,14 +11,16 @@ const expectPolicy = (headers: Record<string, string>, publicResponse: boolean) 
 }
 
 for (const locale of ['en', 'ja']) {
-  for (const accept of ['text/html', 'text/x-component', '*/*']) {
+  for (const accept of ['text/html', 'text/x-component', '*/*', 'text/*']) {
     for (const query of ['one', 'two']) {
       test(`origin serves ${locale} ${accept} with public policy for query ${query}`, async ({ request }) => {
         const response = await request.get(`/${locale}/guide/getting-started?cache-contract=${query}`, {
           headers: { Accept: accept },
         })
         expect(response.status()).toBe(200)
-        expect(response.headers()['content-type']).toContain(accept === '*/*' ? 'text/html' : accept)
+        expect(response.headers()['content-type']).toContain(
+          accept === 'text/x-component' ? 'text/x-component' : 'text/html',
+        )
         expectPolicy(response.headers(), true)
         const body = await response.text()
         expect(body).toContain(`/${locale}/guide/getting-started`)

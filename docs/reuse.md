@@ -50,9 +50,10 @@ These are application changes. The shared shell behavior, styles and Effront run
 ## Response-cache customization
 
 The local cache middleware and its tests extend the behavior copied from Effront `b561905cd773363a8d834ecf1a8279d551eee379`.
-Public GET responses with status 200 and an HTML content type can use the public cache policy when `Accept` permits `*/*`.
-The most specific matching media range determines eligibility, so `text/html;q=0` or `text/*;q=0` prevents the wildcard fallback.
-Flight responses require an explicit, positive `text/x-component` media range and a matching response content type.
+Public GET responses with status 200 and an HTML or Flight content type use the same public cache policy when Accept permits the actual response.
+Both representations permit matching explicit media ranges, `text/*` and `*/*`.
+The most specific matching media range determines eligibility, so an explicit `q=0` exclusion prevents a less specific wildcard fallback.
+The middleware does not select a representation or require explicit Flight acceptance in addition to HTTP negotiation.
 The middleware uses [negotiator](https://github.com/jshttp/negotiator) for Accept parsing, quality values, media-range precedence and response parameter matching.
 Duplicate ranges and malformed quality values follow the library's behavior instead of a separate local parser policy.
 Missing Accept headers, unsupported response types, non-GET requests and other response statuses remain outside the public policy.

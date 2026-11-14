@@ -35,6 +35,7 @@ const expectPolicy = (response: HttpServerResponse.HttpServerResponse, isPublic:
 describe('docs cache middleware', () => {
   it.each([
     'text/html',
+    'text/*',
     '*/*',
     '*/*;q=0.8',
     'TEXT/HTML',
@@ -54,7 +55,6 @@ describe('docs cache middleware', () => {
     'application/json',
     '',
     'text/x-component',
-    'text/*',
     '*/*;q=0',
     'text/html;q=0, */*',
     'text/*;q=0, */*',
@@ -83,13 +83,37 @@ describe('docs cache middleware', () => {
     ['text/x-component;q=0.5, */*', true],
     ['text/x-component;q=0, */*', false],
     ['text/html', false],
-    ['*/*', false],
-    ['text/*', false],
+    ['*/*', true],
+    ['text/*', true],
   ])('checks Flight response eligibility for %s', async (accept, isPublic) => {
     const original = HttpServerResponse.text('flight', { contentType: 'text/x-component' })
     const response = await run(pageRequest({ accept }), Effect.succeed(original))
     expectPolicy(response, isPublic)
     expect(response.body).toBe(original.body)
+  })
+
+  describe.each(['text/html', 'text/x-component'])('symmetric cache policy for %s', (contentType) => {
+    it.each([
+      ['*/*', true],
+      ['text/*', true],
+      ['*/*;q=0', false],
+      ['text/*;q=0, */*', false],
+      [`${contentType};q=0, */*`, false],
+      [`${contentType};q=0.5, */*;q=0`, true],
+      ['application/json', false],
+      ['', false],
+    ])('checks Accept %s without changing the representation', async (accept, isPublic) => {
+      const original = HttpServerResponse.text('representation bytes', {
+        contentType,
+        headers: { vary: 'Accept-Language' },
+      })
+      const response = await run(pageRequest({ accept }), Effect.succeed(original))
+      expectPolicy(response, isPublic)
+      expect(response.headers['content-type']).toBe(contentType)
+      expect(response.headers['vary']).toBe('accept-language, accept')
+      expect(response.body).toBe(original.body)
+      expect(await HttpServerResponse.toWeb(response).text()).toBe('representation bytes')
+    })
   })
 
   it.each([
