@@ -38,19 +38,23 @@ test('origin accepts a browser document Accept header', async ({ request }) => {
   expect(await response.text()).toContain('lang="en"')
 })
 
-for (const accept of [
-  'application/json',
-  '*/*;q=0',
-  'text/html;q=0, */*',
-  'text/*;q=0, */*',
-  'text/x-component;q=0, */*',
-]) {
+for (const accept of ['application/json', '*/*;q=0', 'text/html;q=0, */*', 'text/*;q=0, */*']) {
   test(`origin leaves excluded HTML private for ${accept}`, async ({ request }) => {
     const response = await request.get('/en/guide/getting-started', { headers: { Accept: accept } })
     expect(response.status()).toBe(200)
     expectPolicy(response.headers(), false)
   })
 }
+
+test('origin caches wildcard HTML when Flight is explicitly excluded', async ({ request }) => {
+  const response = await request.get('/en/guide/getting-started', {
+    headers: { Accept: 'text/x-component;q=0, */*' },
+  })
+  expect(response.status()).toBe(200)
+  expect(response.headers()['content-type']).toContain('text/html')
+  expectPolicy(response.headers(), true)
+  expect(await response.text()).toContain('lang="en"')
+})
 
 test('origin does not opt missing pages into long-lived CDN caching', async ({ request }) => {
   const response = await request.get('/en/missing-cache-test-page', {
