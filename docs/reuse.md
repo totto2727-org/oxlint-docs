@@ -28,7 +28,8 @@ Licenses are in [third-party notices](../THIRD-PARTY-NOTICES.md).
 | Local Cloudflare-runtime test host    | `tests/vite.config.ts`, `tests/playwright.config.ts`           |
 
 The shell changes only product text and destination links.
-Style and cache behavior remain unchanged.
+Style behavior remains unchanged.
+The response-cache policy differs from the referenced Effront revision as described below.
 
 ## Site changes
 
@@ -44,7 +45,18 @@ Style and cache behavior remain unchanged.
 - Deploy main directly through the deployment workflow, not branch previews.
   Keep validation in the separate CI workflow. Deployment does not run validation or wait for CI completion.
 
-These are application changes. The shared shell behavior, styles, cache policy and Effront runtime source are unchanged.
+These are application changes. The shared shell behavior, styles and Effront runtime source are unchanged.
+
+## Response-cache customization
+
+The local cache middleware and its tests extend the behavior copied from Effront `b561905cd773363a8d834ecf1a8279d551eee379`.
+Public GET responses with status 200 and an HTML content type can use the public cache policy when `Accept` permits `*/*`.
+The most specific matching media range determines eligibility, so `text/html;q=0` or `text/*;q=0` prevents the wildcard fallback.
+Flight responses require an explicit, positive `text/x-component` media range and a matching response content type.
+Missing Accept headers, unsupported response types, non-GET requests and other response statuses remain outside the public policy.
+The policy keeps `Vary: Accept` and does not read or change response bodies.
+This is an application cache customization, not an Effront runtime source change.
+Local workerd tests check origin headers and representation bodies, not deployed CDN cache hits.
 
 ## Published runtime compatibility
 
