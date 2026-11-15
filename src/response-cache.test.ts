@@ -35,8 +35,12 @@ const expectPolicy = (response: HttpServerResponse.HttpServerResponse, isPublic:
 describe('docs cache middleware', () => {
   it.each([
     'text/html',
-    'text/x-component',
-    'text/x-component; charset=utf-8',
+    'text/*',
+    '*/*',
+    '*/*;q=0.8',
+    'TEXT/HTML',
+    'text/html;q=0.5, */*;q=0',
+    'text/html, text/*;q=0',
     'text/html,application/xhtml+xml,*/*;q=0.8',
   ])('caches public GET with Accept %s without changing its body', async (accept) => {
     const original = html()
@@ -47,12 +51,102 @@ describe('docs cache middleware', () => {
     expect(await HttpServerResponse.toWeb(response).text()).toBe('rendered')
   })
 
-  it.each(['*/*', 'application/json', ''])('does not opt unsupported Accept %s into caching', async (accept) =>
+  it.each([
+    'application/json',
+    '',
+    'text/x-component',
+    '*/*;q=0',
+    'text/html;q=0, */*',
+    'text/*;q=0, */*',
+    'text/html;q=invalid, */*',
+    'text/html;q = 0, */*',
+    '*/*;q=invalid',
+    'application/text/html',
+  ])('does not opt unsupported Accept %s into caching', async (accept) =>
     expectPolicy(await run(pageRequest({ accept })), false),
+  )
+
+  it.each([
+    'text/html;q=1.1, */*',
+    'text/html;q=1;q=0, */*',
+    'text/html;q, */*',
+    'text/html;q=1=0, */*',
+    'text/html;q=0, text/html;q=1',
+  ])('uses negotiator quality handling for %s', async (accept) =>
+    expectPolicy(await run(pageRequest({ accept })), true),
+  )
+
+  it.each([
+    ['text/x-component', true],
+    ['TEXT/X-COMPONENT', true],
+    ['text/x-component; charset=utf-8', false],
+    ['text/x-component;q=0.5, */*', true],
+    ['text/x-component;q=0, */*', false],
+    ['text/html', false],
+    ['*/*', true],
+    ['text/*', true],
+  ])('checks Flight response eligibility for %s', async (accept, isPublic) => {
+    const original = HttpServerResponse.text('flight', { contentType: 'text/x-component' })
+    const response = await run(pageRequest({ accept }), Effect.succeed(original))
+    expectPolicy(response, isPublic)
+    expect(response.body).toBe(original.body)
+  })
+
+  describe.each(['text/html', 'text/x-component'])('symmetric cache policy for %s', (contentType) => {
+    it.each([
+      ['*/*', true],
+      ['text/*', true],
+      ['*/*;q=0', false],
+      ['text/*;q=0, */*', false],
+      [`${contentType};q=0, */*`, false],
+      [`${contentType};q=0.5, */*;q=0`, true],
+      ['application/json', false],
+      ['', false],
+    ])('checks Accept %s without changing the representation', async (accept, isPublic) => {
+      const original = HttpServerResponse.text('representation bytes', {
+        contentType,
+        headers: { vary: 'Accept-Language' },
+      })
+      const response = await run(pageRequest({ accept }), Effect.succeed(original))
+      expectPolicy(response, isPublic)
+      expect(response.headers['content-type']).toBe(contentType)
+      expect(response.headers['vary']).toBe('accept-language, accept')
+      expect(response.body).toBe(original.body)
+      expect(await HttpServerResponse.toWeb(response).text()).toBe('representation bytes')
+    })
+  })
+
+  it.each([
+    ['text/html; charset=utf-8', 'text/html; charset=utf-8', true],
+    ['text/html; charset=iso-8859-1', 'text/html; charset=utf-8', false],
+    ['text/html; profile="a,b"', 'text/html; profile="a,b"', true],
+    ['text/html; profile="a,b"', 'text/html; profile="other"', false],
+    ['text/x-component; charset=utf-8', 'text/x-component; charset=utf-8', true],
+    ['text/x-component; charset=iso-8859-1', 'text/x-component; charset=utf-8', false],
+  ])('matches Accept %s against response %s', async (accept, contentType, isPublic) => {
+    const original = HttpServerResponse.text('body', { contentType })
+    const response = await run(pageRequest({ accept }), Effect.succeed(original))
+    expectPolicy(response, isPublic)
+    expect(response.body).toBe(original.body)
+  })
+
+  it.each(['application/json', 'text/plain', 'text/html-other'])(
+    'does not cache response type %s',
+    async (contentType) => {
+      const response = await run(
+        pageRequest({ accept: '*/*' }),
+        Effect.succeed(HttpServerResponse.text('body', { contentType })),
+      )
+      expectPolicy(response, false)
+    },
   )
 
   it('does not opt requests without Accept into caching', async () => {
     expectPolicy(await run(new Request('https://docs.example/guide')), false)
+  })
+
+  it('does not cache a response without a content type', async () => {
+    expectPolicy(await run(pageRequest({ accept: '*/*' }), Effect.succeed(HttpServerResponse.empty())), false)
   })
 
   it.each(['POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'])('does not cache %s', async (method) => {
