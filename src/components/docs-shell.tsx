@@ -226,26 +226,24 @@ export const DocsShell = ({
                 {locale === 'en' ? 'Documentation' : 'ドキュメント'}
               </a>
             </li>
-            {[
-              current.section,
-              ...(String.isEmpty(current.group ?? '') ? [] : [current.group]),
-              current.title,
-            ].map((label, index, labels) => (
-              // oxlint-disable-next-line react/no-array-index-key -- Breadcrumb positions are stable and labels may repeat.
-              <li key={index} className='flex min-w-0 items-baseline gap-1.5'>
-                <span aria-hidden='true'>/</span>
-                <span
-                  aria-current={index === labels.lastIndexOf(current.title) ? 'page' : undefined}
-                  className={
-                    index === labels.lastIndexOf(current.title)
-                      ? 'min-w-0 text-sm font-medium wrap-break-word text-foreground'
-                      : 'min-w-0 wrap-break-word'
-                  }
-                >
-                  {label}
-                </span>
-              </li>
-            ))}
+            {[current.section, ...(String.isEmpty(current.group ?? '') ? [] : [current.group]), current.title].map(
+              (label, index, labels) => (
+                // oxlint-disable-next-line react/no-array-index-key -- Breadcrumb positions are stable and labels may repeat.
+                <li key={index} className='flex min-w-0 items-baseline gap-1.5'>
+                  <span aria-hidden='true'>/</span>
+                  <span
+                    aria-current={index === labels.lastIndexOf(current.title) ? 'page' : undefined}
+                    className={
+                      index === labels.lastIndexOf(current.title)
+                        ? 'min-w-0 text-sm font-medium wrap-break-word text-foreground'
+                        : 'min-w-0 wrap-break-word'
+                    }
+                  >
+                    {label}
+                  </span>
+                </li>
+              ),
+            )}
           </ol>
         </nav>
         <nav aria-label={locale === 'en' ? 'Language' : '言語'} className='ml-auto flex shrink-0 gap-2 text-xs'>
