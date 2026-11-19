@@ -3,17 +3,23 @@
 import * as React from 'react'
 
 const MOBILE_BREAKPOINT = 768
+// oxlint-disable-next-line eslint/no-magic-numbers -- CSS max-width is inclusive while the JS breakpoint is exclusive.
+const MOBILE_QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+export const useIsMobile = (): boolean => {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>()
 
   React.useEffect(() => {
-    const mediaQuery = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
-    const onChange = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    const mediaQuery = globalThis.matchMedia(MOBILE_QUERY)
+    const onChange = (): void => {
+      setIsMobile(globalThis.innerWidth < MOBILE_BREAKPOINT)
+    }
     mediaQuery.addEventListener('change', onChange)
     onChange()
-    return () => mediaQuery.removeEventListener('change', onChange)
+    return (): void => {
+      mediaQuery.removeEventListener('change', onChange)
+    }
   }, [])
 
-  return !!isMobile
+  return Boolean(isMobile)
 }

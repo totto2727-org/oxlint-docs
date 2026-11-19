@@ -1,35 +1,46 @@
-import { beforeAll, describe, expect, it, vi } from 'vite-plus/test'
+/* oxlint-disable eslint/init-declarations, eslint/no-use-before-define, rules/no-let, typescript/consistent-type-imports -- Load the real component only after the offline probes are installed. */
+/* oxlint-disable eslint/max-lines-per-function, eslint/max-statements, vitest/max-expects, vitest/no-standalone-expect, vitest/require-top-level-describe -- The shared setup verifies all grammar fixtures and restores probes even on failure. */
+/* oxlint-disable eslint/prefer-named-capture-group, eslint/require-unicode-regexp, unicorn/max-nested-calls -- Preserve the existing structure of serialized markup matchers. */
+/* oxlint-disable rules/no-for-loops, rules/no-readonly -- Keep typed ordered fixture pairs and check each grammar sequentially. */
+/* oxlint-disable rules/require-tagged-error, typescript/no-non-null-assertion, typescript/no-unsafe-type-assertion -- Fail directly when a probe fires or required fixture markup is absent. */
+import { beforeAll, describe, expect, test, vi } from 'vite-plus/test'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-import type { CodeLanguage } from './code-block'
+import type { CodeLanguage } from './code-block.tsx'
 
-let CodeBlock: typeof import('./code-block').CodeBlock
+let CodeBlock: typeof import('./code-block.tsx').CodeBlock
 let offlineMarkup: string
 
-const decodeText = (value: string) =>
-  value.replace(/&(amp|lt|gt|quot|#x27);/g, (entity) => {
+const decodeText = (value: string): string =>
+  value.replaceAll(/&(amp|lt|gt|quot|#x27);/g, (entity) => {
     switch (entity) {
-      case '&amp;':
+      case '&amp;': {
         return '&'
-      case '&lt;':
+      }
+      case '&lt;': {
         return '<'
-      case '&gt;':
+      }
+      case '&gt;': {
         return '>'
-      case '&quot;':
+      }
+      case '&quot;': {
         return '"'
-      case '&#x27;':
+      }
+      case '&#x27;': {
         return "'"
-      default:
+      }
+      default: {
         throw new TypeError(`Unexpected escaped entity: ${entity}`)
+      }
     }
   })
 
 // Inspect React's serialized text without executing markup. Real browser parsing,
-// computed colors and no-JavaScript rendering are covered by docs.e2e.ts.
-const serializedCodeText = (html: string) => {
-  const body = html.match(/<code>([\s\S]*?)<\/code>/)?.[1]
+// Computed colors and no-JavaScript rendering are covered by docs.e2e.ts.
+const serializedCodeText = (html: string): string => {
+  const body = /<code>([\s\S]*?)<\/code>/.exec(html)?.[1]
   expect(body).toBeDefined()
-  return decodeText(body!.replace(/<\/?span\b[^>]*>/g, ''))
+  return decodeText(body!.replaceAll(/<\/?span\b[^>]*>/g, ''))
 }
 
 beforeAll(async () => {
@@ -46,7 +57,7 @@ beforeAll(async () => {
     throw new Error('CodeBlock must not compile WebAssembly.')
   })
   try {
-    ;({ CodeBlock } = await import('./code-block'))
+    ;({ CodeBlock } = await import('./code-block.tsx'))
     offlineMarkup = renderToStaticMarkup(CodeBlock({ code: 'const message = "日本語";\n', language: 'typescript' }))
     for (const [language, code] of fixtures) {
       expect(serializedCodeText(renderToStaticMarkup(CodeBlock({ code, language })))).toBe(code)
@@ -79,7 +90,7 @@ const fixtures = [
 ] as const satisfies readonly (readonly [CodeLanguage, string])[]
 
 describe('server CodeBlock', () => {
-  it('initializes and highlights offline with a dark palette and real tokens', () => {
+  test('initializes and highlights offline with a dark palette and real tokens', () => {
     expect(offlineMarkup).toContain('class="shiki github-dark"')
     expect(offlineMarkup).toContain('data-code-block=""')
     expect(offlineMarkup).toContain('data-language="typescript"')
@@ -92,14 +103,14 @@ describe('server CodeBlock', () => {
     expect(serializedCodeText(offlineMarkup)).toBe('const message = "日本語";\n')
   })
 
-  it.each(fixtures)('preserves exact source for the finite %s language', (language, code) => {
+  test.each(fixtures)('preserves exact source for the finite %s language', (language, code) => {
     const html = renderToStaticMarkup(CodeBlock({ code, language }))
     expect(serializedCodeText(html)).toBe(code)
     expect(html).toContain('class="line"')
     expect(html).not.toContain('<script')
   })
 
-  it.each([
+  test.each([
     '',
     '\n',
     '\n\n',
@@ -110,28 +121,28 @@ describe('server CodeBlock', () => {
     'a\r\nb\rc\n\n',
   ])('preserves serialized whitespace and line endings for %j', (code) => {
     // HTML parsers normalize literal carriage returns. This specifically checks
-    // that token rendering does not itself normalize or append source bytes.
+    // That token rendering does not itself normalize or append source bytes.
     expect(serializedCodeText(renderToStaticMarkup(CodeBlock({ code, language: 'tsx' })))).toBe(code)
   })
 
-  it('escapes hostile markup as text instead of accepting HTML or event handlers', () => {
+  test('escapes hostile markup as text instead of accepting HTML or event handlers', () => {
     const code = '</code></pre><script>globalThis.pwned = true</script><img src=x onerror="boom()"> &amp; \' "'
     const html = renderToStaticMarkup(CodeBlock({ code, language: 'tsx' }))
     expect(serializedCodeText(html)).toBe(code)
-    expect(new Set([...html.matchAll(/<\/?([a-z][a-z0-9]*)\b/g)].map((hit) => hit[1]))).toEqual(
+    expect(new Set([...html.matchAll(/<\/?([a-z][a-z0-9]*)\b/g)].map((hit) => hit[1]))).toStrictEqual(
       new Set(['pre', 'code', 'span']),
     )
     expect(html).not.toMatch(/<[^>]+\bonerror\s*=/)
   })
 
-  it('uses explicit text mode by default and does not silently fall back for bad wiring', () => {
+  test('uses explicit text mode by default and does not silently fall back for bad wiring', () => {
     expect(renderToStaticMarkup(CodeBlock({ code: 'plain' }))).toContain('data-language="text"')
     expect(() => CodeBlock({ code: 'unknown', language: 'not-registered' as CodeLanguage })).toThrow(
       'unsupported language',
     )
   })
 
-  it('does not leak previous grammar state between repeated renders', () => {
+  test('does not leak previous grammar state between repeated renders', () => {
     const code = 'const number = 42;\n'
     const before = renderToStaticMarkup(CodeBlock({ code, language: 'ts' }))
     CodeBlock({ code: '/* unfinished comment', language: 'ts' })

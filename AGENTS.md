@@ -44,18 +44,18 @@ Do not generate a Bun lock or a Bun Nix dependency file.
 ### Content
 
 - Give each local rule purpose, options/defaults, examples, fixability, limits and source links in both languages.
-- Include only the 29 local rules in rule pages and navigation. Three compatibility rules are opt-in.
+- Include only the local rules in rule pages and navigation. Compare the inventory with the installed package's `presetRuleNames`.
 - Keep Rules and Presets separate. Group rules into TypeScript and Effect only.
-- Describe external source, included names and disabled-rule reasons on preset pages. Do not duplicate external rule details.
+- Describe the incorporated rule names and their source in the Effect reference. Do not duplicate their details.
 - Identify Effect rules as incorporated MIT implementations, not a separately installed plugin.
-- Keep old external-rule URL redirects to the localized Effect preset. Preserve queries for HTML and Flight.
+- Redirect old external rule URLs to the localized Effect reference. Redirect removed local rules to their replacement or the rule list. Preserve queries for HTML and Flight.
 - Read actual rule source, tests and preset exports before changing a claim.
 - Treat examples as single-rule demonstrations. State when declarations are omitted.
 - Preserve heading IDs, localized links, explicit routes and persistent shell state.
 - Parse Markdown on the server. Do not fetch sources or run Git during rendering.
 - Apply English writing principles to source prose. Review Japanese translation accuracy separately.
-- Keep the shared Ultracite configuration, its three conflict settings and generated-file allowance in preset documentation.
-- Do not apply the library's baseline to this app's formatter or lint configuration.
+- Document shared Oxlint settings separately from the application and library tracing modes.
+- Use the application preset for lint. Keep formatting settings in the Vite+ formatter configuration.
 - Update both languages and relevant tests together.
 
 ### Cache checks
