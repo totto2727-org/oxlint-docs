@@ -9,5 +9,6 @@
     "jsx": "react-jsx",
     "noEmit": true,
     "exactOptionalPropertyTypes": false
-  }
+  },
+  "include": ["*.ts", "*.tsx", "src/**/*.ts", "src/**/*.tsx", "tests/**/*.ts", "tests/**/*.tsx"]
 }
