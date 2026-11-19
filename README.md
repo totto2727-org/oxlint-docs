@@ -9,13 +9,14 @@ Open the documentation in your language:
 - [English](https://oxlint.totto2727.dev/en)
 - [日本語](https://oxlint.totto2727.dev/ja)
 
-Choose a rule page for its options and examples, or a preset page for included policies.
+Use the setup guide to choose and install a preset.
+Use the rule reference to find options and examples.
 
 ## Key features
 
 - English and Japanese rule documentation.
 - Local rule options and examples.
-- External rule sources and disabled-setting reasons on preset pages.
+- Shared lint settings and Effect tracing modes.
 
 ## Prerequisites
 
@@ -25,11 +26,12 @@ Use a web browser to read the hosted documentation.
 
 No local installation is required.
 
-## API
+## Reference
 
+- [Getting started](https://oxlint.totto2727.dev/en/guide/getting-started)
 - [Rule reference](https://oxlint.totto2727.dev/en#rules)
-- [TypeScript preset](https://oxlint.totto2727.dev/en/presets/typescript)
-- [Effect preset](https://oxlint.totto2727.dev/en/presets/effect)
+- [Shared rules](https://oxlint.totto2727.dev/en/presets/typescript)
+- [Effect tracing](https://oxlint.totto2727.dev/en/presets/effect)
 
 ## Development
 
