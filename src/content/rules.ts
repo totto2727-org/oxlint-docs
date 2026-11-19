@@ -260,8 +260,8 @@ export const ruleArticles: readonly RuleArticle[] = [
       'Effect の深いサブパスではなく公開パッケージルートを使います。',
     ],
     details: [
-      'Use `effect`, an `@effect/<package>` root, or an Effect category entry such as `effect/http` or `effect/unstable/cli`. The rule reports other Effect paths except `effect/schema/SchemaJITCompiler/enable`. It ignores re-exports and dynamic imports.',
-      '`effect`、`@effect/<package>` のルート、または `effect/http` や `effect/unstable/cli` のようなカテゴリを使います。それ以外の Effect のパスは `effect/schema/SchemaJITCompiler/enable` を除いて報告します。再 export と動的 import は対象外です。',
+      'Use `effect`, an `@effect/<package>` root, or a [category entry](https://github.com/totto2727-org/oxlint/blob/bed13483292d75318f9ca01e124aa666edaa8202/src/rules/no-effect-subpath-import.ts#L7-L17) such as `effect/http` or `effect/unstable/cli`. The rule reports other Effect paths except `effect/schema/SchemaJITCompiler/enable`. It ignores re-exports and dynamic imports.',
+      '`effect`、`@effect/<package>` のルート、または `effect/http` や `effect/unstable/cli` のような[カテゴリ](https://github.com/totto2727-org/oxlint/blob/bed13483292d75318f9ca01e124aa666edaa8202/src/rules/no-effect-subpath-import.ts#L7-L17)を使います。それ以外の Effect のパスは `effect/schema/SchemaJITCompiler/enable` を除いて報告します。再 export と動的 import は対象外です。',
     ],
     invalid: "import { Schema } from 'effect/Schema'",
     valid: "import { Schema } from 'effect'",

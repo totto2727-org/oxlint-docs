@@ -23,7 +23,7 @@ for (const locale of ['en', 'ja'] as const) {
     const article = page.locator('article')
     await expect(article.locator('#install')).toBeVisible()
     await expect(article).toContainText('npm install --save-dev @totto2727/oxlint oxlint')
-    await expect(article).toContainText('npx oxlint --config .oxlintrc.mjs src')
+    await expect(article).toContainText('npm exec -- oxlint --config .oxlintrc.mjs src')
     await expect(article).not.toContainText('.tgz')
     await expect(article).not.toContainText('npm pack')
   })
