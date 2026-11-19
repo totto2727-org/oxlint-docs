@@ -6,7 +6,7 @@ describe('getting started', () => {
     const guide = documents(locale)['guide/getting-started.md']
     expect(guide).toContain('npm install --save-dev @totto2727/oxlint oxlint oxlint-tsgolint')
     expect(guide).toContain("from '@totto2727/oxlint/preset/application'")
-    expect(guide).toContain('npx oxlint --config .oxlintrc.mjs src')
-    expect(guide).toContain('npx oxlint --config .oxlintrc.mjs --fix src')
+    expect(guide).toContain('npm exec -- oxlint --config .oxlintrc.mjs src')
+    expect(guide).toContain('npm exec -- oxlint --config .oxlintrc.mjs --fix src')
   })
 })

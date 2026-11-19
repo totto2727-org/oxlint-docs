@@ -12,7 +12,10 @@ const configure = fence(
   'js',
   "import { defineConfig } from 'oxlint'\nimport preset from '@totto2727/oxlint/preset/application'\n\nexport default defineConfig({ extends: [preset] })",
 )
-const run = fence('sh', 'npx oxlint --config .oxlintrc.mjs src\nnpx oxlint --config .oxlintrc.mjs --fix src')
+const run = fence(
+  'sh',
+  'npm exec -- oxlint --config .oxlintrc.mjs src\nnpm exec -- oxlint --config .oxlintrc.mjs --fix src',
+)
 
 const overview = {
   en: `## Choose a preset {#choose}

@@ -260,8 +260,8 @@ export const ruleArticles: readonly RuleArticle[] = [
       'Effect の深いサブパスではなく公開パッケージルートを使います。',
     ],
     details: [
-      'Use `effect`, an `@effect/<package>` root, or an Effect category entry. Category names start with a lowercase letter, for example `effect/http` or `effect/unstable/cli`. The rule reports deeper imports except `effect/schema/SchemaJITCompiler/enable`. It ignores re-exports and dynamic imports.',
-      '`effect`、`@effect/<package>` のルート、または `effect/http` や `effect/unstable/cli` のようなカテゴリを使います。カテゴリ名は小文字で始まります。さらに深い import は `effect/schema/SchemaJITCompiler/enable` を除いて報告します。再 export と動的 import は対象外です。',
+      'Use `effect`, an `@effect/<package>` root, or an Effect category entry such as `effect/http` or `effect/unstable/cli`. The rule reports other Effect paths except `effect/schema/SchemaJITCompiler/enable`. It ignores re-exports and dynamic imports.',
+      '`effect`、`@effect/<package>` のルート、または `effect/http` や `effect/unstable/cli` のようなカテゴリを使います。それ以外の Effect のパスは `effect/schema/SchemaJITCompiler/enable` を除いて報告します。再 export と動的 import は対象外です。',
     ],
     invalid: "import { Schema } from 'effect/Schema'",
     valid: "import { Schema } from 'effect'",
@@ -330,7 +330,7 @@ export const ruleArticles: readonly RuleArticle[] = [
       'ネイティブ Date 操作ではなく Effect DateTime と Duration を使います。',
     ],
     details: [
-      'The rule reports new Date() and Date.now, Date.parse or Date.UTC member access, including references without calls. The rule allows the Date identifier and Date.prototype. Give a suppression reason when an external API requires native Date.',
+      'The rule reports new Date() and Date.now, Date.parse or Date.UTC member access, including references without calls. The rule allows the Date identifier and Date.prototype. If an external API requires native Date, give a suppression reason.',
       'new Date() と Date.now、Date.parse、Date.UTC のメンバー参照を報告します。呼び出しでない参照も対象です。Date 識別子と Date.prototype は許可します。外部 API がネイティブ Date を要求する場合は抑制理由を付けてください。',
     ],
     invalid: 'const d = new Date()',
@@ -422,8 +422,8 @@ export const ruleArticles: readonly RuleArticle[] = [
       'The rule reports Schema.decodeUnknownEffect and Schema.decodeUnknownExit calls. If the input type matches the schema’s encoded type, use decodeEffect or decodeExit. The rule does not infer types. For unknown external data, give a suppression reason.',
       'Schema.decodeUnknownEffect と Schema.decodeUnknownExit を報告します。入力の型が Schema のエンコード型に適合する場合は、decodeEffect または decodeExit を使ってください。型は推論しません。unknown の外部入力には抑制理由を付けます。',
     ],
-    invalid: 'Schema.decodeUnknownEffect(schema)(input)',
-    valid: 'Schema.decodeEffect(schema)(input)',
+    invalid: "Schema.decodeUnknownEffect(Schema.String)('ready')",
+    valid: "Schema.decodeEffect(Schema.String)('ready')",
   },
   {
     name: 'no-for-loops',
@@ -433,7 +433,7 @@ export const ruleArticles: readonly RuleArticle[] = [
       '反復処理にはコレクションや Effect のコンビネーターを使います。',
     ],
     details: [
-      'Reports classic `for`, `for...of`, `for await...of`, and `for...in`, but not `while`. Use Array or Iterable combinators for synchronous iteration, `Effect.forEach` for effects, or `Stream.runForEach` for streams. Use `Object.keys` or `Object.entries` for own properties.',
+      'The rule reports classic `for`, `for...of`, `for await...of`, and `for...in`, but not `while`. Use Array or Iterable combinators for synchronous iteration, `Effect.forEach` for effects, or `Stream.runForEach` for streams. Use `Object.keys` or `Object.entries` for own properties.',
       '通常の `for`、`for...of`、`for await...of`、`for...in` を報告します。`while` は対象外です。同期処理には Array や Iterable、Effect の反復には `Effect.forEach`、ストリームには `Stream.runForEach` を使います。オブジェクト自身のプロパティには `Object.keys` や `Object.entries` を使います。',
     ],
     invalid: 'for (const value of values) visit(value)',
