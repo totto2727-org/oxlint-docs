@@ -26,7 +26,7 @@ export default defineConfig({
     plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'react'],
     options: { typeAware: true, typeCheck: true },
   },
-  test: { include: ['src/**/*.test.{ts,tsx}'] },
+  test: { dir: 'src' },
   run: {
     tasks: {
       dev: 'vp dev --config tests/vite.config.ts --host 127.0.0.1 --port 1339',
