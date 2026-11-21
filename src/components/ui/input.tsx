@@ -1,9 +1,12 @@
 'use client'
 
+/* oxlint-disable react/jsx-props-no-spreading -- Forward native input attributes, including form and accessibility props. */
 import * as React from 'react'
-import { cn } from '../../lib/utils'
+// oxlint-disable-next-line import/no-relative-parent-imports -- Shared class merging lives in the app's library directory.
+import { cn } from '../../lib/utils.ts'
 
-function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
+// oxlint-disable-next-line eslint/func-style -- React's component-definition rule requires a named declaration.
+export function Input({ className, type, ...props }: React.ComponentProps<'input'>): React.JSX.Element {
   return (
     <input
       type={type}
@@ -16,5 +19,3 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
     />
   )
 }
-
-export { Input }

@@ -1,22 +1,39 @@
 import { Effect } from 'effect'
-import { describe, expect, it, vi } from 'vite-plus/test'
-import { documentLocale, documentPath, localizedPath, localizeDocumentLink } from './locale'
-import { localizedMarkdownPages, markdownPages } from './markdown'
+import { describe, expect, test, vi } from 'vite-plus/test'
+import { documentLocale, documentPath, localizedPath, localizeDocumentLink } from './locale.ts'
+import { getPage } from './pages.ts'
 
-// Keep the Japanese article available, but point its English metadata at a missing source.
-// A loader that silently falls back to the Japanese article must fail this test.
-vi.mock('./en/catalog', async (importOriginal) => {
-  const original = await importOriginal<typeof import('./en/catalog')>()
+vi.mock(import('./en/catalog.ts'), async (importOriginal) => {
+  const { englishArticleCatalog } = await importOriginal()
   return {
-    ...original,
-    englishArticleCatalog: original.englishArticleCatalog.map((page) =>
-      page.slug === '/guide/getting-started' ? { ...page, source: '/missing-english-translation' } : page,
+    englishArticleCatalog: englishArticleCatalog.map(
+      ({ description, group, headings, section, slug, source, title }) => ({
+        description,
+        group,
+        headings,
+        section,
+        slug,
+        source: slug === '/guide/getting-started' ? '/missing-english-translation' : source,
+        title,
+      }),
     ),
   }
 })
 
+const localizedCases = ['/', '/guide/getting-started', '/rules/no-let'].flatMap((path) =>
+  (['ja', 'en'] as const).flatMap((locale) => {
+    const expected = path === '/' ? `/${locale}` : `/${locale}${path}`
+    return [path, localizedPath(path, 'ja'), localizedPath(path, 'en')].map((source) => ({
+      expected,
+      locale,
+      path,
+      source,
+    }))
+  }),
+)
+
 describe('documentation locale paths', () => {
-  it.each([
+  test.each([
     ['/', 'ja', '/'],
     ['/guide/getting-started', 'ja', '/guide/getting-started'],
     ['/ja', 'ja', '/'],
@@ -33,33 +50,25 @@ describe('documentation locale paths', () => {
     expect(documentPath(pathname)).toBe(path)
   })
 
-  it.each(['/', '/guide/getting-started', '/rules/no-let'])(
-    '%s switches languages without duplicating prefixes or losing the article path',
-    (path) => {
-      for (const locale of ['ja', 'en'] as const) {
-        const expected = `/${locale}${path === '/' ? '' : path}`
-        for (const source of [path, localizedPath(path, 'ja'), localizedPath(path, 'en')]) {
-          expect(localizedPath(source, locale)).toBe(expected)
-          expect(documentPath(localizedPath(source, locale))).toBe(path)
-          expect(documentLocale(localizedPath(source, locale))).toBe(locale)
-        }
-      }
-    },
-  )
+  test.each(localizedCases)('switches $source to $expected', ({ expected, locale, path, source }) => {
+    const localized = localizedPath(source, locale)
+    expect(localized).toBe(expected)
+    expect(documentPath(localized)).toBe(path)
+    expect(documentLocale(localized)).toBe(locale)
+  })
+})
 
-  it.each(['ja', 'en'] as const)(
-    'localizes root-relative article links in %s while preserving queries and anchors',
-    (locale) => {
-      expect(localizeDocumentLink('/', locale)).toBe(`/${locale}`)
-      expect(localizeDocumentLink('/guide/getting-started', locale)).toBe(`/${locale}/guide/getting-started`)
-      expect(localizeDocumentLink('/guide/getting-started?view=all#params', locale)).toBe(
-        `/${locale}/guide/getting-started?view=all#params`,
-      )
-      expect(localizeDocumentLink('/#overview', locale)).toBe(`/${locale}/#overview`)
-    },
-  )
+describe('documentation links', () => {
+  test.each(['ja', 'en'] as const)('localizes links in %s while preserving queries and anchors', (locale) => {
+    expect(localizeDocumentLink('/', locale)).toBe(`/${locale}`)
+    expect(localizeDocumentLink('/guide/getting-started', locale)).toBe(`/${locale}/guide/getting-started`)
+    expect(localizeDocumentLink('/guide/getting-started?view=all#params', locale)).toBe(
+      `/${locale}/guide/getting-started?view=all#params`,
+    )
+    expect(localizeDocumentLink('/#overview', locale)).toBe(`/${locale}/#overview`)
+  })
 
-  it.each([
+  test.each([
     undefined,
     '',
     '#params',
@@ -79,23 +88,26 @@ describe('documentation locale paths', () => {
     expect(localizeDocumentLink(href, 'en')).toBe(href)
   })
 
-  it('does not mistake a locale-like article name for an existing prefix', () => {
+  test('does not mistake a locale-like article name for an existing prefix', () => {
     expect(localizeDocumentLink('/english', 'en')).toBe('/en/english')
     expect(localizeDocumentLink('/japanese', 'ja')).toBe('/ja/japanese')
   })
 })
 
+const loadArticle = async (path: string): Promise<unknown> =>
+  // oxlint-disable-next-line rules/no-effect-runtime-run -- Each Vitest case runs an independent article load.
+  Effect.runPromise(getPage(path).content())
+
 describe('missing English article', () => {
-  it('fails instead of serving available Japanese content', async () => {
-    const legacy = markdownPages.find((page) => page.slug === '/guide/getting-started')
-    const japanese = localizedMarkdownPages('ja').find((page) => page.slug === '/ja/guide/getting-started')
-    const english = localizedMarkdownPages('en').find((page) => page.slug === '/en/guide/getting-started')
-    expect(legacy).toBeDefined()
-    expect(japanese).toBeDefined()
-    expect(english).toBeDefined()
-    await expect(Effect.runPromise(legacy!.content())).resolves.toBeDefined()
-    await expect(Effect.runPromise(japanese!.content())).resolves.toBeDefined()
-    await expect(Effect.runPromise(english!.content())).rejects.toThrow(
+  test.each(['/guide/getting-started', '/ja/guide/getting-started'])(
+    'still loads the Japanese article at %s',
+    async (path) => {
+      await expect(loadArticle(path)).resolves.toBeDefined()
+    },
+  )
+
+  test('fails instead of serving available Japanese content', async () => {
+    await expect(loadArticle('/en/guide/getting-started')).rejects.toThrow(
       'Documentation article is missing: en/missing-english-translation',
     )
   })
