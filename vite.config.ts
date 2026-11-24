@@ -56,5 +56,5 @@ export default defineConfig({
       'test:browser': 'playwright test --config tests/playwright.config.ts',
     },
   },
-  test: { include: ['src/**/*.test.{ts,tsx}'] },
+  test: { dir: 'src' },
 })
