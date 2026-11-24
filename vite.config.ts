@@ -7,8 +7,13 @@ import { defineConfig } from 'vite-plus'
 
 const ignorePatterns = await generateIgnorePatterns(new URL('.', import.meta.url))
 
-// oxlint-disable-next-line import/no-default-export -- Vite loads the default configuration export.
+// oxlint-disable-next-line import/no-default-export, eslint/sort-keys -- Vite loads the default export. Keep its config sections in base order so this change composes with the test discovery update.
 export default defineConfig({
+  plugins: [
+    effrontTailwind({ stylesheet: './src/styles.css' }),
+    effront({ application: './src/entry.effront.tsx' }),
+    effrontAlchemy(),
+  ],
   fmt: {
     arrowParens: 'always',
     ignorePatterns,
@@ -24,11 +29,7 @@ export default defineConfig({
     ignorePatterns,
     options: { ...preset.options, typeCheck: true },
   },
-  plugins: [
-    effrontTailwind({ stylesheet: './src/styles.css' }),
-    effront({ application: './src/entry.effront.tsx' }),
-    effrontAlchemy(),
-  ],
+  test: { dir: 'src' },
   run: {
     tasks: {
       build: {
@@ -56,5 +57,4 @@ export default defineConfig({
       'test:browser': 'playwright test --config tests/playwright.config.ts',
     },
   },
-  test: { dir: 'src' },
 })
