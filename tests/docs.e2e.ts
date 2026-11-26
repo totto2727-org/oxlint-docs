@@ -27,8 +27,8 @@ for (const locale of ['en', 'ja'] as const) {
     await expect(article).not.toContainText('.tgz')
     await expect(article).not.toContainText('npm pack')
   })
-  test(`all 36 local rule pages render the authored content and anchors in ${locale}`, async ({ request }) => {
-    expect(ruleArticles).toHaveLength(36)
+  test(`all 37 local rule pages render the authored content and anchors in ${locale}`, async ({ request }) => {
+    expect(ruleArticles).toHaveLength(37)
     for (const rule of ruleArticles) {
       const response = await request.get(`/${locale}/rules/${rule.name}`, { headers: { Accept: 'text/html' } })
       expect(response.status()).toBe(200)
@@ -42,15 +42,32 @@ for (const locale of ['en', 'ja'] as const) {
       expect(body).not.toContain('architecture-baseline')
     }
   })
+  test(`shared rules show native policy and React examples in ${locale}`, async ({ page }) => {
+    await page.goto(`/${locale}/presets/typescript`)
+    const article = page.locator('article')
+    await expect(article.locator('#function-style')).toBeVisible()
+    await expect(article).toContainText('eslint/no-undef')
+    await expect(article).toContainText('TS2304')
+    await expect(article).toContainText('eslint/sort-keys')
+    await expect(article).toContainText('Class Variance Authority')
+    await expect(article).toContainText('namedComponents')
+    await expect(article).toContainText('unnamedComponents')
+    const example = article.locator('[data-code-block]')
+    await expect(example).toContainText('function formatName')
+    await expect(example).toContainText('const Card = ()')
+    await expect(example).toContainText('React.memo(()')
+    await expect(example).toContainText('React.forwardRef')
+  })
+
   test(`Rules and Presets are separate in the actual ${locale} navigation`, async ({ page }) => {
     await page.goto(`/${locale}`)
     const sidebar = page.locator('[data-slot="sidebar-content"]')
     const rules = sidebar.getByRole('list', { exact: true, name: 'Rules' })
     const presets = sidebar.getByRole('list', { exact: true, name: 'Presets' })
-    await expect(rules.getByRole('link')).toHaveCount(36)
+    await expect(rules.getByRole('link')).toHaveCount(37)
     await expect(presets.getByRole('link')).toHaveCount(2)
     await expect(rules.getByRole('list', { exact: true, name: 'TypeScript' }).getByRole('link')).toHaveCount(11)
-    await expect(rules.getByRole('list', { exact: true, name: 'Effect' }).getByRole('link')).toHaveCount(25)
+    await expect(rules.getByRole('list', { exact: true, name: 'Effect' }).getByRole('link')).toHaveCount(26)
     for (const name of externalEffectRuleNames) {
       await expect(sidebar.locator(`a[href="/${locale}/rules/${name}"]`)).toHaveCount(0)
     }

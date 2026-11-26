@@ -2,8 +2,7 @@ import type { DocLocale } from './locale.ts'
 import { effectRuleSource } from './policies.ts'
 import { ruleArticles, ruleMarkdown } from './rules.ts'
 
-const presetSource =
-  'https://github.com/totto2727-org/oxlint/blob/bed13483292d75318f9ca01e124aa666edaa8202/src/preset.ts'
+const presetSource = 'https://github.com/totto2727-org/oxlint/blob/main/src/preset.ts'
 
 const fence = (language: string, text: string): string => `\`\`\`${language}\n${text}\n\`\`\``
 
@@ -112,6 +111,19 @@ ${run}
 行単位の例外は[共通ルール](/presets/typescript#exceptions)を参照してください。`,
 }
 
+const functionStyle = fence(
+  'tsx',
+  `import * as React from 'react'
+
+const formatName = function formatName(name: string) {
+  return name.trim()
+}
+
+const Card = () => <article />
+const MemoCard = React.memo(() => <article />)
+const CardWithRef = React.forwardRef<HTMLElement>((_props, ref) => <article ref={ref} />)`,
+)
+
 const shared = {
   en: `## Usage {#usage}
 
@@ -131,7 +143,26 @@ They add Vitest rules only to \`*.test.ts\` and \`*.test.tsx\` files.
 In these files, use \`test\` instead of \`it\`.
 The presets turn off \`no-magic-numbers\` only in these files.
 Use your formatter to sort imports.
+
+The shared, application and library presets turn off \`eslint/no-undef\` in JavaScript and TypeScript, including test files.
+When you enable TypeScript compiler checks, an undeclared name in TypeScript can produce \`TS2304\`.
+
+The three presets turn off \`eslint/sort-keys\`.
+Changing property order can change the order of value evaluation and \`Object.keys()\` results.
+Class Variance Authority (CVA) reads variant keys in that order, which can change the order of the classes in its output.
 See the [preset source](${presetSource}) for the full configuration.
+
+## Function style {#function-style}
+
+| Rule | Severity | Setting |
+| --- | --- | --- |
+| \`eslint/func-style\` | \`error\` | \`expression\` |
+| \`react/function-component-definition\` | \`error\` | \`namedComponents: 'arrow-function'\`, \`unnamedComponents: 'arrow-function'\` |
+
+For ordinary functions, use arrow functions or named function expressions in variable initializers.
+Use arrow functions for React components, including inline components passed to \`React.memo\` or \`React.forwardRef\`.
+
+${functionStyle}
 
 ## Custom rules {#included}
 
@@ -160,7 +191,26 @@ React とアクセシビリティのルールを含みます。
 Vitest ルールは \`*.test.ts\` と \`*.test.tsx\` にのみ適用します。
 これらのファイルでは \`test\` を使い、数値リテラルを許可します。
 import の並び替えにはフォーマッターを使います。
+
+共通・アプリケーション・ライブラリの各プリセットは、テストを含む JavaScript と TypeScript で \`eslint/no-undef\` を無効にします。
+TypeScript の型検査を有効にすると、TypeScript 内の未宣言の名前が \`TS2304\` として報告される場合があります。
+
+3つのプリセットは \`eslint/sort-keys\` を無効にします。
+プロパティの並び替えは、値の評価順や \`Object.keys()\` の列挙順を変えることがあります。
+Class Variance Authority（CVA）はその順序でバリアントを読み取るため、出力内のクラスの順序も変わることがあります。
 全設定は[プリセットのソース](${presetSource})を参照してください。
+
+## 関数形式 {#function-style}
+
+| ルール | 重大度 | 設定 |
+| --- | --- | --- |
+| \`eslint/func-style\` | \`error\` | \`expression\` |
+| \`react/function-component-definition\` | \`error\` | \`namedComponents: 'arrow-function'\`, \`unnamedComponents: 'arrow-function'\` |
+
+通常の関数には、変数の初期化でアロー関数または名前付き関数式を使えます。
+React コンポーネントには、\`React.memo\` や \`React.forwardRef\` に直接渡すものも含めてアロー関数を使います。
+
+${functionStyle}
 
 ## 独自ルール {#included}
 

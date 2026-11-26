@@ -63,6 +63,16 @@ describe('rendered articles', () => {
     expect(html.match(/data-code-block/gu)?.length).toBeGreaterThanOrEqual(2)
   })
 
+  test.each(locales)('renders the shared language and function policies in %s', async (locale) => {
+    const html = await renderArticle(localizedPath('/presets/typescript', locale))
+    expect(html).toContain('eslint/no-undef')
+    expect(html).toContain('TS2304')
+    expect(html).toContain('eslint/sort-keys')
+    expect(html).toContain('Class Variance Authority')
+    expect(html).toContain('namedComponents')
+    expect(html).toContain('unnamedComponents')
+  })
+
   test.each(locales)('keeps the vendored rule source with the Effect reference in %s', async (locale) => {
     const html = await renderArticle(localizedPath('/presets/effect', locale))
     expect(html).toContain(effectRuleSource)

@@ -46,6 +46,7 @@ const articles: StaticArticle[] = [
     headings: [
       { en: 'Usage', id: 'usage', ja: '使い方' },
       { en: 'Oxlint rules', id: 'baseline', ja: 'Oxlint のルール' },
+      { en: 'Function style', id: 'function-style', ja: '関数形式' },
       { en: 'Custom rules', id: 'included', ja: '独自ルール' },
       { en: 'Exceptions', id: 'exceptions', ja: '例外' },
     ],

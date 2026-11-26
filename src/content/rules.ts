@@ -14,7 +14,7 @@ export interface RuleArticle {
   readonly options?: readonly [string, string]
 }
 
-// Authored against @totto2727/oxlint 0.2.0.
+// Keep this inventory in sync with the installed shared preset.
 // Examples are syntax fixtures for this individual rule, not complete runnable programs.
 export const ruleArticles: readonly RuleArticle[] = [
   {
@@ -338,6 +338,18 @@ export const ruleArticles: readonly RuleArticle[] = [
       "import { DateTime, Effect } from 'effect'\n\nconst renderDate = Effect.gen(function* () {\n  const date = yield* DateTime.now\n  return DateTime.formatIso(date)\n})",
   },
   {
+    name: 'no-raw-crypto',
+    group: 'Effect',
+    purpose: ['Use Effect services for cryptography.', '暗号処理には Effect のサービスを使います。'],
+    details: [
+      'The rule reports direct use of the global Web Crypto API and runtime imports of Node crypto. Use the services in effect/crypto for hashing, signing and secure randomness. Supply the implementation at the runtime boundary.',
+      'グローバルな Web Crypto API の直接利用と、Node crypto の実行時 import を報告します。ハッシュ、署名、暗号学的乱数には effect/crypto のサービスを使い、実行境界で実装を供給します。',
+    ],
+    invalid: "import { randomUUID } from 'node:crypto'\nconst id = randomUUID()",
+    valid:
+      "import { Effect } from 'effect'\nimport { SecureRandom } from 'effect/crypto'\nconst id = Effect.gen(function* () {\n  const random = yield* SecureRandom.SecureRandom\n  return yield* random.uuidV4()\n})",
+  },
+  {
     name: 'no-node-imports',
     group: 'Effect',
     purpose: [
@@ -519,7 +531,7 @@ export const ruleHeadings = (locale: DocLocale): { id: string; title: string }[]
 ]
 
 const fence = (code: string): string => `\`\`\`tsx\n${code}\n\`\`\``
-const sourceBase = 'https://github.com/totto2727-org/oxlint/blob/bed13483292d75318f9ca01e124aa666edaa8202/src/rules/'
+const sourceBase = 'https://github.com/totto2727-org/oxlint/blob/b4038e28d70dcc8fb35ea10526619577390e9acc/src/rules/'
 
 const languageIndex = { en: 0, ja: 1 } as const
 const filenameException = [
