@@ -7,7 +7,7 @@ import type application from './entry.effront.tsx'
 export default Cloudflare.Worker(
   'Docs',
   {
-    // oxlint-disable-next-line eslint/no-undef, node/no-process-env -- Alchemy evaluates stage selection in Node during planning.
+    // oxlint-disable-next-line node/no-process-env -- Alchemy evaluates stage selection in Node during planning.
     ...(process.env['ALCHEMY_STAGE'] === 'production'
       ? { domain: { name: 'oxlint.totto2727.dev', zoneName: 'totto2727.dev' } }
       : {}),

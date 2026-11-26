@@ -1,7 +1,7 @@
 /* oxlint-disable eslint/max-lines -- Keep both translations and examples together for every rule. */
 import type { DocLocale } from './locale.ts'
 
-/* oxlint-disable rules/no-readonly, eslint/sort-keys -- Preserve the public immutable article contract and keep fields in reading order. */
+/* oxlint-disable rules/no-readonly -- Preserve the public immutable article contract. */
 export interface RuleArticle {
   readonly name: string
   readonly group: 'TypeScript' | 'Effect'
@@ -507,7 +507,7 @@ export const ruleArticles: readonly RuleArticle[] = [
   },
 ]
 
-/* oxlint-enable rules/no-readonly, eslint/sort-keys */
+/* oxlint-enable rules/no-readonly */
 
 export const ruleHeadings = (locale: DocLocale): { id: string; title: string }[] => [
   { id: 'purpose', title: locale === 'en' ? 'Purpose and behavior' : '目的と動作' },

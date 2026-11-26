@@ -7,7 +7,7 @@ import { defineConfig } from 'vite-plus'
 
 const ignorePatterns = await generateIgnorePatterns(new URL('.', import.meta.url))
 
-// oxlint-disable-next-line import/no-default-export, eslint/sort-keys -- Vite loads the default export. Keep its config sections in base order so this change composes with the test discovery update.
+// oxlint-disable-next-line import/no-default-export -- Vite loads the default export.
 export default defineConfig({
   plugins: [
     effrontTailwind({ stylesheet: './src/styles.css' }),
