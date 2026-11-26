@@ -2,7 +2,6 @@
 
 /* oxlint-disable react/no-multi-comp -- Keep the related Radix tooltip slots together. */
 /* oxlint-disable react/forbid-component-props, react/jsx-props-no-spreading -- These wrappers forward Radix attributes and Tailwind styles. */
-/* oxlint-disable react/function-component-definition -- The application preset requires function expressions through eslint/func-style. */
 import * as React from 'react'
 import { Tooltip as TooltipPrimitive } from 'radix-ui'
 // oxlint-disable-next-line import/no-relative-parent-imports -- Reuse the application's class merging helper.

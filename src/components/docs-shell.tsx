@@ -1,7 +1,6 @@
 'use client'
 
 /* oxlint-disable react/no-multi-comp, react/jsx-max-depth, react/forbid-component-props -- Retain the shell's landmark hierarchy, related components, and Tailwind styling. */
-/* oxlint-disable react/function-component-definition -- The preset's eslint/func-style requires function expressions. */
 /* oxlint-disable eslint/max-lines, eslint/max-lines-per-function -- Keep the copied shell and its navigation layout together. */
 /* oxlint-disable react-perf/jsx-no-new-function-as-prop -- Navigation callbacks close over the current render and mobile state. */
 /* oxlint-disable import/no-relative-parent-imports -- The shell uses the application's shared locale contract. */

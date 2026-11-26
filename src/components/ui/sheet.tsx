@@ -2,7 +2,6 @@
 
 /* oxlint-disable react/no-multi-comp, react/jsx-max-depth -- Keep the related Radix dialog slots and their accessible portal structure together. */
 /* oxlint-disable react/forbid-component-props, react/jsx-props-no-spreading -- These wrappers forward Radix attributes and Tailwind styles. */
-/* oxlint-disable react/function-component-definition -- The application preset requires function expressions through eslint/func-style. */
 import * as React from 'react'
 import { XIcon } from 'lucide-react'
 import { Dialog as SheetPrimitive } from 'radix-ui'

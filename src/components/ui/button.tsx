@@ -21,14 +21,13 @@ const buttonVariants = cva(
   },
 )
 
-// oxlint-disable-next-line eslint/func-style -- React's component-definition rule requires a named declaration.
-export function Button({
+export const Button = ({
   className,
   variant,
   size,
   asChild = false,
   ...props
-}: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean }): React.JSX.Element {
+}: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants> & { asChild?: boolean }): React.JSX.Element => {
   const Comp = asChild ? Slot.Root : 'button'
   // oxlint-disable-next-line react/forbid-component-props, react/jsx-props-no-spreading -- The Radix Slot must receive native button props and the merged class name.
   return <Comp data-slot='button' className={cn(buttonVariants({ size, variant }), className)} {...props} />

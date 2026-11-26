@@ -1,7 +1,6 @@
 'use client'
 
 /* oxlint-disable react/no-multi-comp, react/jsx-max-depth, react/forbid-component-props, react/jsx-props-no-spreading -- Retain the compound sidebar and forward styled native and Radix props unchanged. */
-/* oxlint-disable react/function-component-definition -- The preset's eslint/func-style requires function expressions. */
 /* oxlint-disable eslint/max-lines, eslint/max-lines-per-function, import/max-dependencies -- Keep this copied compound sidebar and its dependency wiring together. */
 /* oxlint-disable react-perf/jsx-no-new-function-as-prop -- Sidebar callbacks capture the current handlers and ref. */
 /* oxlint-disable react/only-export-components -- The compound sidebar exports its associated context hook. */

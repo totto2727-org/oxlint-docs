@@ -14,17 +14,16 @@ type AlertComponent = (props: { children?: ReactNode }) => JSX.Element
 const alertComponent = (type: keyof typeof alerts): AlertComponent => {
   const { title, Icon } = alerts[type]
   // oxlint-disable-next-line react/only-export-components -- Comark looks up server-rendered alerts in the exported registry.
-  return function MarkdownAlert({ children }: { children?: ReactNode }): JSX.Element {
-    return (
-      <aside className='docs-alert' data-alert={type} aria-label={title}>
-        <p className='docs-alert-title'>
-          <Icon size={16} aria-hidden='true' />
-          {title}
-        </p>
-        <div className='docs-alert-body'>{children}</div>
-      </aside>
-    )
-  }
+  const MarkdownAlert = ({ children }: { children?: ReactNode }): JSX.Element => (
+    <aside className='docs-alert' data-alert={type} aria-label={title}>
+      <p className='docs-alert-title'>
+        <Icon size={16} aria-hidden='true' />
+        {title}
+      </p>
+      <div className='docs-alert-body'>{children}</div>
+    </aside>
+  )
+  return MarkdownAlert
 }
 
 // Comark's default alert plugin resolves its `as` attribute through this map.
