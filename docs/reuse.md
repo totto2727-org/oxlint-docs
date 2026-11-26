@@ -36,7 +36,7 @@ The response-cache policy differs from the referenced Effront revision as descri
 - Replace Effront articles with Oxlint guides, presets and local rule references.
 - Store both languages in `src/content/`. Do not read Git, source files or the network during rendering.
 - Register authored routes explicitly and retain native 404 behavior.
-- Show 29 local rules in TypeScript and Effect groups. Keep two preset pages separate.
+- Group local rule pages under TypeScript and Effect. Keep the shared settings and tracing references separate.
 - Redirect five external-rule URLs to the localized Effect preset's `official-effect` section.
   GET/HEAD redirects use status 308 and preserve queries for HTML and Flight.
 - Build a documentation Worker and use a development-only Nix shell. Do not export an npm CLI or native executable.
@@ -86,20 +86,11 @@ The original Effront source attribution remains unchanged.
 
 ## External policy documentation
 
-Only the library incorporates external lint sources. This site describes their preset use.
-
-| Source                                                                                                                                                      | Compared revision                          | Documentation scope                                     |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------- |
-| [Effect Oxc rules](https://github.com/Effect-TS/effect/tree/b1d200c40a1dad69def51ebdbf0a1a612a12b8ac/packages/tools/oxc/src/oxlint/rules)                   | `b1d200c40a1dad69def51ebdbf0a1a612a12b8ac` | Included names, source and disabled-rule reasons        |
-| [Ultracite 7.12.3 core](https://github.com/haydenbleasel/ultracite/blob/48156546701badf2c6e60f25cf1e8511f7dc44c7/packages/cli/config/oxlint/core/index.mjs) | `48156546701badf2c6e60f25cf1e8511f7dc44c7` | Shared settings, ignores and three conflict adjustments |
-
-The plugin exports 29 local rules and five incorporated Effect rules.
-The private Effect tools package is not a separately installed plugin.
-The Effect preset enables four external rules and disables `no-js-extension-imports` to avoid overlap and opposite fixes in `js` mode.
-The two local import-compatibility rules remain opt-in because they impose the opposite convention.
-Ultracite documentation covers native settings only, not its CLI, React, JavaScript-plugin, type-aware or formatter layers.
-Both groups discard external file overrides and test exemptions.
-TypeScript and combined presets retain the `**/*.gen.ts` alias allowance.
+The site uses the [application preset from `@totto2727/oxlint` 0.2.0](https://github.com/totto2727-org/oxlint/blob/bed13483292d75318f9ca01e124aa666edaa8202/src/preset.ts).
+The site documents 36 local rules and four rules from [Effect's Oxc sources](https://github.com/Effect-TS/effect/tree/b1d200c40a1dad69def51ebdbf0a1a612a12b8ac/packages/tools/oxc/src/oxlint/rules).
+The package includes those four implementations directly. The site does not install Effect's private tools package.
+The two local import extension rules replace `no-js-extension-imports`.
+The presets use native Oxlint rules without Ultracite. The site also enables TypeScript compiler diagnostics.
 
 ## Operational limits
 

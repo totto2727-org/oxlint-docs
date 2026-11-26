@@ -1,30 +1,36 @@
 import { Application } from '@effront/core'
-import { Context, Effect, Layer } from 'effect'
+import { Context, Effect, Layer, Predicate } from 'effect'
 import { HttpRouter, HttpServerRequest, HttpServerResponse } from 'effect/http'
-import { DocsShell } from './components/docs-shell'
-import { getPage, navigation, localizedNavigation } from './content'
-import { documentLocale, documentPath, localizedPath } from './content/locale'
-import { externalEffectRuleNames } from './content/policies'
-import { responseCache } from './response-cache'
+import { DocsShell } from './components/docs-shell.tsx'
+import { documentLocale, documentPath, localizedPath } from './content/locale.ts'
+import { getPage, localizedNavigation, navigation, navigationItem } from './content/pages.ts'
+import { retiredRuleRedirects } from './content/policies.ts'
+import { responseCache } from './response-cache.ts'
+import type { ReactElement } from 'react'
+import type { RenderableDocPage } from './content/types.ts'
 
 class RequestPath extends Context.Service<RequestPath, string>()('oxlint-docs/RequestPath') {}
 const RequestPathLive = Layer.effect(
   RequestPath,
   Effect.map(HttpServerRequest.HttpServerRequest, (request) => new URL(request.url, 'https://oxlint.local').pathname),
 )
-// Retired external-rule articles redirect before route matching for both HTML and Flight.
-const ExternalRuleRedirects = HttpRouter.middleware(
+const hasLocalePath = (path: string): boolean => /^\/(?:en|ja)(?:\/|$)/u.test(path)
+
+// Retired rule articles redirect before route matching for both HTML and Flight.
+const RetiredRuleRedirects = HttpRouter.middleware(
   (httpEffect) =>
     Effect.gen(function* () {
       const request = yield* HttpServerRequest.HttpServerRequest
       const url = new URL(request.url, 'https://oxlint.local')
       if (request.method === 'GET' || request.method === 'HEAD') {
-        const path = documentPath(url.pathname).replace(/\/+$/, '')
-        if (externalEffectRuleNames.some((name) => path === `/rules/${name}`)) {
-          const destination = /^\/(en|ja)(?:\/|$)/.test(url.pathname)
-            ? localizedPath('/presets/effect', documentLocale(url.pathname))
-            : '/presets/effect'
-          return HttpServerResponse.redirect(`${destination}${url.search}#official-effect`, { status: 308 })
+        const path = documentPath(url.pathname).replace(/\/+$/u, '')
+        const target = retiredRuleRedirects.get(path)
+        if (Predicate.isNotNullish(target)) {
+          const destination = new URL(target, url.origin)
+          const location = hasLocalePath(url.pathname)
+            ? localizedPath(destination.pathname, documentLocale(url.pathname))
+            : destination.pathname
+          return HttpServerResponse.redirect(`${location}${url.search}${destination.hash}`, { status: 308 })
         }
       }
       return yield* httpEffect
@@ -38,7 +44,7 @@ const RootLayout = EFFRONT.Layout.make({
     Effect.map(RequestPath, (pathname) => {
       const page = getPage(pathname)
       const locale = documentLocale(pathname)
-      const prefixed = /^\/(en|ja)(?:\/|$)/.test(pathname)
+      const prefixed = hasLocalePath(pathname)
       return (
         <html lang={locale} className='dark'>
           <head>
@@ -47,7 +53,7 @@ const RootLayout = EFFRONT.Layout.make({
           </head>
           <body>
             <DocsShell
-              current={{ slug: page.slug, title: page.title, section: page.section, group: page.group }}
+              current={navigationItem(page)}
               navigation={prefixed ? localizedNavigation(locale) : navigation}
               locale={locale}
               headings={page.headings}
@@ -59,7 +65,19 @@ const RootLayout = EFFRONT.Layout.make({
       )
     }),
 })
-function documentPage(slug: string) {
+const renderArticleHeader = ({
+  description,
+  section,
+  title,
+}: Pick<RenderableDocPage, 'description' | 'section' | 'title'>): ReactElement => (
+  <header className='not-prose mb-10 border-b pb-8'>
+    <p className='mb-3 text-xs font-semibold uppercase tracking-widest text-emerald-700'>{section}</p>
+    <h1 className='text-3xl font-semibold tracking-tight sm:text-4xl'>{title}</h1>
+    <p className='mt-4 text-base leading-8 text-muted-foreground'>{description}</p>
+  </header>
+)
+
+const documentPage = (slug: string): ReturnType<typeof EFFRONT.Page.make> => {
   const page = getPage(slug)
   return EFFRONT.Page.make({
     render: () =>
@@ -68,11 +86,7 @@ function documentPage(slug: string) {
           <title>{`${page.title} | @totto2727/oxlint`}</title>
           <meta name='description' content={page.description} />
           <article className='prose prose-neutral max-w-none dark:prose-invert' data-doc-page={page.slug}>
-            <header className='not-prose mb-10 border-b pb-8'>
-              <p className='mb-3 text-xs font-semibold uppercase tracking-widest text-emerald-700'>{page.section}</p>
-              <h1 className='text-3xl font-semibold tracking-tight sm:text-4xl'>{page.title}</h1>
-              <p className='mt-4 text-base leading-8 text-muted-foreground'>{page.description}</p>
-            </header>
+            {renderArticleHeader(page)}
             {content}
           </article>
         </>
@@ -88,7 +102,10 @@ const routes = EFFRONT.withMiddleware(ResponseCache)
   .page('/presets/effect', documentPage('/presets/effect'))
   .page('/rules/consistent-import-extension', documentPage('/rules/consistent-import-extension'))
   .page('/rules/require-import-extension', documentPage('/rules/require-import-extension'))
-  .page('/rules/force-ts-extension', documentPage('/rules/force-ts-extension'))
+  .page('/rules/effect-tracing', documentPage('/rules/effect-tracing'))
+  .page('/rules/no-index-filename', documentPage('/rules/no-index-filename'))
+  .page('/rules/no-local-export-list', documentPage('/rules/no-local-export-list'))
+  .page('/rules/require-vitest-hooks', documentPage('/rules/require-vitest-hooks'))
   .page('/rules/no-eslint-disable-comments', documentPage('/rules/no-eslint-disable-comments'))
   .page('/rules/no-jsx-script-tag', documentPage('/rules/no-jsx-script-tag'))
   .page('/rules/no-let', documentPage('/rules/no-let'))
@@ -102,14 +119,19 @@ const routes = EFFRONT.withMiddleware(ResponseCache)
   .page('/rules/no-effect-import-as', documentPage('/rules/no-effect-import-as'))
   .page('/rules/no-effect-runtime-run', documentPage('/rules/no-effect-runtime-run'))
   .page('/rules/no-effect-subpath-import', documentPage('/rules/no-effect-subpath-import'))
-  .page('/rules/no-error-cause-option', documentPage('/rules/no-error-cause-option'))
+  .page('/rules/no-optional-error-cause', documentPage('/rules/no-optional-error-cause'))
   .page('/rules/no-error-property-access', documentPage('/rules/no-error-property-access'))
   .page('/rules/no-fetch', documentPage('/rules/no-fetch'))
   .page('/rules/no-instanceof-error', documentPage('/rules/no-instanceof-error'))
   .page('/rules/no-js-date', documentPage('/rules/no-js-date'))
   .page('/rules/no-node-imports', documentPage('/rules/no-node-imports'))
-  .page('/rules/no-option-tag-comparison', documentPage('/rules/no-option-tag-comparison'))
-  .page('/rules/no-raw-hono-create-middleware', documentPage('/rules/no-raw-hono-create-middleware'))
+  .page('/rules/no-raw-crypto', documentPage('/rules/no-raw-crypto'))
+  .page('/rules/no-direct-tag-access', documentPage('/rules/no-direct-tag-access'))
+  .page('/rules/no-for-loops', documentPage('/rules/no-for-loops'))
+  .page('/rules/no-readonly', documentPage('/rules/no-readonly'))
+  .page('/rules/prefer-schema-format-validation', documentPage('/rules/prefer-schema-format-validation'))
+  .page('/rules/require-tagged-data', documentPage('/rules/require-tagged-data'))
+  .page('/rules/require-tagged-error', documentPage('/rules/require-tagged-error'))
   .page('/rules/no-sync-decode', documentPage('/rules/no-sync-decode'))
   .page('/rules/no-type-predicate', documentPage('/rules/no-type-predicate'))
   .page('/rules/prefer-is-nullish', documentPage('/rules/prefer-is-nullish'))
@@ -121,7 +143,10 @@ const routes = EFFRONT.withMiddleware(ResponseCache)
   .page('/en/presets/effect', documentPage('/en/presets/effect'))
   .page('/en/rules/consistent-import-extension', documentPage('/en/rules/consistent-import-extension'))
   .page('/en/rules/require-import-extension', documentPage('/en/rules/require-import-extension'))
-  .page('/en/rules/force-ts-extension', documentPage('/en/rules/force-ts-extension'))
+  .page('/en/rules/effect-tracing', documentPage('/en/rules/effect-tracing'))
+  .page('/en/rules/no-index-filename', documentPage('/en/rules/no-index-filename'))
+  .page('/en/rules/no-local-export-list', documentPage('/en/rules/no-local-export-list'))
+  .page('/en/rules/require-vitest-hooks', documentPage('/en/rules/require-vitest-hooks'))
   .page('/en/rules/no-eslint-disable-comments', documentPage('/en/rules/no-eslint-disable-comments'))
   .page('/en/rules/no-jsx-script-tag', documentPage('/en/rules/no-jsx-script-tag'))
   .page('/en/rules/no-let', documentPage('/en/rules/no-let'))
@@ -135,14 +160,19 @@ const routes = EFFRONT.withMiddleware(ResponseCache)
   .page('/en/rules/no-effect-import-as', documentPage('/en/rules/no-effect-import-as'))
   .page('/en/rules/no-effect-runtime-run', documentPage('/en/rules/no-effect-runtime-run'))
   .page('/en/rules/no-effect-subpath-import', documentPage('/en/rules/no-effect-subpath-import'))
-  .page('/en/rules/no-error-cause-option', documentPage('/en/rules/no-error-cause-option'))
+  .page('/en/rules/no-optional-error-cause', documentPage('/en/rules/no-optional-error-cause'))
   .page('/en/rules/no-error-property-access', documentPage('/en/rules/no-error-property-access'))
   .page('/en/rules/no-fetch', documentPage('/en/rules/no-fetch'))
   .page('/en/rules/no-instanceof-error', documentPage('/en/rules/no-instanceof-error'))
   .page('/en/rules/no-js-date', documentPage('/en/rules/no-js-date'))
   .page('/en/rules/no-node-imports', documentPage('/en/rules/no-node-imports'))
-  .page('/en/rules/no-option-tag-comparison', documentPage('/en/rules/no-option-tag-comparison'))
-  .page('/en/rules/no-raw-hono-create-middleware', documentPage('/en/rules/no-raw-hono-create-middleware'))
+  .page('/en/rules/no-raw-crypto', documentPage('/en/rules/no-raw-crypto'))
+  .page('/en/rules/no-direct-tag-access', documentPage('/en/rules/no-direct-tag-access'))
+  .page('/en/rules/no-for-loops', documentPage('/en/rules/no-for-loops'))
+  .page('/en/rules/no-readonly', documentPage('/en/rules/no-readonly'))
+  .page('/en/rules/prefer-schema-format-validation', documentPage('/en/rules/prefer-schema-format-validation'))
+  .page('/en/rules/require-tagged-data', documentPage('/en/rules/require-tagged-data'))
+  .page('/en/rules/require-tagged-error', documentPage('/en/rules/require-tagged-error'))
   .page('/en/rules/no-sync-decode', documentPage('/en/rules/no-sync-decode'))
   .page('/en/rules/no-type-predicate', documentPage('/en/rules/no-type-predicate'))
   .page('/en/rules/prefer-is-nullish', documentPage('/en/rules/prefer-is-nullish'))
@@ -154,7 +184,10 @@ const routes = EFFRONT.withMiddleware(ResponseCache)
   .page('/ja/presets/effect', documentPage('/ja/presets/effect'))
   .page('/ja/rules/consistent-import-extension', documentPage('/ja/rules/consistent-import-extension'))
   .page('/ja/rules/require-import-extension', documentPage('/ja/rules/require-import-extension'))
-  .page('/ja/rules/force-ts-extension', documentPage('/ja/rules/force-ts-extension'))
+  .page('/ja/rules/effect-tracing', documentPage('/ja/rules/effect-tracing'))
+  .page('/ja/rules/no-index-filename', documentPage('/ja/rules/no-index-filename'))
+  .page('/ja/rules/no-local-export-list', documentPage('/ja/rules/no-local-export-list'))
+  .page('/ja/rules/require-vitest-hooks', documentPage('/ja/rules/require-vitest-hooks'))
   .page('/ja/rules/no-eslint-disable-comments', documentPage('/ja/rules/no-eslint-disable-comments'))
   .page('/ja/rules/no-jsx-script-tag', documentPage('/ja/rules/no-jsx-script-tag'))
   .page('/ja/rules/no-let', documentPage('/ja/rules/no-let'))
@@ -168,17 +201,24 @@ const routes = EFFRONT.withMiddleware(ResponseCache)
   .page('/ja/rules/no-effect-import-as', documentPage('/ja/rules/no-effect-import-as'))
   .page('/ja/rules/no-effect-runtime-run', documentPage('/ja/rules/no-effect-runtime-run'))
   .page('/ja/rules/no-effect-subpath-import', documentPage('/ja/rules/no-effect-subpath-import'))
-  .page('/ja/rules/no-error-cause-option', documentPage('/ja/rules/no-error-cause-option'))
+  .page('/ja/rules/no-optional-error-cause', documentPage('/ja/rules/no-optional-error-cause'))
   .page('/ja/rules/no-error-property-access', documentPage('/ja/rules/no-error-property-access'))
   .page('/ja/rules/no-fetch', documentPage('/ja/rules/no-fetch'))
   .page('/ja/rules/no-instanceof-error', documentPage('/ja/rules/no-instanceof-error'))
   .page('/ja/rules/no-js-date', documentPage('/ja/rules/no-js-date'))
   .page('/ja/rules/no-node-imports', documentPage('/ja/rules/no-node-imports'))
-  .page('/ja/rules/no-option-tag-comparison', documentPage('/ja/rules/no-option-tag-comparison'))
-  .page('/ja/rules/no-raw-hono-create-middleware', documentPage('/ja/rules/no-raw-hono-create-middleware'))
+  .page('/ja/rules/no-raw-crypto', documentPage('/ja/rules/no-raw-crypto'))
+  .page('/ja/rules/no-direct-tag-access', documentPage('/ja/rules/no-direct-tag-access'))
+  .page('/ja/rules/no-for-loops', documentPage('/ja/rules/no-for-loops'))
+  .page('/ja/rules/no-readonly', documentPage('/ja/rules/no-readonly'))
+  .page('/ja/rules/prefer-schema-format-validation', documentPage('/ja/rules/prefer-schema-format-validation'))
+  .page('/ja/rules/require-tagged-data', documentPage('/ja/rules/require-tagged-data'))
+  .page('/ja/rules/require-tagged-error', documentPage('/ja/rules/require-tagged-error'))
   .page('/ja/rules/no-sync-decode', documentPage('/ja/rules/no-sync-decode'))
   .page('/ja/rules/no-type-predicate', documentPage('/ja/rules/no-type-predicate'))
   .page('/ja/rules/prefer-is-nullish', documentPage('/ja/rules/prefer-is-nullish'))
   .page('/ja/rules/prefer-non-unknown-decode', documentPage('/ja/rules/prefer-non-unknown-decode'))
   .page('/ja/rules/require-top-level-decoder', documentPage('/ja/rules/require-top-level-decoder'))
-export default EFFRONT.make({ layer: Layer.mergeAll(RequestPathLive, ExternalRuleRedirects), routes })
+const application = EFFRONT.make({ layer: Layer.mergeAll(RequestPathLive, RetiredRuleRedirects), routes })
+// oxlint-disable-next-line import/no-default-export -- Effront loads its server application from the default export.
+export default application

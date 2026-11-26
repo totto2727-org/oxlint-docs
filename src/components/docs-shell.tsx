@@ -1,7 +1,13 @@
 'use client'
 
+/* oxlint-disable react/no-multi-comp, react/jsx-max-depth, react/forbid-component-props -- Retain the shell's landmark hierarchy, related components, and Tailwind styling. */
+/* oxlint-disable eslint/max-lines, eslint/max-lines-per-function -- Keep the copied shell and its navigation layout together. */
+/* oxlint-disable react-perf/jsx-no-new-function-as-prop -- Navigation callbacks close over the current render and mobile state. */
+/* oxlint-disable import/no-relative-parent-imports -- The shell uses the application's shared locale contract. */
 import * as React from 'react'
-import { localizedPath, type DocLocale } from '../content/locale'
+import { Array, String } from 'effect'
+import { localizedPath } from '../content/locale.ts'
+import type { DocLocale } from '../content/locale.ts'
 import { ArrowLeftIcon, ArrowRightIcon, ExternalLinkIcon, SearchIcon } from 'lucide-react'
 import {
   Sidebar,
@@ -19,7 +25,7 @@ import {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
-} from './ui/sidebar'
+} from './ui/sidebar.tsx'
 
 type NavigationItem = Readonly<{ slug: string; title: string; section: string; group?: string }>
 type Heading = Readonly<{ id: string; title: string }>
@@ -27,16 +33,16 @@ type Heading = Readonly<{ id: string; title: string }>
 export type DocsShellProps = Readonly<{
   locale?: DocLocale
   current: NavigationItem
-  navigation: readonly NavigationItem[]
-  headings: readonly Heading[]
+  navigation: Readonly<NavigationItem[]>
+  headings: Readonly<Heading[]>
   children: React.ReactNode
 }>
 
-function DocsNavigation({
+const DocsNavigation = ({
   current,
   navigation,
   locale = 'ja',
-}: Pick<DocsShellProps, 'current' | 'navigation' | 'locale'>) {
+}: Pick<DocsShellProps, 'current' | 'navigation' | 'locale'>): React.JSX.Element => {
   const [query, setQuery] = React.useState('')
   const { setOpenMobile } = useSidebar()
   const filtered = navigation.filter((item) =>
@@ -47,12 +53,18 @@ function DocsNavigation({
       .includes(query.toLocaleLowerCase()),
   )
   const sections = [...new Set(filtered.map((item) => item.section))]
-  const renderItem = (item: NavigationItem) => {
+  const renderItem = (item: NavigationItem): React.JSX.Element => {
     const active = item.slug === current.slug
     return (
       <SidebarMenuItem key={item.slug}>
         <SidebarMenuButton asChild isActive={active}>
-          <a href={item.slug} aria-current={active ? 'page' : undefined} onClick={() => setOpenMobile(false)}>
+          <a
+            href={item.slug}
+            aria-current={active ? 'page' : undefined}
+            onClick={() => {
+              setOpenMobile(false)
+            }}
+          >
             {item.title}
           </a>
         </SidebarMenuButton>
@@ -78,7 +90,9 @@ function DocsNavigation({
           />
           <SidebarInput
             value={query}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => {
+              setQuery(event.target.value)
+            }}
             placeholder={locale === 'en' ? 'Search guides' : 'ガイドを検索'}
             className='pl-7'
           />
@@ -93,15 +107,22 @@ function DocsNavigation({
               {filtered
                 .filter((item) => item.section === section)
                 .map((item, index, items) => {
-                  if (!item.group) return renderItem(item)
-                  if (items.findIndex((candidate) => candidate.group === item.group) !== index) return null
+                  if (String.isEmpty(item.group ?? '')) {
+                    return renderItem(item)
+                  }
+                  if (items.findIndex((candidate) => candidate.group === item.group) !== index) {
+                    // oxlint-disable-next-line unicorn/no-null -- React omits duplicate navigation group fragments.
+                    return null
+                  }
                   return (
                     <SidebarMenuItem key={`group:${item.group}`}>
                       <span className='block px-2 py-1.5 text-xs font-medium text-sidebar-foreground/75'>
                         {item.group}
                       </span>
                       <SidebarMenu aria-label={item.group} className='ml-2 border-l border-sidebar-border pl-2'>
-                        {items.filter((candidate) => candidate.group === item.group).map(renderItem)}
+                        {items
+                          .filter((candidate) => candidate.group === item.group)
+                          .map((candidate) => renderItem(candidate))}
                       </SidebarMenu>
                     </SidebarMenuItem>
                   )
@@ -109,7 +130,7 @@ function DocsNavigation({
             </SidebarMenu>
           </SidebarGroup>
         ))}
-        {filtered.length === 0 && (
+        {Array.isReadonlyArrayEmpty(filtered) && (
           <p className='px-5 py-4 text-sm text-sidebar-foreground/60'>
             {locale === 'en' ? 'No guides match your search.' : '一致するガイドはありません。'}
           </p>
@@ -130,15 +151,20 @@ function DocsNavigation({
   )
 }
 
-function PreviousNext({
+const PreviousNext = ({
   current,
   navigation,
   locale = 'ja',
-}: Pick<DocsShellProps, 'current' | 'navigation' | 'locale'>) {
+}: Pick<DocsShellProps, 'current' | 'navigation' | 'locale'>): React.JSX.Element | null => {
   const index = navigation.findIndex((item) => item.slug === current.slug)
+  // oxlint-disable-next-line eslint/no-magic-numbers -- One position before the current item is its previous neighbor.
   const previous = index > 0 ? navigation[index - 1] : undefined
-  const next = index >= 0 && index < navigation.length - 1 ? navigation[index + 1] : undefined
-  if (!previous && !next) return null
+  // oxlint-disable-next-line eslint/no-magic-numbers -- findIndex returns -1 for a missing item; otherwise use the next position.
+  const next = index === -1 ? undefined : navigation[index + 1]
+  if (!previous && !next) {
+    // oxlint-disable-next-line unicorn/no-null -- React renders no previous/next region when both are absent.
+    return null
+  }
   return (
     <nav
       aria-label={locale === 'en' ? 'Previous and next pages' : '前後のページ'}
@@ -172,119 +198,124 @@ function PreviousNext({
   )
 }
 
-export function DocsShell({ current, navigation, headings, children, locale = 'ja' }: DocsShellProps) {
-  return (
-    <SidebarProvider defaultOpen>
-      <a href='#main-content' className='skip-link'>
-        {locale === 'en' ? 'Skip to content' : '本文へ移動'}
-      </a>
-      <Sidebar>
-        <DocsNavigation current={current} navigation={navigation} locale={locale} />
-      </Sidebar>
-      <SidebarInset>
-        <header className='sticky top-0 z-20 flex min-h-15 items-center gap-3 border-b border-border/80 bg-background/90 px-4 py-2 backdrop-blur md:px-8'>
-          <SidebarTrigger aria-label='Toggle Sidebar' className='md:hidden' />
-          <nav aria-label={locale === 'en' ? 'Breadcrumbs' : 'パンくずリスト'} className='min-w-0'>
-            <ol className='flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground'>
-              <li>
-                <a
-                  href={localizedPath('/', locale)}
-                  className='rounded-sm outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring'
-                >
-                  {locale === 'en' ? 'Documentation' : 'ドキュメント'}
-                </a>
-              </li>
-              {[current.section, ...(current.group ? [current.group] : []), current.title].map(
-                (label, index, labels) => (
-                  <li key={index} className='flex min-w-0 items-baseline gap-1.5'>
-                    <span aria-hidden='true'>/</span>
-                    <span
-                      aria-current={index === labels.length - 1 ? 'page' : undefined}
-                      className={
-                        index === labels.length - 1
-                          ? 'min-w-0 text-sm font-medium wrap-break-word text-foreground'
-                          : 'min-w-0 wrap-break-word'
-                      }
-                    >
-                      {label}
-                    </span>
-                  </li>
-                ),
-              )}
-            </ol>
-          </nav>
-          <nav aria-label={locale === 'en' ? 'Language' : '言語'} className='ml-auto flex shrink-0 gap-2 text-xs'>
-            <a
-              href={localizedPath(current.slug, 'en')}
-              hrefLang='en'
-              lang='en'
-              aria-current={locale === 'en' ? 'true' : undefined}
-              className='rounded px-1 py-2 underline-offset-4 hover:underline aria-current:font-semibold'
-            >
-              English
-            </a>
-            <a
-              href={localizedPath(current.slug, 'ja')}
-              hrefLang='ja'
-              lang='ja'
-              aria-current={locale === 'ja' ? 'true' : undefined}
-              className='rounded px-1 py-2 underline-offset-4 hover:underline aria-current:font-semibold'
-            >
-              日本語
-            </a>
-          </nav>
-        </header>
-        <div className='mx-auto grid w-full max-w-[90rem] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_11rem]'>
-          <main id='main-content' className='min-w-0 px-5 py-10 sm:px-8 sm:py-14 lg:px-14'>
-            <noscript>
-              <nav
-                aria-label={locale === 'en' ? 'Documentation navigation' : 'ドキュメントナビゲーション'}
-                className='docs-noscript-nav'
+export const DocsShell = ({
+  current,
+  navigation,
+  headings,
+  children,
+  locale = 'ja',
+}: DocsShellProps): React.JSX.Element => (
+  <SidebarProvider defaultOpen>
+    <a href='#main-content' className='skip-link'>
+      {locale === 'en' ? 'Skip to content' : '本文へ移動'}
+    </a>
+    <Sidebar>
+      <DocsNavigation current={current} navigation={navigation} locale={locale} />
+    </Sidebar>
+    <SidebarInset>
+      <header className='sticky top-0 z-20 flex min-h-15 items-center gap-3 border-b border-border/80 bg-background/90 px-4 py-2 backdrop-blur md:px-8'>
+        <SidebarTrigger aria-label='Toggle Sidebar' className='md:hidden' />
+        <nav aria-label={locale === 'en' ? 'Breadcrumbs' : 'パンくずリスト'} className='min-w-0'>
+          <ol className='flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted-foreground'>
+            <li>
+              <a
+                href={localizedPath('/', locale)}
+                className='rounded-sm outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring'
               >
-                <p>
-                  <strong>@totto2727/oxlint</strong> TypeScript and Effect lint rules.
-                </p>
-                <ul>
-                  {navigation.map((item) => (
-                    <li key={item.slug}>
-                      <a href={item.slug} aria-current={item.slug === current.slug ? 'page' : undefined}>
-                        {item.section}: {item.group ? `${item.group}: ` : ''}
-                        {item.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </noscript>
-            <div className='max-w-3xl'>{children}</div>
-            <PreviousNext current={current} navigation={navigation} locale={locale} />
-          </main>
-          <aside
-            aria-label={locale === 'en' ? 'On this page' : 'このページ内'}
-            className='hidden border-l border-border/70 px-6 py-14 lg:block'
-          >
-            {headings.length > 0 && (
-              <nav className='sticky top-23'>
-                <p className='mb-3 text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase'>
-                  {locale === 'en' ? 'On this page' : 'このページ内'}
-                </p>
-                <ol className='space-y-2 border-l border-border text-sm'>
-                  {headings.map((heading) => (
-                    <li key={heading.id}>
-                      <a
-                        className='block -ml-px border-l border-transparent [overflow-wrap:anywhere] py-0.5 pl-3 text-muted-foreground outline-none hover:border-emerald-600 hover:text-foreground focus-visible:border-emerald-600 focus-visible:text-foreground'
-                        href={`#${heading.id}`}
-                      >
-                        {heading.title}
-                      </a>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
+                {locale === 'en' ? 'Documentation' : 'ドキュメント'}
+              </a>
+            </li>
+            {[current.section, ...(String.isEmpty(current.group ?? '') ? [] : [current.group]), current.title].map(
+              (label, index, labels) => (
+                // oxlint-disable-next-line react/no-array-index-key -- Breadcrumb positions are stable and labels may repeat.
+                <li key={index} className='flex min-w-0 items-baseline gap-1.5'>
+                  <span aria-hidden='true'>/</span>
+                  <span
+                    aria-current={index === labels.lastIndexOf(current.title) ? 'page' : undefined}
+                    className={
+                      index === labels.lastIndexOf(current.title)
+                        ? 'min-w-0 text-sm font-medium wrap-break-word text-foreground'
+                        : 'min-w-0 wrap-break-word'
+                    }
+                  >
+                    {label}
+                  </span>
+                </li>
+              ),
             )}
-          </aside>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
-  )
-}
+          </ol>
+        </nav>
+        <nav aria-label={locale === 'en' ? 'Language' : '言語'} className='ml-auto flex shrink-0 gap-2 text-xs'>
+          <a
+            href={localizedPath(current.slug, 'en')}
+            hrefLang='en'
+            lang='en'
+            aria-current={locale === 'en' ? 'true' : undefined}
+            className='rounded px-1 py-2 underline-offset-4 hover:underline aria-current:font-semibold'
+          >
+            English
+          </a>
+          <a
+            href={localizedPath(current.slug, 'ja')}
+            hrefLang='ja'
+            lang='ja'
+            aria-current={locale === 'ja' ? 'true' : undefined}
+            className='rounded px-1 py-2 underline-offset-4 hover:underline aria-current:font-semibold'
+          >
+            日本語
+          </a>
+        </nav>
+      </header>
+      <div className='mx-auto grid w-full max-w-[90rem] grid-cols-1 lg:grid-cols-[minmax(0,1fr)_11rem]'>
+        <main id='main-content' className='min-w-0 px-5 py-10 sm:px-8 sm:py-14 lg:px-14'>
+          <noscript>
+            <nav
+              aria-label={locale === 'en' ? 'Documentation navigation' : 'ドキュメントナビゲーション'}
+              className='docs-noscript-nav'
+            >
+              <p>
+                <strong>@totto2727/oxlint</strong> TypeScript and Effect lint rules.
+              </p>
+              <ul>
+                {navigation.map((item) => (
+                  <li key={item.slug}>
+                    <a href={item.slug} aria-current={item.slug === current.slug ? 'page' : undefined}>
+                      {item.section}: {String.isEmpty(item.group ?? '') ? '' : `${item.group}: `}
+                      {item.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </noscript>
+          <div className='max-w-3xl'>{children}</div>
+          <PreviousNext current={current} navigation={navigation} locale={locale} />
+        </main>
+        <aside
+          aria-label={locale === 'en' ? 'On this page' : 'このページ内'}
+          className='hidden border-l border-border/70 px-6 py-14 lg:block'
+        >
+          {Array.isReadonlyArrayNonEmpty(headings) && (
+            <nav className='sticky top-23'>
+              <p className='mb-3 text-xs font-semibold tracking-[0.12em] text-muted-foreground uppercase'>
+                {locale === 'en' ? 'On this page' : 'このページ内'}
+              </p>
+              <ol className='space-y-2 border-l border-border text-sm'>
+                {headings.map((heading) => (
+                  <li key={heading.id}>
+                    <a
+                      className='block -ml-px border-l border-transparent [overflow-wrap:anywhere] py-0.5 pl-3 text-muted-foreground outline-none hover:border-emerald-600 hover:text-foreground focus-visible:border-emerald-600 focus-visible:text-foreground'
+                      href={`#${heading.id}`}
+                    >
+                      {heading.title}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
+        </aside>
+      </div>
+    </SidebarInset>
+  </SidebarProvider>
+)
