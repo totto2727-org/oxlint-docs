@@ -12,6 +12,13 @@ const MemoCard = React.memo(() => <article />)
 const CardWithRef = React.forwardRef<HTMLElement>((_props, ref) => <article ref={ref} />)
 \`\`\``
 
+const eventCallback = `\`\`\`ts
+const onSave = () => {
+  void save().catch(reportFailure)
+  return true
+}
+\`\`\``
+
 export const sharedPresetArticle = {
   en: `## Usage {#usage}
 
@@ -43,6 +50,16 @@ The three presets turn off \`import/unambiguous\` only in \`**/*.d.ts\` files.
 An ambient module declaration can use \`declare module\` without a top-level \`import\` or \`export\`.
 The rule applies to JavaScript and TypeScript implementation files, including \`.tsx\` files.
 When you enable TypeScript compiler checks, an import from an unknown module can produce \`TS2307\`.
+
+The shared preset sets \`eslint/no-void\` to \`error\` with \`{ allowAsStatement: true }\`.
+Application and library presets inherit this setting, including in test files.
+A synchronous event callback can start a save and immediately return a boolean or \`undefined\`.
+
+${eventCallback}
+
+The standalone \`void\` statement explicitly discards the promise. It does not catch a rejection.
+The callback handles failure with \`.catch(reportFailure)\`. If the caller needs to observe completion, return the promise and have the caller \`await\` it.
+Using \`void\` in an expression such as \`return void save()\` still produces a lint error.
 
 See the [preset source](${presetSource}) for the full configuration.
 
@@ -97,6 +114,16 @@ Class Variance Authority（CVA）はその順序でバリアントを読み取�
 アンビエントモジュールは、トップレベルの \`import\` や \`export\` を使わずに \`declare module\` で宣言できます。
 JavaScript と TypeScript の実装ファイルには、\`.tsx\` を含めてこのルールを適用します。
 TypeScript の型検査を有効にすると、未知のモジュールからの import が \`TS2307\` として報告される場合があります。
+
+共通プリセットは \`eslint/no-void\` を \`error\` に設定し、\`{ allowAsStatement: true }\` を指定します。
+アプリケーションとライブラリのプリセットはこの設定を継承し、テストファイルにも適用します。
+同期イベントコールバックは保存処理を開始し、すぐに真偽値または \`undefined\` を返せます。
+
+${eventCallback}
+
+独立した文の \`void\` は Promise を明示的に破棄します。拒否は処理しません。
+この例ではコールバックが \`.catch(reportFailure)\` で失敗を処理します。呼び出し元が完了を確認する場合は Promise を返し、呼び出し元で \`await\` します。
+\`return void save()\` のように式の中で \`void\` を使うと、引き続きリントエラーになります。
 
 全設定は[プリセットのソース](${presetSource})を参照してください。
 

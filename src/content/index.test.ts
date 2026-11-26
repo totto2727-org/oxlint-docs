@@ -74,6 +74,9 @@ describe('rendered articles', () => {
       '**/*.d.ts',
       'declare module',
       'TS2307',
+      'eslint/no-void',
+      '{ allowAsStatement: true }',
+      'return void save()',
       'namedComponents',
       'unnamedComponents',
     ]
