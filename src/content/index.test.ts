@@ -70,6 +70,10 @@ describe('rendered articles', () => {
       'TS2304',
       'eslint/sort-keys',
       'Class Variance Authority',
+      'import/unambiguous',
+      '**/*.d.ts',
+      'declare module',
+      'TS2307',
       'namedComponents',
       'unnamedComponents',
     ]

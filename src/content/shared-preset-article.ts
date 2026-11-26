@@ -38,6 +38,12 @@ When you enable TypeScript compiler checks, an undeclared name in TypeScript can
 The three presets turn off \`eslint/sort-keys\`.
 Changing property order can change the order of value evaluation and \`Object.keys()\` results.
 Class Variance Authority (CVA) reads variant keys in that order, which can change the order of the classes in its output.
+
+The three presets turn off \`import/unambiguous\` only in \`**/*.d.ts\` files.
+An ambient module declaration can use \`declare module\` without a top-level \`import\` or \`export\`.
+The rule applies to JavaScript and TypeScript implementation files, including \`.tsx\` files.
+When you enable TypeScript compiler checks, an import from an unknown module can produce \`TS2307\`.
+
 See the [preset source](${presetSource}) for the full configuration.
 
 ## Function style {#function-style}
@@ -86,6 +92,12 @@ TypeScript の型検査を有効にすると、TypeScript 内の未宣言の名�
 3つのプリセットは \`eslint/sort-keys\` を無効にします。
 プロパティの並び替えは、値の評価順や \`Object.keys()\` の列挙順を変えることがあります。
 Class Variance Authority（CVA）はその順序でバリアントを読み取るため、出力内のクラスの順序も変わることがあります。
+
+3つのプリセットは \`**/*.d.ts\` に限り \`import/unambiguous\` を無効にします。
+アンビエントモジュールは、トップレベルの \`import\` や \`export\` を使わずに \`declare module\` で宣言できます。
+JavaScript と TypeScript の実装ファイルには、\`.tsx\` を含めてこのルールを適用します。
+TypeScript の型検査を有効にすると、未知のモジュールからの import が \`TS2307\` として報告される場合があります。
+
 全設定は[プリセットのソース](${presetSource})を参照してください。
 
 ## 関数形式 {#function-style}
