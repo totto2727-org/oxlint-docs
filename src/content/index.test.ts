@@ -65,12 +65,15 @@ describe('rendered articles', () => {
 
   test.each(locales)('renders the shared language and function policies in %s', async (locale) => {
     const html = await renderArticle(localizedPath('/presets/typescript', locale))
-    expect(html).toContain('eslint/no-undef')
-    expect(html).toContain('TS2304')
-    expect(html).toContain('eslint/sort-keys')
-    expect(html).toContain('Class Variance Authority')
-    expect(html).toContain('namedComponents')
-    expect(html).toContain('unnamedComponents')
+    const policyText = [
+      'eslint/no-undef',
+      'TS2304',
+      'eslint/sort-keys',
+      'Class Variance Authority',
+      'namedComponents',
+      'unnamedComponents',
+    ]
+    expect(policyText.filter((text) => !html.includes(text))).toStrictEqual([])
   })
 
   test.each(locales)('keeps the vendored rule source with the Effect reference in %s', async (locale) => {
